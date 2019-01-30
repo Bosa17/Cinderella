@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/navigationComponentPageAFragment">
+    <fragment
+        android:id="@+id/navigationComponentPageAFragment"
+        android:name="in.madamcoco.madamcoco.NavigationComponentPageAFragment"
+        android:label="NavigationComponentPageAFragment" />
+    <fragment
+        android:id="@+id/navigationComponentPageBFragment"
+        android:name="in.madamcoco.madamcoco.NavigationComponentPageBFragment"
+        android:label="NavigationComponentPageBFragment" />
+    <fragment
+        android:id="@+id/navigationComponentPageCFragment"
+        android:name="in.madamcoco.madamcoco.NavigationComponentPageCFragment"
+        android:label="NavigationComponentPageCFragment" />
+    <fragment
+        android:id="@+id/navigationComponentPageDFragment"
+        android:name="in.madamcoco.madamcoco.NavigationComponentPageDFragment"
+        android:label="NavigationComponentPageDFragment" />
+</navigation>

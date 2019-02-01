@@ -1,2 +1,2 @@
 # Zeitgeist
-Real social media forr real people
+Real social media for real people

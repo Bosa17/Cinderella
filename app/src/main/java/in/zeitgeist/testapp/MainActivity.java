@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
     static NavigationController navigationController;
     private final int[] PAGE_IDS = {
             R.id.navigationComponentPageAFragment,
-            R.id.navigationComponentPageBFragment,
+            R.id.Profile_fragment,
             R.id.navigationComponentPageCFragment,
             R.id.Settings_fragment
     };

@@ -7,9 +7,9 @@
         android:name="in.zeitgeist.testapp.NavigationComponentPageAFragment"
         android:label="NavigationComponentPageAFragment" />
     <fragment
-        android:id="@+id/navigationComponentPageBFragment"
-        android:name="in.zeitgeist.testapp.NavigationComponentPageBFragment"
-        android:label="NavigationComponentPageBFragment" />
+        android:id="@+id/Profile_fragment"
+        android:name="in.zeitgeist.testapp.Profile"
+        android:label="Profile" />
     <fragment
         android:id="@+id/navigationComponentPageCFragment"
         android:name="in.zeitgeist.testapp.NavigationComponentPageCFragment"
@@ -17,5 +17,5 @@
     <fragment
         android:id="@+id/Settings_fragment"
         android:name="in.zeitgeist.testapp.Settings"
-        android:label="Sttings" />
+        android:label="Settings" />
 </navigation>

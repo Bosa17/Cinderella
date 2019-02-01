@@ -1,14 +1,13 @@
-package in.madamcoco.madamcoco;
+package in.zeitgeist.testapp;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import in.madamcoco.madamcoco.utils.BottomNavigationUtils;
+import in.zeitgeist.testapp.utils.BottomNavigationUtils;
 import me.majiajie.pagerbottomtabstrip.NavigationController;
 import me.majiajie.pagerbottomtabstrip.PageNavigationView;
-import me.majiajie.pagerbottomtabstrip.MaterialMode;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
             R.id.navigationComponentPageAFragment,
             R.id.navigationComponentPageBFragment,
             R.id.navigationComponentPageCFragment,
-            R.id.navigationComponentPageDFragment
+            R.id.Settings_fragment
     };
 
     private NavController mNavController;
@@ -42,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
                 .addItem(R.drawable.ic_account_circle_black_24dp, "Profile")
                 .addItem(R.drawable.ic_search_black_24dp, "Search")
                 .addItem(R.drawable.ic_settings_black_24dp, "Settings")
-                .setMode( MaterialMode.HIDE_TEXT)
                 .build();
         BottomNavigationUtils.setupWithNavController(PAGE_IDS, navigationController, mNavController);
     }

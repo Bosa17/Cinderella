@@ -1,4 +1,4 @@
-package in.madamcoco.madamcoco;
+package in.zeitgeist.testapp;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;

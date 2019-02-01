@@ -1,4 +1,4 @@
-package in.madamcoco.madamcoco;
+package in.zeitgeist.testapp;
 
 import org.junit.Test;
 

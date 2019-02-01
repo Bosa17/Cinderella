@@ -1,4 +1,4 @@
-package in.madamcoco.madamcoco;
+package in.zeitgeist.testapp;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

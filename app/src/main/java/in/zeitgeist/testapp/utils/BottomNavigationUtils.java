@@ -1,5 +1,4 @@
-package in.madamcoco.madamcoco.utils;
-import android.os.Bundle;
+package in.zeitgeist.testapp.utils;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
@@ -7,7 +6,7 @@ import androidx.navigation.NavDestination;
 import androidx.navigation.NavOptions;
 import me.majiajie.pagerbottomtabstrip.NavigationController;
 import me.majiajie.pagerbottomtabstrip.listener.OnTabItemSelectedListener;
-import in.madamcoco.madamcoco.R;
+import in.zeitgeist.testapp.R;
 
 public class BottomNavigationUtils {
 

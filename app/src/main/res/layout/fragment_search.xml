@@ -1,0 +1,35 @@
+<LinearLayout android:layout_height="match_parent"
+    android:layout_width="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#75757575"
+        android:orientation="vertical"
+        android:gravity="center|right">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#eeeeee"
+            android:gravity="center|right"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <EditText
+                android:id="@+id/editMobileNo"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/login_edittext"
+                android:ems="10"
+                android:hint="Search..."
+                android:drawableRight="@drawable/ic_search_black_24dp"
+                android:gravity="center|left" >
+            </EditText>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

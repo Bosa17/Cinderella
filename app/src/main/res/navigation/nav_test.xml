@@ -11,8 +11,8 @@
         android:name="in.zeitgeist.testapp.Profile"
         android:label="Profile" />
     <fragment
-        android:id="@+id/navigationComponentPageCFragment"
-        android:name="in.zeitgeist.testapp.NavigationComponentPageCFragment"
+        android:id="@+id/Search_fragment"
+        android:name="in.zeitgeist.testapp.Search"
         android:label="NavigationComponentPageCFragment" />
     <fragment
         android:id="@+id/Settings_fragment"

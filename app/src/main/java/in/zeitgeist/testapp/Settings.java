@@ -2,6 +2,7 @@ package in.zeitgeist.testapp;
 
 import android.os.Bundle;
 
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 
@@ -15,19 +16,14 @@ public class Settings extends PreferenceFragmentCompat{
         super.onActivityCreated(savedInstanceState);
         // To get a preference
         PreferenceScreen preferenceScreen = getPreferenceScreen();
-//        Preference preference = preferenceScreen.findPreference("checkbox_preference");
-//
-//        //You can set a listener
-//        preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-//            @Override
-//            public boolean onPreferenceClick(Preference preference) {
-//                return false;
-//            }
-//        });
+        Preference preference = preferenceScreen.findPreference("checkbox_preference");
 
-        //change title
-//        preference.setTitle("my_title");
-
-        // etc
+        //You can set a listener
+        preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                return false;
+            }
+        });
     }
 }

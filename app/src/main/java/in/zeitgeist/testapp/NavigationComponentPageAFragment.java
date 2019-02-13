@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 
 public class NavigationComponentPageAFragment extends Fragment {
 
-    protected TextView mTvText;
+    private TextView mTvText;
 
     @Nullable
     @Override

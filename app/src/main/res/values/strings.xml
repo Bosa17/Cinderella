@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Zeitgeist</string>
     <string name="tag">Escape Into Reality</string>
+    <string name="sign_in_with_google">Sign-in with Google</string>
+    <string name="google_web_client">937526574260-qmnu57p5piu1toebbalu437skcdtdr57.apps.googleusercontent.com
+</string>
 </resources>

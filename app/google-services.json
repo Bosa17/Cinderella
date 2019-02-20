@@ -15,14 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "937526574260-leato5e7pla0omdv7alj6494rhbrsrj9.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "in.zeitgeist.testapp",
-            "certificate_hash": "de07974ba55f4bcfc6a38ff0781e972400635047"
-          }
-        },
-        {
           "client_id": "937526574260-qmnu57p5piu1toebbalu437skcdtdr57.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -37,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "937526574260-qmnu57p5piu1toebbalu437skcdtdr57.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

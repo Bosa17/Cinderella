@@ -1,6 +1,11 @@
 package in.zeitgeist.testapp;
 
+import android.content.Intent;
 import android.os.Bundle;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -10,7 +15,7 @@ import me.majiajie.pagerbottomtabstrip.NavigationController;
 import me.majiajie.pagerbottomtabstrip.PageNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-
+    private FirebaseAuth mAuth;
     static NavigationController navigationController;
     private final int[] PAGE_IDS = {
             R.id.navigationComponentPageAFragment,
@@ -25,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAuth=FirebaseAuth.getInstance();
         PageNavigationView mNavigation = findViewById(R.id.navigation);
 
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -33,6 +39,22 @@ public class MainActivity extends AppCompatActivity {
         setMessage();
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser currentUser=mAuth.getCurrentUser();
+        if(currentUser== null){
+            loginOrRegisterUser();
+        }
+    }
+
+    private void loginOrRegisterUser(){
+        Intent intent = new Intent(this,User_login.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
     private void initBottomNavigation(PageNavigationView pageNavigationView) {
         navigationController = pageNavigationView.material()
                 .addItem(R.drawable.ic_home_black_24dp, "Home")

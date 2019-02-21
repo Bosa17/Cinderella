@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import in.zeitgeist.testapp.R;
 
-public class NavigationComponentPageAFragment extends Fragment {
+public class Feed extends Fragment {
 
     private TextView mTvText;
 
@@ -30,6 +30,6 @@ public class NavigationComponentPageAFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mTvText.setText("A");
+        mTvText.setText("Feed");
     }
 }

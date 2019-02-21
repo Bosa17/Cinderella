@@ -1,6 +1,7 @@
-package in.zeitgeist.testapp;
+package in.zeitgeist.testapp.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import in.zeitgeist.testapp.R;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -15,25 +15,10 @@
             android:dialogTitle="Enter E-mail ID"
             android:dependency="checkbox_preference" />
 
+        <Preference android:title="Logout"
+            android:key="logout"
+            android:summary="Log out from this account"/>
+
 
     </PreferenceCategory>
-
-    <!--<PreferenceCategory-->
-        <!--android:title="@string/title_second_section">-->
-
-        <!--<ListPreference-->
-            <!--android:key="list_preference"-->
-            <!--android:title="@string/title_list_preference"-->
-            <!--android:dialogTitle="@string/dialog_title_list_preference"-->
-            <!--android:entries="@array/entries_list_preference"-->
-            <!--android:entryValues="@array/entryvalues_list_preference" />-->
-
-        <!--<Preference-->
-            <!--android:title="@string/title_intent_preference">-->
-            <!--<intent android:action="android.intent.action.VIEW"-->
-                <!--android:data="http://codepath.com/" />-->
-        <!--</Preference>-->
-
-    <!--</PreferenceCategory>-->
-
 </PreferenceScreen>

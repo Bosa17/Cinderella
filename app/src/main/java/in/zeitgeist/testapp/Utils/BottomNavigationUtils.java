@@ -1,4 +1,4 @@
-package in.zeitgeist.testapp.utils;
+package in.zeitgeist.testapp.Utils;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;

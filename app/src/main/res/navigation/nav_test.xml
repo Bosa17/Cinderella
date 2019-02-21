@@ -4,7 +4,7 @@
     app:startDestination="@id/navigationComponentPageAFragment">
     <fragment
         android:id="@+id/navigationComponentPageAFragment"
-        android:name="in.zeitgeist.testapp.Fragments.NavigationComponentPageAFragment"
+        android:name="in.zeitgeist.testapp.Fragments.Feed"
         android:label="NavigationComponentPageAFragment" />
     <fragment
         android:id="@+id/Profile_fragment"
@@ -18,4 +18,8 @@
         android:id="@+id/Settings_fragment"
         android:name="in.zeitgeist.testapp.Fragments.Settings"
         android:label="Settings" />
+    <fragment
+        android:id="@+id/Post_fragment"
+        android:name="in.zeitgeist.testapp.Fragments.Post"
+        android:label="Post" />
 </navigation>

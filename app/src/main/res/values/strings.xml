@@ -4,4 +4,7 @@
     <string name="sign_in_with_google">Sign-in with Google</string>
     <string name="google_web_client">937526574260-qmnu57p5piu1toebbalu437skcdtdr57.apps.googleusercontent.com
 </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

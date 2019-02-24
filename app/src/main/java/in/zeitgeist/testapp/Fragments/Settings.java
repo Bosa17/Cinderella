@@ -27,6 +27,7 @@ public class Settings extends PreferenceFragmentCompat{
             public boolean onPreferenceClick(Preference preference) {
                 FirebaseAuth.getInstance().signOut();
                 startSigninActivity();
+                getActivity().finish();
                 return false;
             }
         });

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/Post_picture_fragment" >
+
+    <fragment
+        android:id="@+id/Post_picture_fragment"
+        android:name="in.zeitgeist.testapp.Fragments.Post_picture"
+        android:label="Post_picture_Fragment" />
+    <fragment
+        android:id="@+id/Post_text_fragment"
+        android:name="in.zeitgeist.testapp.Fragments.Post_text"
+        android:label="Post_text_fragment"/>
+
+
+</navigation>

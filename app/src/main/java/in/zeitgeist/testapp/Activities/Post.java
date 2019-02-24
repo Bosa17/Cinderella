@@ -1,16 +1,17 @@
 package in.zeitgeist.testapp.Activities;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+
+
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -20,61 +21,43 @@ import in.zeitgeist.testapp.Utils.Permissions;
 import me.majiajie.pagerbottomtabstrip.NavigationController;
 import me.majiajie.pagerbottomtabstrip.PageNavigationView;
 
-public class MainActivity extends AppCompatActivity {
-    private FirebaseAuth mAuth;
+
+public class Post extends AppCompatActivity {
+
+    private static String TAG="Post Fragment";
     static NavigationController navigationController;
     private final int[] PAGE_IDS = {
-            R.id.Feed_fragment,
-            R.id.Search_fragment,
-            R.id.Post_activity,
-            R.id.Profile_fragment,
-            R.id.Settings_fragment
+            R.id.Post_picture_fragment
     };
 
     private NavController mNavController;
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        mAuth=FirebaseAuth.getInstance();
+        setContentView(R.layout.activity_post);
+        Log.d(TAG, "onCreateView: started.");
         PageNavigationView mNavigation = findViewById(R.id.navigation);
 
-        mNavController = Navigation.findNavController(this, R.id.nav_main_fragment);
+        mNavController = Navigation.findNavController(this, R.id.nav_post_fragment);
 
         initBottomNavigation(mNavigation);
-        setMessage();
 
     }
-    //checking to see if user is already logged in else goes to user login activity
+
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
-        FirebaseUser currentUser=mAuth.getCurrentUser();
-        if(currentUser== null){
-            loginOrRegisterUser();
-        }
         checkPermission();
     }
-    //starting login activity
-    private void loginOrRegisterUser(){
-        Intent intent = new Intent(this,User_login.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-    }
+
     //Initializing Bottom Navigation Components
     private void initBottomNavigation(PageNavigationView pageNavigationView) {
         navigationController = pageNavigationView.material()
-                .addItem(R.drawable.ic_home_black_24dp, "Home")
-                .addItem(R.drawable.ic_explore_black_24dp, "Explore")
-                .addItem(R.drawable.ic_add_circle_black_24dp,"Post")
-                .addItem(R.drawable.ic_account_circle_black_24dp, "Profile")
-                .addItem(R.drawable.ic_settings_black_24dp, "Settings")
+                .addItem(R.drawable.ic_landscape_black_24dp,"Image")
                 .build();
         BottomNavigationUtils.setupWithNavController(PAGE_IDS, navigationController, mNavController);
-    }
-    private void setMessage(){
-        navigationController.setHasMessage(0,true);
     }
 
 
@@ -86,9 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
             requestPermissions(Permissions.READ_STORAGE_PERMISSION, 2);
         }else {
-            //write your code here. if permission already granted
-
-
+            // if permission already granted
         }
     }
 
@@ -106,19 +87,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
             else {
-//                Toast.makeText(getApplicationContext(),  "Permission Denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),  "Permission Denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
 }
-
-
-
-
-
-
-
-
-
-
-

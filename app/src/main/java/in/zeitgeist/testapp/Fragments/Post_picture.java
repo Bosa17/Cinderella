@@ -65,7 +65,7 @@ public class Post_picture extends Fragment {
         mProgressBar.setVisibility(View.GONE);
         directories = new ArrayList<>();
         Log.d(TAG, "onCreateView: started.");
-        ImageView shareClose = (ImageView) view.findViewById(R.id.ivCloseShare);
+        ImageView shareClose = (ImageView) view.findViewById(R.id.ivClosePost);
         shareClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,19 +76,19 @@ public class Post_picture extends Fragment {
         });
 
 
-//        TextView nextScreen = (TextView) view.findViewById(R.id.tvNext);
-//        nextScreen.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.d(TAG, "onClick: navigating to the final share screen.");
-//
-//                Intent intent = new Intent(this, NextActivity.class);
-//                intent.putExtra(getString(R.string.selected_image), mSelectedImage);
-//                startActivity(intent);
-//
-//
-//            }
-//        });
+        TextView nextScreen = (TextView) view.findViewById(R.id.tvNext);
+        nextScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: navigating to the final share screen.");
+                Bundle bundle=new Bundle();
+                bundle.putString(getString(R.string.selected_image), mSelectedImage);
+                Post_picture_next ppn =new Post_picture_next();
+                ppn.setArguments(bundle);
+                getFragmentManager().beginTransaction().replace(R.id.nav_post_fragment,ppn).commit();
+
+            }
+        });
         init();
         return view;
     }

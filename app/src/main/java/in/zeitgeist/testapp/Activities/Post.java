@@ -27,7 +27,8 @@ public class Post extends AppCompatActivity {
     private static String TAG="Post Fragment";
     static NavigationController navigationController;
     private final int[] PAGE_IDS = {
-            R.id.Post_picture_fragment
+            R.id.Post_picture_fragment,
+            R.id.Post_text_fragment
     };
 
     private NavController mNavController;
@@ -56,6 +57,7 @@ public class Post extends AppCompatActivity {
     private void initBottomNavigation(PageNavigationView pageNavigationView) {
         navigationController = pageNavigationView.material()
                 .addItem(R.drawable.ic_landscape_black_24dp,"Image")
+                .addItem(R.drawable.ic_post_text_black_24dp,"Words")
                 .build();
         BottomNavigationUtils.setupWithNavController(PAGE_IDS, navigationController, mNavController);
     }

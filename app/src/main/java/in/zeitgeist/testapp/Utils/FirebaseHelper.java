@@ -1,10 +1,19 @@
 package in.zeitgeist.testapp.Utils;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.google.android.gms.common.images.ImageManager;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import androidx.annotation.NonNull;
 import in.zeitgeist.testapp.Models.UserModel;
 import in.zeitgeist.testapp.R;
 

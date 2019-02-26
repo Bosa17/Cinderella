@@ -25,7 +25,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import in.zeitgeist.testapp.Activities.MainActivity;
 import in.zeitgeist.testapp.R;
 import in.zeitgeist.testapp.Utils.FirebaseHelper;
 import in.zeitgeist.testapp.Utils.UniversalImageLoader;

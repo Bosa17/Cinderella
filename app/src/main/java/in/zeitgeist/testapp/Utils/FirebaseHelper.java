@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.images.ImageManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -51,11 +52,35 @@ public class FirebaseHelper {
 
     }
 
-    public void getUsername(){
+    /**
+     * retrieve user data from the firebase database
+     * @param dataSnapshot
+     * @return
+     */
+    public UserModel getUser(DataSnapshot dataSnapshot){
+        Log.d(TAG, "getUserSettings: retrieving user account settings from firebase.");
 
-    }
+        UserModel user = new UserModel();
 
-    public void getDP(){
+        for(DataSnapshot ds: dataSnapshot.getChildren()){
+
+            Log.d(TAG, "getUserSettings: snapshot key: " + ds.getKey());
+            if(ds.getKey().equals(mContext.getString(R.string.user_db))) {
+
+                user.setUsername(
+                        ds.child(userID)
+                                .getValue(UserModel.class)
+                                .getUsername()
+                );
+                user.setDp(
+                        ds.child(userID)
+                                .getValue(UserModel.class)
+                                .getDp()
+                );
+
+            }
+        }
+        return user;
 
     }
 

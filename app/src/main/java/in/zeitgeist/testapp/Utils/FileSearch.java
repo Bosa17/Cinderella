@@ -10,6 +10,9 @@ import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 
+/**
+ * created by Bosa
+ */
 public class FileSearch {
 
     /**
@@ -49,6 +52,11 @@ public class FileSearch {
         return pathArray;
     }
 
+    /**
+     * returns list of image buckets
+     * @param mContext
+     * @return
+     */
     public static ArrayList<String> getImageBuckets(Context mContext){
         ArrayList<String> buckets = new ArrayList<>();
         Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
@@ -70,7 +78,12 @@ public class FileSearch {
         return buckets;
     }
 
-
+    /**
+     * returns all the image paths inside the bucket
+     * @param mContext
+     * @param bucketPath
+     * @return
+     */
     public static ArrayList<String> getImagesByBucket(Context mContext , @NonNull String bucketPath){
 
         Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;

@@ -9,6 +9,6 @@
     <string name="selected_image">selected_image</string>
     <string name="post">Post</string>
     <string name="image_post">Image Post</string>
-    <string name="post_picture_desc">Write a description...</string>
+    <string name="post_picture_desc">Write a description…</string>
     <string name="user_db">User</string>
 </resources>

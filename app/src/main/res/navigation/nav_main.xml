@@ -7,17 +7,9 @@
         android:name="in.zeitgeist.testapp.Fragments.Feed"
         android:label="Feed_Fragment" />
     <fragment
-        android:id="@+id/Profile_fragment"
-        android:name="in.zeitgeist.testapp.Fragments.Profile"
-        android:label="Profile_Fragment" />
-    <fragment
         android:id="@+id/Search_fragment"
         android:name="in.zeitgeist.testapp.Fragments.Explore"
         android:label="Explore_Fragment" />
-    <fragment
-        android:id="@+id/Settings_fragment"
-        android:name="in.zeitgeist.testapp.Fragments.Settings"
-        android:label="Settings_Fragment" />
     <activity
         android:id="@+id/Post_activity"
         android:name="in.zeitgeist.testapp.Activities.Post"

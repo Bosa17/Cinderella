@@ -2,6 +2,7 @@ package in.zeitgeist.testapp.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -12,6 +13,7 @@ import in.zeitgeist.testapp.R;
 import in.zeitgeist.testapp.Activities.User_login;
 
 public class Settings extends PreferenceFragmentCompat{
+
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.settings);
     }

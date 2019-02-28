@@ -25,10 +25,8 @@ public class MainActivity extends AppCompatActivity {
     static NavigationController navigationController;
     private final int[] PAGE_IDS = {
             R.id.Feed_fragment,
-            R.id.Search_fragment,
             R.id.Post_activity,
-            R.id.Profile_fragment,
-            R.id.Settings_fragment
+            R.id.Search_fragment,
     };
 
     private NavController mNavController;
@@ -66,10 +64,8 @@ public class MainActivity extends AppCompatActivity {
     private void initBottomNavigation(PageNavigationView pageNavigationView) {
         navigationController = pageNavigationView.material()
                 .addItem(R.drawable.ic_home_black_24dp, "Home")
-                .addItem(R.drawable.ic_explore_black_24dp, "Explore")
                 .addItem(R.drawable.ic_add_circle_black_24dp,"Post")
-                .addItem(R.drawable.ic_account_circle_black_24dp, "Profile")
-                .addItem(R.drawable.ic_settings_black_24dp, "Settings")
+                .addItem(R.drawable.ic_explore_black_24dp, "Explore")
                 .build();
         BottomNavigationUtils.setupWithNavController(PAGE_IDS, navigationController, mNavController);
     }

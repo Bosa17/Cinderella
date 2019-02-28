@@ -85,13 +85,14 @@ public class Post_picture extends Fragment {
                 bundle.putString(getString(R.string.selected_image), mSelectedImage);
                 Post_picture_next ppn =new Post_picture_next();
                 ppn.setArguments(bundle);
-                getFragmentManager().beginTransaction().replace(R.id.nav_post_fragment,ppn).commit();
+                getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.nav_post_fragment,ppn).commit();
 
             }
         });
         init();
         return view;
     }
+
 
     private void startMainActivity(){
         Intent intent = new Intent(getActivity(), MainActivity.class);

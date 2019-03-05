@@ -10,8 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="125dp"
-        android:src="@drawable/zeigeist"/>
+        android:layout_marginTop="250dp"
+        android:src="@drawable/ic_account_150dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

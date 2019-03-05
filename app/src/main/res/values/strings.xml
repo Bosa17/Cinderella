@@ -10,5 +10,8 @@
     <string name="post">Post</string>
     <string name="image_post">Image Post</string>
     <string name="post_picture_desc">Write a description…</string>
+
+    <!--firebase-->
     <string name="user_db">User</string>
+    <string name="username_field">username</string>
 </resources>

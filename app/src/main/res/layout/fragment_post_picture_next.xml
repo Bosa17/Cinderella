@@ -3,14 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
 
-        <RelativeLayout
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -21,51 +20,40 @@
                 <include layout="@layout/snippet_top_post_picture_next"/>
 
             </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/relLayout1"
-                android:id="@+id/relLayout2"
-                android:background="#eeeeee">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:id="@+id/caption"
-                    android:hint="@string/post_picture_desc"
-                    android:gravity="center"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="20dp"/>
-
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="512dp"
-                    android:id="@+id/imageShare"
-                    android:layout_below="@+id/caption"
-                    android:scaleType="centerCrop"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="40dp"/>
-
-
-
-            </RelativeLayout>
-
-            <RelativeLayout
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/relLayout1"
+                    android:id="@+id/relLayout2">
 
-            </RelativeLayout>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:id="@+id/caption"
+                        android:hint="@string/post_picture_desc"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="20dp"/>
 
 
-        </RelativeLayout>
-    </ScrollView>
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="512dp"
+                        android:id="@+id/imageShare"
+                        android:layout_below="@+id/caption"
+                        android:scaleType="centerCrop"
+                        android:layout_marginBottom="40dp"/>
+
+
+
+                </RelativeLayout>
+
+            </ScrollView>
+        </LinearLayout>
+
 </RelativeLayout>

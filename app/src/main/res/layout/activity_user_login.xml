@@ -10,20 +10,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="125dp"
-        android:src="@drawable/zeigeist"/>
+        android:layout_marginTop="250dp"
+        android:src="@drawable/ic_account_150dp"/>
 
     <Button
         android:id="@+id/sign-in"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/sign_in_with_google"
-        android:layout_marginTop="75dp"
+        android:layout_marginTop="150dp"
         android:background="#ffffff"
-        android:textColor="@color/colorAccent"
-        android:paddingLeft="25dp"
+        android:paddingStart="25dp"
         android:layout_marginHorizontal="25dp"
-        android:drawableStart="@drawable/googleg_standard_color_18"
-        />
+        android:drawableStart="@drawable/googleg_standard_color_18"/>
 
 </LinearLayout>

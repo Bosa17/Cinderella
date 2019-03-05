@@ -1,11 +1,11 @@
 package in.zeitgeist.testapp.Models;
 
 public class UserModel {
-    private String Username;
+    private String username;
     private long dp;
 
     public UserModel(String username, long dp) {
-        Username = username;
+        this.username = username;
         this.dp = dp;
     }
     public UserModel() {
@@ -13,11 +13,11 @@ public class UserModel {
     }
 
     public String getUsername() {
-        return Username;
+        return username;
     }
 
     public void setUsername(String username) {
-        Username = username;
+        this.username = username;
     }
 
     public long getDp() {
@@ -31,7 +31,7 @@ public class UserModel {
     @Override
     public String toString() {
         return "UserModel{" +
-                "Username='" + Username + '\'' +
+                "Username='" + username + '\'' +
                 ", dp=" + dp +
                 '}';
     }

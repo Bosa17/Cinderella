@@ -1,17 +1,23 @@
 <resources>
-    <string name="app_name">Zeitgeist</string>
-    <string name="tag">Escape Into Reality</string>
-    <string name="sign_in_with_google">Sign-in with Google</string>
-    <string name="google_web_client">937526574260-qmnu57p5piu1toebbalu437skcdtdr57.apps.googleusercontent.com
-</string>
+    <string name="app_name">Lolita</string>
+    <string name="tag">Lolita</string>
 
     <string name="next">Next</string>
     <string name="selected_image">selected_image</string>
     <string name="post">Post</string>
     <string name="image_post">Image Post</string>
-    <string name="post_picture_desc">Write a description…</string>
+    <!--facebook-->
+    <string name="facebook_app_id">858470831208589</string>
+    <string name="fb_login_protocol_scheme">fb858470831208589</string>
 
     <!--firebase-->
     <string name="user_db">User</string>
     <string name="username_field">username</string>
+    <string name="search">Search…</string>
+    <string name="sign_up_with_facebook">Sign Up With Facebook</string>
+
+    <!--dialog-->
+    <string name="dlg_wait_please">Please wait…</string>
+    <string name="settings">Settings</string>
+
 </resources>

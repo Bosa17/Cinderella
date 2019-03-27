@@ -11,17 +11,17 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="250dp"
-        android:src="@drawable/ic_account_150dp"/>
+        android:src="@drawable/ic_peacock"/>
 
     <Button
         android:id="@+id/sign-in"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/sign_in_with_google"
-        android:layout_marginTop="150dp"
-        android:background="#ffffff"
+        android:text="@string/sign_up_with_facebook"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/login_fb_button"
         android:paddingStart="25dp"
         android:layout_marginHorizontal="25dp"
-        android:drawableStart="@drawable/googleg_standard_color_18"/>
+        android:drawableStart="@drawable/ic_fb_red"/>
 
 </LinearLayout>

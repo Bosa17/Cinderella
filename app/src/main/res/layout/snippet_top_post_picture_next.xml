@@ -43,7 +43,7 @@
                     android:textSize="20sp"
                     android:textColor="@color/colorAccent"
                     android:layout_centerVertical="true"
-                    android:id="@+id/tvNext"
+                    android:id="@+id/ivNext"
                     />
 
 

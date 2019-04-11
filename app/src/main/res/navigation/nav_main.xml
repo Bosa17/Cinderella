@@ -4,14 +4,14 @@
     app:startDestination="@id/Feed_fragment">
     <fragment
         android:id="@+id/Feed_fragment"
-        android:name="in.lolita.testapp.Fragments.Feed"
+        android:name="in.cinderella.testapp.Fragments.Feed"
         android:label="Feed_Fragment" />
     <fragment
         android:id="@+id/Search_fragment"
-        android:name="in.lolita.testapp.Fragments.Explore"
+        android:name="in.cinderella.testapp.Fragments.Explore"
         android:label="Explore_Fragment" />
     <fragment
         android:id="@+id/Recepie_fragment"
-        android:name="in.lolita.testapp.Fragments.Select_picture"
+        android:name="in.cinderella.testapp.Fragments.Select_picture"
         android:label="Explore_Fragment" />
 </navigation>

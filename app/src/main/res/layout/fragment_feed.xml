@@ -16,6 +16,16 @@
             <!-- profile snippet -->
             <include layout="@layout/snippet_profile"/>
 
+            <Button
+                android:id="@+id/call"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Call"
+                android:layout_marginTop="475dp"
+                android:background="@drawable/login_fb_button"
+                android:paddingStart="25dp"
+                android:layout_marginHorizontal="25dp"/>
+
         </RelativeLayout>
 
 

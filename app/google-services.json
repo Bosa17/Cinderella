@@ -8,17 +8,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:937526574260:android:203ecb80554603b6",
+        "mobilesdk_app_id": "1:937526574260:android:42145f29e471cae6",
         "android_client_info": {
-          "package_name": "in.lolita.testapp"
+          "package_name": "in.cinderella.testapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "937526574260-h4pkbnjrg1fjo6ae11uqrrek8amk9mf0.apps.googleusercontent.com",
+          "client_id": "937526574260-rrgs28ipqn4clto77444n2kouttorqir.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "in.lolita.testapp",
+            "package_name": "in.cinderella.testapp",
             "certificate_hash": "de07974ba55f4bcfc6a38ff0781e972400635047"
           }
         },

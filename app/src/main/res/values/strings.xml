@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Lolita</string>
-    <string name="tag">Lolita</string>
+    <string name="app_name">Cinderella</string>
+    <string name="tag">Cinderella</string>
 
     <string name="next">Next</string>
     <string name="selected_image">selected_image</string>
@@ -9,12 +9,17 @@
     <!--facebook-->
     <string name="facebook_app_id">858470831208589</string>
     <string name="fb_login_protocol_scheme">fb858470831208589</string>
+    <string name="sign_up_with_facebook">Sign Up With Facebook</string>
 
     <!--firebase-->
     <string name="user_db">User</string>
     <string name="username_field">username</string>
     <string name="search">Search…</string>
-    <string name="sign_up_with_facebook">Sign Up With Facebook</string>
+
+
+    <!--sinch-->
+    <string name="sinch_key">4d488c48-c86f-4c7b-9779-e99f64f9f169</string>
+    <string name="sinch_secret">M0f04f2FVECLNh5S6NnWEg==</string>
 
     <!--dialog-->
     <string name="dlg_wait_please">Please wait…</string>

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/recepie_fragment"
-        android:name="in.lolita.testapp.Fragments.Select_picture"
+        android:name="in.cinderella.testapp.Fragments.Select_picture"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

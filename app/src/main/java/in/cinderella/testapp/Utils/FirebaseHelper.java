@@ -3,10 +3,14 @@ package in.cinderella.testapp.Utils;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 
 import in.cinderella.testapp.Models.UserModel;
@@ -19,6 +23,7 @@ public class FirebaseHelper {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
     private String userID="";
+    private long karma;
     private StorageReference mStorageReference;
 
     private Context mContext;
@@ -39,11 +44,47 @@ public class FirebaseHelper {
     }
 
     public void addNewUser(String userID,UserModel user){
-
-        myRef.child("User")
+        myRef.child(mContext.getString(R.string.user_db))
                 .child(userID)
                 .setValue(user);
 
+    }
+    public void addKarma(long karma){
+        myRef.child(mContext.getString(R.string.user_db))
+                .child(mAuth.getCurrentUser().getUid())
+                .child(mContext.getString(R.string.karma))
+                .setValue(karma);
+    }
+    public void updateKarmaWithUid(String uid,long karma){
+        myRef.child(mContext.getString(R.string.user_db))
+                .child(uid)
+                .child(mContext.getString(R.string.karma))
+                .setValue(karma);
+    }
+
+    public long getKarmaWithUid(String uid){
+        myRef.child(mContext.getString(R.string.user_db))
+                .child(uid)
+                .child(mContext.getString(R.string.karma)).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //TODO
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        return karma;
+    }
+
+
+    public void updateMask(long mask){
+        myRef.child(mContext.getString(R.string.user_db))
+                .child(mAuth.getCurrentUser().getUid())
+                .child(mContext.getString(R.string.mask))
+                .setValue(mask);
     }
 
     /**

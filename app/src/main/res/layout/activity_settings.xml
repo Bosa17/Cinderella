@@ -1,19 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/settings_app_bar"
-        layout="@layout/snippet_settings" />
-
-    <fragment
-        android:id="@+id/settings_container"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
-        android:layout_below="@+id/settings_app_bar"
-        class="in.cinderella.testapp.Fragments.Settings"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/relLayout1">
+
+            <!-- toolbar -->
+            <include layout="@layout/snippet_top_user_account"/>
+
+        </RelativeLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/relLayout2">
+
+
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:id="@+id/imageShare"
+                    android:layout_marginTop="20dp"
+                    android:scaleType="fitCenter"/>
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_below="@+id/imageShare"
+                    android:id="@+id/alias"
+                    android:src="@drawable/ic_account_150dp"/>
+
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bottom_text"
+                    android:layout_toEndOf="@+id/alias"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@+id/imageShare"
+                    android:hint="Enter Alias Name..."
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"/>
+
+
+                <Button
+                    android:id="@+id/logout"
+                    android:layout_width="match_parent"
+                    android:layout_below="@+id/bottom_text"
+                    android:layout_height="wrap_content"
+                    android:text="Logout"
+                    android:layout_marginTop="70dp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/login_fb_button"
+                    android:paddingStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginStart="25dp"/>
+
+            </RelativeLayout>
+
+        </ScrollView>
+    </LinearLayout>
 
 </RelativeLayout>

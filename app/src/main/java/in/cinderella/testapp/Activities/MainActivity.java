@@ -22,11 +22,11 @@ import me.majiajie.pagerbottomtabstrip.NavigationController;
 import me.majiajie.pagerbottomtabstrip.PageNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-    private FirebaseAuth mAuth;
+//    private FirebaseAuth mAuth;
     static NavigationController navigationController;
     private final int[] PAGE_IDS = {
             R.id.Feed_fragment,
-            R.id.Recepie_fragment,
+            R.id.Call_fragment,
             R.id.Search_fragment,
     };
 
@@ -35,11 +35,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mAuth=FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser()== null){
-            loginOrRegisterUser();
-        }
 
         setContentView(R.layout.activity_main);
         PageNavigationView mNavigation = findViewById(R.id.navigation);
@@ -55,20 +50,12 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         checkPermission();
     }
-
-    //starting login activity
-    private void loginOrRegisterUser(){
-        Intent intent = new Intent(this,User_login.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
-    }
     //Initializing Bottom Navigation Components
     private void initBottomNavigation(PageNavigationView pageNavigationView) {
         navigationController = pageNavigationView.material()
-                .addItem(R.drawable.ic_home_black_24dp, "Home")
-                .addItem(R.drawable.ic_add_circle_black_24dp,"Chats")
-                .addItem(R.drawable.ic_notifications, "Notifications").setMode(MaterialMode.HIDE_TEXT)
+                .addItem(R.drawable.ic_home, "",getResources().getColor(R.color.colorAccent,getTheme()))
+                .addItem(R.drawable.ic_call,"",getResources().getColor(R.color.colorAccent,getTheme()))
+                .addItem(R.drawable.ic_notifications, "",getResources().getColor(R.color.colorAccent,getTheme())).setDefaultColor(getResources().getColor(R.color.white,getTheme()))
                 .build();
         BottomNavigationUtils.setupWithNavController(PAGE_IDS, navigationController, mNavController);
     }
@@ -77,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private void checkPermission() {
         if ((ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED ) ){
+            Toast.makeText(getApplicationContext(),"Accept all the permissions",Toast.LENGTH_SHORT).show();
 
             requestPermissions(Permissions.PERMISSIONS, 2);
         }else {

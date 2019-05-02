@@ -44,6 +44,9 @@ public class SinchHelper {
         call=sinchClient.getCallClient().callUser(rcvrID);
         call.addCallListener(new SinchCallListener());
     }
+    public void endCall(){
+        call.hangup();
+    }
 
     private class SinchCallListener implements CallListener {
         @Override

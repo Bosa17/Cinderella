@@ -5,16 +5,16 @@ public class UserModel {
     private String fb_dp;
     private long karma;
     private String gender;
-    private long profile_pic;
+    private long mask;
 //    private long age;
 
 
-    public UserModel(String username, String fb_dp, long karma,  String gender, long profile_pic) {
+    public UserModel(String username, String fb_dp, long karma, String gender, long mask) {
         this.username = username;
         this.fb_dp = fb_dp;
         this.karma = karma;
         this.gender = gender;
-        this.profile_pic = profile_pic;
+        this.mask = mask;
     }
 
     public UserModel() {
@@ -52,11 +52,22 @@ public class UserModel {
         this.gender = gender;
     }
 
-    public long getProfile_pic() {
-        return profile_pic;
+    public long getMask() {
+        return mask;
     }
 
-    public void setProfile_pic(long profile_pic) {
-        this.profile_pic = profile_pic;
+    public void setMask(long mask) {
+        this.mask = mask;
+    }
+
+    @Override
+    public String toString() {
+        return "UserModel{" +
+                "username='" + username + '\'' +
+                ", fb_dp='" + fb_dp + '\'' +
+                ", karma=" + karma +
+                ", gender='" + gender + '\'' +
+                ", mask=" + mask +
+                '}';
     }
 }

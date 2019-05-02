@@ -9,9 +9,9 @@
     <fragment
         android:id="@+id/Search_fragment"
         android:name="in.cinderella.testapp.Fragments.Explore"
-        android:label="Explore_Fragment" />
+        android:label="Notification_fragment" />
     <fragment
-        android:id="@+id/Recepie_fragment"
-        android:name="in.cinderella.testapp.Fragments.Select_picture"
-        android:label="Explore_Fragment" />
+        android:id="@+id/Call_fragment"
+        android:name="in.cinderella.testapp.Fragments.Call_init"
+        android:label="Call_fragment" />
 </navigation>

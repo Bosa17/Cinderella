@@ -30,7 +30,6 @@ import in.cinderella.testapp.Utils.UserListAdapter;
 
 public class Explore extends Fragment {
 
-    private static final int ACTIVITY_NUM = 1;
 
     private Context mContext = getContext();
     private DatabaseReference reference;
@@ -90,7 +89,7 @@ public class Explore extends Fragment {
         if(keyword.length() ==0){
 
         }else {
-            Query query =reference.orderByChild(getString(R.string.username_field)).startAt(keyword);
+            Query query =reference.orderByChild(getString(R.string.username)).startAt(keyword);
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

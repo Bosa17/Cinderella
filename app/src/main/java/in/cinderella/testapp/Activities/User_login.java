@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import in.cinderella.testapp.Fragments.ProgressDialogFragment;
 import in.cinderella.testapp.Models.UserModel;
 import in.cinderella.testapp.R;
+import in.cinderella.testapp.Utils.DataHelper;
 import in.cinderella.testapp.Utils.FacebookHelper;
 import in.cinderella.testapp.Utils.FirebaseHelper;
 
@@ -38,17 +39,19 @@ public class User_login extends AppCompatActivity {
     private Button btn;
     private FirebaseHelper firebaseHelper;
     private FirebaseAuth mAuth;
+    private DataHelper dataHelper;
     private FacebookHelper facebookHelper;
     private UserModel userModel;
+    private static int RC_SUCCESS=2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth=FirebaseAuth.getInstance();
         userModel=new UserModel();
+        dataHelper=new DataHelper(this);
         facebookHelper=new FacebookHelper(this);
         setContentView(R.layout.activity_user_login);
-        firebaseHelper = new FirebaseHelper(this);
         btn=findViewById(R.id.sign_in);
 
         btn.setOnClickListener(new View.OnClickListener(){
@@ -82,9 +85,16 @@ public class User_login extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
+                            boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            getFacebookDetails(user.getUid(),token);
+                            if (isNewUser) {
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                getFacebookDetails(user.getUid(), token);
+                            }
+                            else{
+                                startMainActivity();
+                                ProgressDialogFragment.hide(getSupportFragmentManager());
+                            }
                             ProgressDialogFragment.hide(getSupportFragmentManager());
 
                         } else {
@@ -120,9 +130,8 @@ public class User_login extends AppCompatActivity {
                             userModel.setFb_dp(""+Profile.getCurrentProfile().getProfilePictureUri(200, 200));
                             Log.i("Login", "ProfilePic" + Profile.getCurrentProfile().getProfilePictureUri(200, 200));
                         }
-
-                        firebaseHelper.addNewUser(uid,userModel);
-                        startMainActivity();
+                        dataHelper.addNewUser(uid,userModel);
+                        startSelect_mask();
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -134,14 +143,23 @@ public class User_login extends AppCompatActivity {
         request.setParameters(parameters);
         request.executeAsync();
     }
+    private void startSelect_mask(){
+        startActivityForResult(new Intent(this,Select_mask.class),RC_SUCCESS);
+    }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Pass the activity result back to the Facebook SDK
-        facebookHelper.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==RC_SUCCESS){
+            dataHelper.putMask(data.getIntExtra(getString(R.string.mask),R.drawable.dp_1));
+            startMainActivity();
+        }
+        else {
+            // Pass the activity result back to the Facebook SDK
+            facebookHelper.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
 

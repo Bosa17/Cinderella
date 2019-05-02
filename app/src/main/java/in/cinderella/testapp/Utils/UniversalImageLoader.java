@@ -23,7 +23,7 @@ import in.cinderella.testapp.R;
 
 public class UniversalImageLoader {
 
-    private static final int defaultImage = R.drawable.ic_add_circle_black_24dp;
+    private static final int defaultImage = R.drawable.ic_call;
     private Context mContext;
 
     public UniversalImageLoader(Context context) {

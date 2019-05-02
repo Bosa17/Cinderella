@@ -6,13 +6,10 @@
     <in.cinderella.testapp.Utils.SquareImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:id="@+id/gridImageView"/>
 
-    <ProgressBar
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_centerInParent="true"
-        android:id="@+id/gridImageProgressbar"/>
 
 </RelativeLayout>

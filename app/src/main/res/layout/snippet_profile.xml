@@ -1,8 +1,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="405dp"
-        android:background="@color/colorAccent">
+        android:layout_height="405dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -10,6 +9,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/rewards"
                 android:layout_gravity="end"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
@@ -21,7 +21,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:src="@drawable/ic_account_150dp"/>
+                android:src="@drawable/dp_1"/>
             <TextView
                 android:layout_marginTop="10dp"
                 android:id="@+id/username"
@@ -64,6 +64,7 @@
                         android:textStyle="bold"
                         android:text="Karma"
                         android:textSize="20sp"
+                        android:textColor="@color/colorAccent"
                         />
                     <TextView
                         android:layout_width="wrap_content"
@@ -84,6 +85,7 @@
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
                         android:text="Followers"
+                        android:textColor="@color/colorAccent"
                         android:textSize="20sp"
                         />
                     <TextView
@@ -105,6 +107,7 @@
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
                         android:text="Following"
+                        android:textColor="@color/colorAccent"
                         android:textSize="20sp"
                         />
                     <TextView

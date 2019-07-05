@@ -1,35 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:scrollbars="none"
+    android:id="@+id/scroll">
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/relLayout1">
+            android:layout_height="wrap_content">
 
-            <!-- profile snippet -->
-            <include layout="@layout/snippet_profile"/>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/relLayout1">
 
-            <Button
-                android:id="@+id/call"
+                <!-- profile snippet -->
+                <include layout="@layout/snippet_profile"/>
+            </RelativeLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Call"
-                android:layout_marginTop="475dp"
-                android:background="@drawable/search_edit_text"
-                android:paddingStart="25dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginEnd="25dp"/>
+                android:orientation="vertical"
+                android:padding="30dp"
+                android:layout_below="@id/relLayout1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="1.  Select Channel"
+                    android:textSize="30sp"
+                    />
+
+                <com.greenfrvr.hashtagview.HashtagView
+                    android:id="@+id/channel_tags"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="30dp"
+                    app:rowMode="wrap"
+                    app:tagBackground="@drawable/channel_bg"
+                    app:selectionMode="true"
+                    app:tagPaddingBottom="10dp"
+                    app:tagPaddingTop="10dp"
+                    app:tagTextSize="14sp"
+                    app:tagTextColor="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="2.  Select Preferences"
+                    android:textSize="30sp"
+                    />
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RadioGroup>
+
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="30dp"
+                    android:src="@drawable/ic_phone_icon"
+                    android:id="@+id/phone"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:textSize="20sp"
+                    android:text="Shake to Start Connection!" />
+
+            </LinearLayout>
+
 
         </RelativeLayout>
 
-
-    </ScrollView>
-
-</LinearLayout>
+</ScrollView>

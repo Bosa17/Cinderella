@@ -2,8 +2,6 @@ package in.cinderella.testapp.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,47 +14,38 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import in.cinderella.testapp.Fragments.TwoButtonsDialogFragment;
 import in.cinderella.testapp.R;
 import in.cinderella.testapp.Utils.DataHelper;
-import in.cinderella.testapp.Utils.FirebaseHelper;
 
 public class Setting extends AppCompatActivity {
-    //firebase
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference myRef;
-    private FirebaseHelper firebaseHelper;
 
     //widgets
-    private Button logout;
-    private EditText mCaption;
+    private TextView logout;
     private ImageView image;
-    private DataHelper dataHelper;
+    private TextView feedback;
 
     //vars
     private static int RC_SUCCESS=2;
-    private Integer imgUrl;
-    private Bitmap bitmap;
+    private DataHelper dataHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         dataHelper=new DataHelper(this);
-        logout=(Button) findViewById(R.id.logout);
+        logout=(TextView) findViewById(R.id.logout);
+        feedback=(TextView) findViewById(R.id.feedback);
         image = (ImageView) findViewById(R.id.imageShare);
         ImageView back = (ImageView) findViewById(R.id.ivBack);
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
-        firebaseHelper=new FirebaseHelper(this);
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,6 +58,12 @@ public class Setting extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 startSigninActivity();
                 finish();
+            }
+        });
+        feedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startFeedbackActivity();
             }
         });
         TextView share = (TextView) findViewById(R.id.ivSave);
@@ -111,6 +106,10 @@ public class Setting extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void startFeedbackActivity(){
+        Intent intent =new Intent(this, Feedback.class);
+        startActivity(intent);
+    }
     private void saveData(){
         dataHelper.putMask((Integer) image.getTag());
         Toast.makeText(this,"Saved Settings Successfully",Toast.LENGTH_SHORT).show();

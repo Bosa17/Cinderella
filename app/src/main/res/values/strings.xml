@@ -19,7 +19,7 @@
 
     <!--firebase-->
     <string name="user_db">User</string>
-
+    <string name="channel">Channel</string>
 
     <!--sinch-->
     <string name="sinch_key">4d488c48-c86f-4c7b-9779-e99f64f9f169</string>
@@ -30,6 +30,7 @@
     <string name="dlg_ok">OK</string>
     <string name="dlg_cancel">Cancel</string>
     <string name="dlg_save_confirm">Do you want to save your settings before leaving?</string>
+    <string name="dlg_call_back_confirm">Are you sure you want to exit this call?</string>
 
     <!--user fields-->
     <string name="uid">uid</string>
@@ -39,8 +40,24 @@
     <string name="gender">gender</string>
     <string name="mask">mask</string>
 
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_feedback">Feedback</string>
+    <string name="feedback">Feedback</string>
+
+    <!-- Feedback -->
+    <string name="feedback_title">Feedback Description</string>
+    <string name="feedback_label">
+        In your email please provide the steps of bug/error reproduction. Let us know how often it occurs and if it gives any error code.
+        This information will help us to find the source of the issue. Kindly give us as many details as possible. Thank you.
+    </string>
+    <string name="feedback_bug_type">Bug</string>
+    <string name="feedback_improvement_type">Improvement</string>
+    <string name="feedback_suggestion_type">Suggestion</string>
+    <string name="feedback_support_email">ababhirupbose21@gmail.com</string>
+    <string name="feedback_choose_email_provider">Choose an email provider:</string>
+    <string name="feedback_write_email">Write an Email</string>
 
 
 </resources>

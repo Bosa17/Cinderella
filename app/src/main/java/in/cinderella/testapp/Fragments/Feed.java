@@ -1,36 +1,49 @@
 package in.cinderella.testapp.Fragments;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Vibrator;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.greenfrvr.hashtagview.HashtagView;
 import com.sinch.android.rtc.calling.Call;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import in.cinderella.testapp.Activities.Connections;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import in.cinderella.testapp.Activities.CallActivity;
 import in.cinderella.testapp.Activities.Setting;
 import in.cinderella.testapp.Models.UserModel;
 import in.cinderella.testapp.R;
 import in.cinderella.testapp.Utils.DataHelper;
 import in.cinderella.testapp.Utils.FirebaseHelper;
-import in.cinderella.testapp.Utils.SinchHelper;
-import in.cinderella.testapp.Utils.UniversalImageLoader;
+import in.cinderella.testapp.Utils.ShakeListener;
 
-import static android.content.Context.MODE_PRIVATE;
+import static org.webrtc.ContextUtils.getApplicationContext;
 
 public class Feed extends Fragment {
     //vars
@@ -38,17 +51,18 @@ public class Feed extends Fragment {
     private FirebaseDatabase database;
     private DatabaseReference myRef;
     private FirebaseHelper firebaseHelper;
-    private SinchHelper sinchHelper;
     private Call call;
     private DataHelper dataHelper;
 
     //widgets
-    private ImageView rewards;
+    private ImageView phone_shake;
+    private ScrollView scrollView;
+    private HashtagView hashtagView;
+    private ShakeListener mShaker;
     private TextView username;
     private TextView karma;
     private ImageView settings_btn;
-    private ImageView user_dp;
-    private Button call_btn;
+    private ImageView mask;
 
     @Nullable
     @Override
@@ -56,32 +70,59 @@ public class Feed extends Fragment {
         View view=inflater.inflate(R.layout.fragment_feed, container, false);
         firebaseHelper=new FirebaseHelper(getActivity());
         database = FirebaseDatabase.getInstance();
-        sinchHelper=new SinchHelper(getActivity(),firebaseHelper.getUserID());
         myRef = database.getReference();
-        dataHelper=new DataHelper(getActivity());
-        rewards=(ImageView) view.findViewById(R.id.rewards);
-        user_dp=(ImageView) view.findViewById(R.id.user_dp);
+        dataHelper=new DataHelper(getActivity());;
+        mask=(ImageView) view.findViewById(R.id.user_dp);
+        scrollView=view.findViewById(R.id.scroll);
         username=(TextView) view.findViewById(R.id.username);
         karma=(TextView)  view.findViewById(R.id.user_karma);
-        call_btn=(Button) view.findViewById(R.id.call);
+        final Vibrator vibe = (Vibrator)getContext().getSystemService(Context.VIBRATOR_SERVICE);
+        final Animation animShake = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
+        animShake.setStartOffset(300);
+        phone_shake = (ImageView) view.findViewById(R.id.phone);
+        phone_shake.startAnimation(animShake);
+        mShaker = new ShakeListener(getContext());
+        mShaker.setOnShakeListener(new ShakeListener.OnShakeListener () {
+            public void onShake()
+            {   Rect scrollBounds = new Rect();
+                scrollView.getHitRect(scrollBounds);
+                if (phone_shake.getLocalVisibleRect(scrollBounds)) {
+                    startActivity(new Intent(getActivity(), CallActivity.class));
+                    vibe.vibrate(300);
+                    Toast.makeText(getContext(),"Starting CallActivity!",Toast.LENGTH_LONG).show();
+                } else {
+                    // imageView is not within the visible window
+                }
+
+            }
+        });
         settings_btn=(ImageView) view.findViewById(R.id.settings_btn);
-        rewards.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showConnections();
-            }
-        });
-        call_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sinchHelper.makeCall("m9br3J93hihpVDLMs2pREu3UAg33");
-                firebaseHelper.addKarma(dataHelper.getkarma()+10);
-            }
-        });
         settings_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showSettings();
+            }
+        });
+        hashtagView=(HashtagView) view.findViewById(R.id.channel_tags);
+        List<String> DATA = new ArrayList<String>();
+        DATA.add("php");
+        DATA.add("love");
+        DATA.add("android");
+        DATA.add("programming");
+
+
+        hashtagView.setData(DATA, new HashtagView.DataTransform<String>() {
+            @Override
+            public CharSequence prepare(String item) {
+                SpannableString spannableString = new SpannableString("#" + item);
+                spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimaryDark)), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                return spannableString;
+            }
+        });
+        hashtagView.addOnTagSelectListener(new HashtagView.TagsSelectListener() {
+            @Override
+            public void onItemSelected(Object item,boolean selected) {
+                Toast.makeText(getApplicationContext(), item.toString(), Toast.LENGTH_SHORT).show();
             }
         });
         // Read from the database
@@ -89,9 +130,24 @@ public class Feed extends Fragment {
         updateWidgets(dataHelper.get());
         return view;
     }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mShaker.resume();
+        updateWidgets(dataHelper.get());
+    }
+    @Override
+    public void onPause()
+    {
+        mShaker.pause();
+        super.onPause();
+    }
+
     private void sync(){
         myRef.child(getString(R.string.user_db))
-                .child(dataHelper.getUID()).addValueEventListener(new ValueEventListener() {
+                .child(firebaseHelper.getUserID()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 dataHelper.syncWithFirebase(dataSnapshot);
@@ -104,23 +160,10 @@ public class Feed extends Fragment {
             }
         });
     }
-
-    private void showConnections(){
-        Intent intent=new Intent(getActivity(), Connections.class);
-        startActivity(intent);
-    }
-
     private void showSettings(){
         Intent intent =new Intent(getActivity(), Setting.class);
         startActivity(intent);
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        updateWidgets(dataHelper.get());
-    }
-
 
     /**
      * sets all the widgets
@@ -129,8 +172,8 @@ public class Feed extends Fragment {
     private void updateWidgets(UserModel user){
         if (user != null) {
             username.setText(user.getUsername());
-            karma.setText(Long.toString(user.getKarma()));
-            user_dp.setImageResource((int) user.getMask());
+            karma.setText(String.valueOf(user.getKarma()));
+            mask.setImageResource((int) user.getMask());
         }
         else{
             //TODO

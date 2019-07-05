@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <in.cinderella.testapp.Utils.ScratchCardView
+        android:id="@+id/remoteUserMask_scv"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/dp_1"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/remoteUserName_scv"
+        android:text="Abhiurup Bose"
+        android:layout_margin="20dp"
+        android:textSize="30sp"
+        android:layout_below="@id/remoteUserMask_scv"
+        android:layout_centerHorizontal="true"/>
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_close"
+        android:layout_margin="30dp"
+        android:layout_above="@+id/remoteUserMask_scv"
+        android:id="@+id/close_scv"/>
+</RelativeLayout>

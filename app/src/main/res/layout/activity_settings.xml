@@ -14,7 +14,7 @@
             android:id="@+id/relLayout1">
 
             <!-- toolbar -->
-            <include layout="@layout/snippet_top_user_account"/>
+            <include layout="@layout/snippet_settings"/>
 
         </RelativeLayout>
         <ScrollView
@@ -25,7 +25,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/relLayout2">
-
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageSharelayout"
+                    android:padding="20dp"
+                    android:background="@drawable/setting_border"
+                    >
 
 
                 <ImageView
@@ -34,42 +40,70 @@
                     android:id="@+id/imageShare"
                     android:layout_marginTop="20dp"
                     android:scaleType="fitCenter"/>
+                </FrameLayout>
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_below="@+id/imageShare"
-                    android:id="@+id/alias"
-                    android:src="@drawable/ic_account_150dp"/>
+                <!--<ImageView-->
+                    <!--android:layout_width="30dp"-->
+                    <!--android:layout_height="30dp"-->
+                    <!--android:layout_marginStart="20dp"-->
+                    <!--android:layout_marginTop="20dp"-->
+                    <!--android:layout_below="@+id/imageSharelayout"-->
+                    <!--android:id="@+id/alias"-->
+                    <!--android:src="@drawable/ic_account_150dp"/>-->
 
 
-                <EditText
+                <!--<EditText-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:id="@+id/alias_name"-->
+                    <!--android:layout_toEndOf="@+id/alias"-->
+                    <!--android:layout_marginTop="10dp"-->
+                    <!--android:layout_below="@+id/imageSharelayout"-->
+                    <!--android:hint="Enter Alias Name..."-->
+                    <!--android:padding="10dp"-->
+                    <!--android:layout_marginStart="20dp"-->
+                    <!--android:layout_marginEnd="20dp"-->
+                    <!--android:layout_marginBottom="20dp"/>-->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/bottom_text"
-                    android:layout_toEndOf="@+id/alias"
-                    android:layout_marginTop="10dp"
-                    android:layout_below="@+id/imageShare"
-                    android:hint="Enter Alias Name..."
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="20dp"/>
+                    android:orientation="vertical"
+                    android:layout_below="@+id/imageSharelayout"
+                    android:layout_marginTop="30dp"
+                    android:padding="30dp"
+                    android:background="@drawable/setting_border"
+                    >
+                    <TextView
+                        android:id="@+id/feedback"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Feedback"
+                        android:textColor="@color/white"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="@color/colorPrimary"
+                        android:padding="20dp"
+                        android:gravity="center_horizontal"
+                        android:layout_marginEnd="25dp"
+                        android:layout_marginStart="25dp"/>
+                    <TextView
+                        android:id="@+id/logout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Logout"
+                        android:textColor="@color/white"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginTop="30dp"
+                        android:background="@color/colorPrimary"
+                        android:padding="20dp"
+                        android:gravity="center_horizontal"
+                        android:layout_marginEnd="25dp"
+                        android:layout_marginStart="25dp"/>
+
+                </LinearLayout>
 
 
-                <Button
-                    android:id="@+id/logout"
-                    android:layout_width="match_parent"
-                    android:layout_below="@+id/bottom_text"
-                    android:layout_height="wrap_content"
-                    android:text="Logout"
-                    android:layout_marginTop="70dp"
-                    android:textColor="@color/white"
-                    android:background="@drawable/login_fb_button"
-                    android:paddingStart="25dp"
-                    android:layout_marginEnd="25dp"
-                    android:layout_marginStart="25dp"/>
 
             </RelativeLayout>
 

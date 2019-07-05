@@ -9,8 +9,7 @@
 
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/profileToolBar">
+            android:layout_height="wrap_content">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -27,24 +26,23 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/settings"
-                    android:layout_toEndOf="@+id/ivBack"
+                    android:layout_toEndOf="@id/ivBack"
+                    android:text="@string/feedback"
                     android:textSize="20sp"
                     android:layout_centerVertical="true"
                     />
 
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/save"
+                    android:text="@string/next"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="15dp"
                     android:textSize="20sp"
                     android:textColor="@color/colorAccent"
                     android:layout_centerVertical="true"
-                    android:id="@+id/ivSave"
-                    />
-
+                    android:id="@+id/tvNext" />
 
 
 

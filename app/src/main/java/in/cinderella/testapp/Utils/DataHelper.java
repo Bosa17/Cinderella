@@ -39,13 +39,6 @@ public class DataHelper {
 //        firebaseHelper.updateMask(Settings.)
 //    }
 
-    public void put(UserModel curr_user){
-        Hawk.put(mContext.getString(R.string.mask), curr_user.getMask());
-        Hawk.put(mContext.getString(R.string.username), curr_user.getUsername());
-        Hawk.put(mContext.getString(R.string.fb_dp), curr_user.getFb_dp());
-        Hawk.put(mContext.getString(R.string.gender), curr_user.getGender());
-        Hawk.put(mContext.getString(R.string.karma), curr_user.getKarma());
-    }
 
     public UserModel get(){
         UserModel user=new UserModel();
@@ -93,6 +86,6 @@ public class DataHelper {
         Hawk.put(mContext.getString(R.string.uid), uid);
     }
     public String getUID(){
-        return firebaseHelper.getUserID();
+        return Hawk.get(mContext.getString(R.string.uid));
     }
 }

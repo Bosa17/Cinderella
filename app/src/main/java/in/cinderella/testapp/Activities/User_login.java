@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import in.cinderella.testapp.Fragments.ProgressDialogFragment;
 import in.cinderella.testapp.Models.UserModel;
 import in.cinderella.testapp.R;
+import in.cinderella.testapp.Utils.ConnectivityUtils;
 import in.cinderella.testapp.Utils.DataHelper;
 import in.cinderella.testapp.Utils.FacebookHelper;
 import in.cinderella.testapp.Utils.FirebaseHelper;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.FacebookCallback;
@@ -56,7 +58,10 @@ public class User_login extends AppCompatActivity {
 
         btn.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
-                facebookHelper.login(new FacebookLoginCallback());
+                if(ConnectivityUtils.isNetworkAvailable(getApplicationContext()))
+                    facebookHelper.login(new FacebookLoginCallback());
+                else
+                    Toast.makeText(getApplicationContext(),"No Internet Connection",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -84,6 +89,7 @@ public class User_login extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+//                            boolean isNewUser=true;
                             // Sign in success, update UI with the signed-in user's information
                             boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
                             Log.d(TAG, "signInWithCredential:success");

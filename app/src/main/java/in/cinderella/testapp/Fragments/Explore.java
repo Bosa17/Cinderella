@@ -76,7 +76,7 @@ public class Explore extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
 
-                String text = mSearchParam.getText().toString().toLowerCase(Locale.getDefault());
+                String text = mSearchParam.getText().toString().toLowerCase(Locale.getDefault()).trim();
                 searchForMatch(text);
             }
         });

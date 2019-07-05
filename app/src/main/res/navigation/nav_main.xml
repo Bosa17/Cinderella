@@ -11,7 +11,7 @@
         android:name="in.cinderella.testapp.Fragments.Explore"
         android:label="Notification_fragment" />
     <fragment
-        android:id="@+id/Call_fragment"
-        android:name="in.cinderella.testapp.Fragments.Call_init"
-        android:label="Call_fragment" />
+        android:id="@+id/Connections_fragment"
+        android:name="in.cinderella.testapp.Fragments.Connections"
+        android:label="Connetions_fragment" />
 </navigation>

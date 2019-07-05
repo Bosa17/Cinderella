@@ -56,28 +56,47 @@
                     />
 
                 <RadioGroup
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/channel_preference"
+                    android:layout_margin="30dp"
+                    android:layout_gravity="center_horizontal"
+                    >
                     <RadioButton
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:id="@+id/option0"
+                        android:text="Man"
+                        android:textSize="20sp"/>
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/option1"
+                        android:text="Woman"
+                        android:textSize="20sp"/>
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/option2"
+                        android:text="Other"
+                        android:textSize="20sp"/>
                 </RadioGroup>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="3.  Shake to Start "
+                    android:textSize="30sp" />
 
                 <ImageView
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="30dp"
+                    android:layout_margin="30dp"
                     android:src="@drawable/ic_phone_icon"
                     android:id="@+id/phone"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="20dp"
-                    android:textSize="20sp"
-                    android:text="Shake to Start Connection!" />
+
 
             </LinearLayout>
 

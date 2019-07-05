@@ -65,7 +65,10 @@ public class RemoteCardDialog extends BlurPopupWindow {
             protected void onPostExecute(Drawable result) {
 
                 //Add image to ImageView
-                scv.setImageDrawable(result);
+                if (result!=null)
+                    scv.setImageDrawable(result);
+                else
+                    return;
 
             }
 

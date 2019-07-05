@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +56,9 @@ public class Feed extends Fragment {
     private DataHelper dataHelper;
 
     //widgets
+    private RadioButton option0;
+    private RadioButton option1;
+    private RadioButton option2;
     private ImageView phone_shake;
     private ScrollView scrollView;
     private HashtagView hashtagView;
@@ -103,26 +107,39 @@ public class Feed extends Fragment {
                 showSettings();
             }
         });
+        option0=view.findViewById(R.id.option0);
+        option1=view.findViewById(R.id.option1);
+        option2=view.findViewById(R.id.option2);
         hashtagView=(HashtagView) view.findViewById(R.id.channel_tags);
         List<String> DATA = new ArrayList<String>();
-        DATA.add("php");
-        DATA.add("love");
-        DATA.add("android");
-        DATA.add("programming");
+        DATA.add("BFF");
+        DATA.add("naughty");
+        DATA.add("FiftyShades");
+        DATA.add("gaypride");
 
 
         hashtagView.setData(DATA, new HashtagView.DataTransform<String>() {
+
             @Override
             public CharSequence prepare(String item) {
                 SpannableString spannableString = new SpannableString("#" + item);
                 spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimaryDark)), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 return spannableString;
             }
+        },new HashtagView.DataSelector<String>() {
+            @Override
+            public boolean preselect(String item) {
+                return DATA.indexOf(item)  == 0;
+            }
         });
+        hashtagView.setSelectionLimit(1);
         hashtagView.addOnTagSelectListener(new HashtagView.TagsSelectListener() {
             @Override
             public void onItemSelected(Object item,boolean selected) {
-                Toast.makeText(getApplicationContext(), item.toString(), Toast.LENGTH_SHORT).show();
+                option0.setText("Man");
+                option1.setText("Woman");
+                option2.setText("Other");
+                Toast.makeText(getContext(), item.toString(), Toast.LENGTH_SHORT).show();
             }
         });
         // Read from the database

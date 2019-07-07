@@ -9,6 +9,8 @@ import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
@@ -21,13 +23,16 @@ public class FacebookHelper {
     private static final String PERMISSION_PUBLIC_PROFILE = "public_profile";
     private static final String PERMISSION_USER_GENDER = "user_gender";
 
+    private DataHelper dataHelper;
     private Activity activity;
-    private FBAccessTokenTracker fbAccessTokenTracker;
+    private ProfileTracker fbProfileTracker;
+    private AccessTokenTracker fbAccessTokenTracker;
     private CallbackManager fbCallbackManager;
     private LoginManager fbLoginManager;
 
     public FacebookHelper(Activity activity) {
         this.activity = activity;
+        dataHelper=new DataHelper(activity);
         initFacebook();
     }
 
@@ -42,7 +47,8 @@ public class FacebookHelper {
 
         fbLoginManager = LoginManager.getInstance();
 
-        this.fbAccessTokenTracker = new FBAccessTokenTracker();
+        this.fbProfileTracker = new FBProfileTracker();
+        this.fbAccessTokenTracker=new FBAccessTokenTracker();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -63,10 +69,12 @@ public class FacebookHelper {
     }
 
     public void onActivityStart() {
+        fbProfileTracker.startTracking();
         fbAccessTokenTracker.startTracking();
     }
 
     public void onActivityStop() {
+        fbProfileTracker.stopTracking();
         fbAccessTokenTracker.stopTracking();
     }
 
@@ -75,8 +83,17 @@ public class FacebookHelper {
         @Override
         protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
             if (currentAccessToken == null) {
-//                LoginManager.getInstance().logOut();
+                LoginManager.getInstance().logOut();
             }
+        }
+    }
+    private class FBProfileTracker extends ProfileTracker {
+
+        @Override
+        protected void onCurrentProfileChanged(
+                Profile oldProfile,
+                Profile currentProfile) {
+            dataHelper.putFb_dp(""+currentProfile.getProfilePictureUri(200, 200));
         }
     }
 }

@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,6 +54,7 @@ public class CallActivity extends AppCompatActivity {
     private FirebaseHelper firebaseHelper;
     private TextView mDuration;
     private TextView mRemoteUser;
+    private ToggleButton ring_control;
     private ImageView close_call;
     private ImageView mRemoteUserDp;
     private UpdateCallDurationTask mDurationTask;
@@ -95,6 +97,21 @@ public class CallActivity extends AppCompatActivity {
         mRemoteUser=findViewById(R.id.remoteUser);
         mRemoteUserDp=findViewById(R.id.remoteUserDp);
         spinKitView=findViewById(R.id.spin_kit);
+        ring_control=findViewById(R.id.ring_control);
+        ring_control.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean checked=ring_control.isChecked();
+                if (checked){
+                    mAudioPlayer.stopRingtone();
+                    ring_control.setBackground(getDrawable(R.drawable.ic_ring_on));
+                }
+                else{
+                    mAudioPlayer.playRingtone();
+                    ring_control.setBackground(getDrawable(R.drawable.ic_ring_off));
+                }
+            }
+        });
         close_call=findViewById(R.id.closecall);
         close_call.setOnClickListener(new View.OnClickListener() {
             @Override

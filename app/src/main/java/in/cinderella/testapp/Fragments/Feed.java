@@ -38,6 +38,7 @@ import java.util.List;
 
 import in.cinderella.testapp.Activities.CallActivity;
 import in.cinderella.testapp.Activities.Setting;
+import in.cinderella.testapp.Models.ChannelModel;
 import in.cinderella.testapp.Models.UserModel;
 import in.cinderella.testapp.R;
 import in.cinderella.testapp.Utils.DataHelper;
@@ -93,7 +94,6 @@ public class Feed extends Fragment {
                 if (phone_shake.getLocalVisibleRect(scrollBounds)) {
                     startActivity(new Intent(getActivity(), CallActivity.class));
                     vibe.vibrate(300);
-                    Toast.makeText(getContext(),"Starting CallActivity!",Toast.LENGTH_LONG).show();
                 } else {
                     // imageView is not within the visible window
                 }
@@ -111,35 +111,35 @@ public class Feed extends Fragment {
         option1=view.findViewById(R.id.option1);
         option2=view.findViewById(R.id.option2);
         hashtagView=(HashtagView) view.findViewById(R.id.channel_tags);
-        List<String> DATA = new ArrayList<String>();
-        DATA.add("BFF");
-        DATA.add("naughty");
-        DATA.add("FiftyShades");
-        DATA.add("gaypride");
+        List<ChannelModel> CHANNELS = new ArrayList<ChannelModel>();
+        CHANNELS.add(new ChannelModel ("IceBreakers","Man","Woman", "Any"));
+        CHANNELS.add(new ChannelModel ("MannKiBaat","Man","Woman", "Any"));
+        CHANNELS.add(new ChannelModel ("FiftyShades","Dominant","Submissive", "Any"));
+        CHANNELS.add(new ChannelModel ("Pride","Gay","Trans", "Any"));
 
 
-        hashtagView.setData(DATA, new HashtagView.DataTransform<String>() {
+        hashtagView.setData(CHANNELS, new HashtagView.DataTransform<ChannelModel>() {
 
             @Override
-            public CharSequence prepare(String item) {
-                SpannableString spannableString = new SpannableString("#" + item);
+            public CharSequence prepare(ChannelModel item) {
+                SpannableString spannableString = new SpannableString("#" + item.getName());
                 spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimaryDark)), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 return spannableString;
             }
-        },new HashtagView.DataSelector<String>() {
+        },new HashtagView.DataSelector<ChannelModel>() {
             @Override
-            public boolean preselect(String item) {
-                return DATA.indexOf(item)  == 0;
+            public boolean preselect(ChannelModel item) {
+                return CHANNELS.indexOf(item)  == 0;
             }
         });
         hashtagView.setSelectionLimit(1);
         hashtagView.addOnTagSelectListener(new HashtagView.TagsSelectListener() {
             @Override
             public void onItemSelected(Object item,boolean selected) {
-                option0.setText("Man");
-                option1.setText("Woman");
-                option2.setText("Other");
-                Toast.makeText(getContext(), item.toString(), Toast.LENGTH_SHORT).show();
+                ChannelModel ch=(ChannelModel) item;
+                option0.setText(ch.getOption0());
+                option1.setText(ch.getOption1());
+                option2.setText(ch.getOption2());
             }
         });
         // Read from the database

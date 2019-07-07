@@ -1,14 +1,12 @@
 package in.cinderella.testapp.Models;
 
 public class ChannelModel {
-    public String tag;
     public String name;
     public String option0;
     public String option1;
     public String option2;
 
-    public ChannelModel(String tag, String name, String option0, String option1, String option2) {
-        this.tag = tag;
+    public ChannelModel( String name, String option0, String option1, String option2) {
         this.name = name;
         this.option0 = option0;
         this.option1 = option1;
@@ -17,15 +15,6 @@ public class ChannelModel {
 
     public ChannelModel() {
     }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
     public String getName() {
         return name;
     }
@@ -61,7 +50,6 @@ public class ChannelModel {
     @Override
     public String toString() {
         return "ChannelModel{" +
-                "tag='" + tag + '\'' +
                 ", name='" + name + '\'' +
                 ", option0='" + option0 + '\'' +
                 ", option1='" + option1 + '\'' +

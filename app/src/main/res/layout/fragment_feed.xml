@@ -65,6 +65,7 @@
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:checked="true"
                         android:id="@+id/option0"
                         android:text="Man"
                         android:textSize="20sp"/>
@@ -78,7 +79,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/option2"
-                        android:text="Other"
+                        android:text="Any"
                         android:textSize="20sp"/>
                 </RadioGroup>
                 <TextView

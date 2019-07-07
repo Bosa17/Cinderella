@@ -12,6 +12,27 @@
         android:layout_margin="30dp"
         android:visibility="visible"
         android:id="@+id/closecall"/>
+    <ToggleButton
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/ic_ring_off"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        android:textOff=""
+        android:textOn=""
+        android:layout_margin="30dp"
+        android:visibility="visible"
+        android:id="@+id/ring_control"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ring_control"
+        android:layout_margin="20dp"
+        android:visibility="visible"
+        android:textSize="30sp"
+        android:layout_centerHorizontal="true"
+        android:text="Initializing. PLease Wait..."/>
     <com.github.ybq.android.spinkit.SpinKitView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/spin_kit"

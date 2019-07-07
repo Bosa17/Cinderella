@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.firebase.auth.FirebaseAuth;
 
 import in.cinderella.testapp.Fragments.TwoButtonsDialogFragment;
@@ -24,9 +25,11 @@ public class Setting extends AppCompatActivity {
     //widgets
     private TextView logout;
     private ImageView image;
+    private TextView invite;
     private TextView feedback;
 
     //vars
+    private static int REQUEST_INVITE=100;
     private static int RC_SUCCESS=2;
     private DataHelper dataHelper;
 
@@ -36,6 +39,7 @@ public class Setting extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         dataHelper=new DataHelper(this);
         logout=(TextView) findViewById(R.id.logout);
+        invite=(TextView) findViewById(R.id.invite);
         feedback=(TextView) findViewById(R.id.feedback);
         image = (ImageView) findViewById(R.id.imageShare);
         ImageView back = (ImageView) findViewById(R.id.ivBack);
@@ -60,6 +64,12 @@ public class Setting extends AppCompatActivity {
                 finish();
             }
         });
+        invite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onInviteClicked();
+            }
+        });
         feedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,6 +88,14 @@ public class Setting extends AppCompatActivity {
 
     private void startSelect_mask(){
         startActivityForResult(new Intent(this,Select_mask.class),RC_SUCCESS);
+    }
+
+    private void onInviteClicked() {
+        Intent intent = new AppInviteInvitation.IntentBuilder("Cinderella App invitation")
+                .setMessage("Come to Cinderella")
+                .setCallToActionText("Lets go!")
+                .build();
+        startActivityForResult(intent, REQUEST_INVITE);
     }
     /**
      * gets the image url from the incoming bundle and displays the chosen image

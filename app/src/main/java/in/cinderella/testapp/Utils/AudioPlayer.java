@@ -1,5 +1,6 @@
 package in.cinderella.testapp.Utils;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioFormat;
@@ -13,6 +14,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import in.cinderella.testapp.R;
+
+import static com.github.ybq.android.spinkit.animation.AnimationUtils.stop;
 
 public class AudioPlayer {
 
@@ -33,25 +36,29 @@ public class AudioPlayer {
     public void playRingtone() {
         AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
-        // Honour silent mode
-        switch (audioManager.getRingerMode()) {
-            case AudioManager.RINGER_MODE_NORMAL:
-                mPlayer = new MediaPlayer();
-                mPlayer.setAudioStreamType(AudioManager.STREAM_RING);
+        int result = audioManager.requestAudioFocus(null,
+                AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN);
 
-                try {
-                    mPlayer.setDataSource(mContext,
-                            Uri.parse("android.resource://" + mContext.getPackageName() + "/" + R.raw.bad_boy));
-                    mPlayer.prepare();
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "Could not setup media player for ringtone");
-                    mPlayer = null;
-                    return;
-                }
-                mPlayer.setLooping(true);
-                mPlayer.start();
-                break;
+        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            Log.d("AudioFocus", "Audio focus received");
+        } else {
+            Log.d("AudioFocus", "Audio focus NOT received");
         }
+
+        mPlayer = new MediaPlayer();
+        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        try {
+            mPlayer.setDataSource(mContext,
+                    Uri.parse("android.resource://" + mContext.getPackageName() + "/" + R.raw.bad_boy));
+            mPlayer.prepare();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Could not setup media player for ringtone");
+            mPlayer = null;
+            return;
+        }
+        mPlayer.setLooping(true);
+        mPlayer.start();
     }
 
     public void stopRingtone() {

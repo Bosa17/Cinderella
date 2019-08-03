@@ -8,7 +8,7 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
-                  <entry key="Call_fragment">
+                  <entry key="Connections_fragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
@@ -20,7 +20,7 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="Feed_fragment">
+                  <entry key="Home_fragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:startDestination="@id/Feed_fragment">
+    app:startDestination="@id/Home_fragment">
     <fragment
-        android:id="@+id/Feed_fragment"
-        android:name="in.cinderella.testapp.Fragments.Feed"
-        android:label="Feed_Fragment" />
+        android:id="@+id/Home_fragment"
+        android:name="in.cinderella.testapp.Fragments.Home"
+        android:label="Home_Fragment" />
     <fragment
         android:id="@+id/Search_fragment"
-        android:name="in.cinderella.testapp.Fragments.Explore"
+        android:name="in.cinderella.testapp.Fragments.Pixies"
         android:label="Notification_fragment" />
     <fragment
         android:id="@+id/Connections_fragment"

@@ -80,7 +80,7 @@ public class User_login extends AppCompatActivity {
     }
 
 
-    private void handleFacebookAccessToken(final AccessToken token) {
+    private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
@@ -96,6 +96,7 @@ public class User_login extends AppCompatActivity {
                             if (isNewUser) {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 getFacebookDetails(user.getUid(), token);
+                                ProgressDialogFragment.hide(getSupportFragmentManager());
                             }
                             else{
                                 startMainActivity();
@@ -113,7 +114,7 @@ public class User_login extends AppCompatActivity {
                 });
     }
 
-    private void getFacebookDetails(final String uid,AccessToken token){
+    private void getFacebookDetails(String uid,AccessToken token){
 
         GraphRequest request = GraphRequest.newMeRequest(
             token,
@@ -133,6 +134,7 @@ public class User_login extends AppCompatActivity {
 
                         if (Profile.getCurrentProfile()!=null)
                         {
+                            userModel.setFb_link(""+Profile.getCurrentProfile().getLinkUri());
                             userModel.setFb_dp(""+Profile.getCurrentProfile().getProfilePictureUri(200, 200));
                             Log.i("Login", "ProfilePic" + Profile.getCurrentProfile().getProfilePictureUri(200, 200));
                         }

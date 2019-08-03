@@ -5,12 +5,14 @@ public class ChannelModel {
     public String option0;
     public String option1;
     public String option2;
+    public long cost;
 
-    public ChannelModel( String name, String option0, String option1, String option2) {
+    public ChannelModel(String name, String option0, String option1, String option2, long cost) {
         this.name = name;
         this.option0 = option0;
         this.option1 = option1;
         this.option2 = option2;
+        this.cost = cost;
     }
 
     public ChannelModel() {
@@ -45,6 +47,14 @@ public class ChannelModel {
 
     public void setOption2(String option2) {
         this.option2 = option2;
+    }
+
+    public long getCost() {
+        return cost;
+    }
+
+    public void setCost(long cost) {
+        this.cost = cost;
     }
 
     @Override

@@ -9,13 +9,14 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/ic_close"
+        android:layout_marginTop="70dp"
         android:layout_margin="30dp"
         android:visibility="visible"
         android:id="@+id/closecall"/>
     <ToggleButton
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:background="@drawable/ic_ring_off"
+        android:background="@drawable/ic_ring_on"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:text=""
@@ -29,6 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/ring_control"
         android:layout_margin="20dp"
+        android:id="@+id/initText"
         android:visibility="visible"
         android:textSize="30sp"
         android:layout_centerHorizontal="true"
@@ -43,31 +45,31 @@
         android:layout_centerInParent="true"
         app:SpinKit_Color="@color/colorAccent" />
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:weightSum="6">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:background="@color/colorPrimary"
+            android:id="@+id/call_info"
+            android:visibility="gone"
+            android:layout_weight="2"
             android:orientation="vertical"
-            android:layout_weight="1"
             >
 
             <TextView
                 android:id="@+id/remoteUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center"
                 android:layout_margin="10dp"
-                android:visibility="gone"
                 android:text=""
                 android:textColor="@color/white"
-                android:textSize="28sp"/>
-
-
+                android:textSize="56sp"/>
 
             <TextView
                 android:id="@+id/callDuration"
@@ -76,43 +78,55 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="4dp"
-                android:visibility="gone"
                 android:text="00:00"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp"/>
+                android:textColor="@color/white"
+                android:textSize="32sp"/>
 
         </LinearLayout>
 
-
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:id="@+id/remoteUserDp"
-            android:padding="0dip"
-            android:visibility="gone"
+            android:padding="20dp"
             android:layout_weight="3"
-            android:contentDescription="Call background">
+            android:layout_gravity="center"
+            android:visibility="gone">
 
         </ImageView>
 
-        <RelativeLayout
-            android:id="@+id/bottomPanel"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
-            <Button
+            android:background="@color/colorPrimary"
+            android:id="@+id/call_controls"
+            android:visibility="gone"
+            android:layout_weight="1"
+            android:weightSum="3"
+            android:orientation="horizontal"
+            >
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_ring_off"/>
+            <ImageView
                 android:id="@+id/hangupButton"
-                android:paddingBottom="20dp"
-                android:paddingTop="20dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone"
-                android:text="End Call"
-                android:background="@drawable/login_fb_button"/>
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_call_end"/>
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_back"/>
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </LinearLayout>
 

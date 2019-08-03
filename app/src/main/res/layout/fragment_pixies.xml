@@ -1,0 +1,49 @@
+<RelativeLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <FrameLayout
+        android:layout_width="210dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/switcher"
+        android:layout_centerVertical="true"
+        android:id="@+id/frameLayout">
+
+        <TextSwitcher
+            android:id="@+id/karma_switcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+
+    </FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="210dp"
+        android:layout_centerInParent="true"
+        android:clipChildren="false"
+        android:overScrollMode="never"
+        app:layoutManager="com.ramotion.cardslider.CardSliderLayoutManager"
+        app:viewUpdater="in.cinderella.testapp.Utils.CardsUpdater"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/recycler_view"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="30dp">
+
+        <TextSwitcher
+            android:id="@+id/name_switcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"/>
+
+    </FrameLayout>
+
+</RelativeLayout>

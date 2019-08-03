@@ -21,13 +21,6 @@ public class Connections extends Fragment {
         // Inflate the layout for this fragment
         dataHelper=new DataHelper(getContext());
         View view=inflater.inflate(R.layout.fragment_connections, container, false);
-        Button btn=view.findViewById(R.id.showpopup);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new RemoteCardDialog.Builder(getActivity()).build().show();
-            }
-        });
 
         return view;
     }

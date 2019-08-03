@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     static NavigationController navigationController;
     private final int[] PAGE_IDS = {
-            R.id.Feed_fragment,
+            R.id.Home_fragment,
             R.id.Connections_fragment,
             R.id.Search_fragment,
     };
@@ -103,16 +103,15 @@ public class MainActivity extends AppCompatActivity {
         navigationController = pageNavigationView.material()
                 .addItem(R.drawable.ic_home, "",getResources().getColor(R.color.colorAccent,getTheme()))
                 .addItem(R.drawable.ic_call,"",getResources().getColor(R.color.colorAccent,getTheme()))
-                .addItem(R.drawable.ic_notifications, "",getResources().getColor(R.color.colorAccent,getTheme())).setDefaultColor(getResources().getColor(R.color.white,getTheme()))
+                .addItem(R.drawable.ic_pixie_buy, "",getResources().getColor(R.color.colorAccent,getTheme())).setDefaultColor(getResources().getColor(R.color.white,getTheme()))
                 .build();
         BottomNavigationUtils.setupWithNavController(PAGE_IDS, navigationController, mNavController);
     }
 
 
     private void checkPermission() {
-        if ((ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED ) ){
-            Toast.makeText(getApplicationContext(),"Accept all the permissions",Toast.LENGTH_SHORT).show();
+        if (!Permissions.hasAllPermissions(this) ){
+            Toast.makeText(getApplicationContext(),"Accept all the permissions for seamless app use!",Toast.LENGTH_SHORT).show();
 
             requestPermissions(Permissions.PERMISSIONS, 2);
         }else {

@@ -1,13 +1,19 @@
 package in.cinderella.testapp.Activities;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -22,6 +28,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.sinch.android.rtc.AudioController;
+import com.sinch.android.rtc.MissingPermissionException;
 import com.sinch.android.rtc.PushPair;
 import com.sinch.android.rtc.Sinch;
 import com.sinch.android.rtc.SinchClient;
@@ -42,26 +49,38 @@ import in.cinderella.testapp.R;
 import in.cinderella.testapp.Utils.AudioPlayer;
 import in.cinderella.testapp.Utils.ConnectivityUtils;
 import in.cinderella.testapp.Utils.FirebaseHelper;
+import in.cinderella.testapp.Utils.Permissions;
+import in.cinderella.testapp.Utils.StringUtils;
 
 import static android.util.Log.d;
 
 public class CallActivity extends AppCompatActivity {
+//    vars
     private String TAG= CallActivity.class.getSimpleName();
     private SinchClient sinchClient;
     private Call call;
     private String userID;
+    private String mRemoteUserFbDp;
+    private long mRemoteUserKarma;
+    private String mRemoteUserName;
     private AudioPlayer mAudioPlayer;
     private FirebaseHelper firebaseHelper;
+    private Vibrator vibe;
+    private boolean isCallEstablished;
+//    widgets
+    private LinearLayout call_info;
+    private LinearLayout call_controls;
     private TextView mDuration;
     private TextView mRemoteUser;
+    private TextView initText;
     private ToggleButton ring_control;
     private ImageView close_call;
     private ImageView mRemoteUserDp;
     private UpdateCallDurationTask mDurationTask;
     private Timer mTimer;
-    private boolean isCallEstablished;
     private SpinKitView spinKitView;
-    private Button end_btn;
+    private ImageView end_btn;
+
     private class UpdateCallDurationTask extends TimerTask {
 
         @Override
@@ -81,11 +100,6 @@ public class CallActivity extends AppCompatActivity {
             Toast.makeText(this,"No Network Available!",Toast.LENGTH_SHORT).show();
             finish();
         }
-        firebaseHelper=new FirebaseHelper(this);
-        userID=firebaseHelper.getUserID();
-        call=null;
-//        callHelper=new CallHelper(this);
-        sinchInit();
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -94,6 +108,27 @@ public class CallActivity extends AppCompatActivity {
                         | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                         | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         setContentView(R.layout.activity_call);
+        firebaseHelper=new FirebaseHelper(this);
+        userID=firebaseHelper.getUserID();
+        vibe = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+        call=null;
+        mAudioPlayer=new AudioPlayer(this);
+        boolean permissionsGranted = true;
+        if(sinchClient==null)
+            sinchInit();
+        try {
+            //mandatory checks
+            sinchClient.checkManifest();
+        } catch (MissingPermissionException e) {
+            permissionsGranted=false;
+            requestPermissions(Permissions.SINCH_PERMISSIONS, 2);
+        }
+        if(permissionsGranted){
+            sinchClient.start();
+            makeCall();
+        }
+        call_controls=findViewById(R.id.call_controls);
+        call_info=findViewById(R.id.call_info);
         mRemoteUser=findViewById(R.id.remoteUser);
         mRemoteUserDp=findViewById(R.id.remoteUserDp);
         spinKitView=findViewById(R.id.spin_kit);
@@ -104,14 +139,15 @@ public class CallActivity extends AppCompatActivity {
                 boolean checked=ring_control.isChecked();
                 if (checked){
                     mAudioPlayer.stopRingtone();
-                    ring_control.setBackground(getDrawable(R.drawable.ic_ring_on));
+                    ring_control.setBackground(getDrawable(R.drawable.ic_ring_off));
                 }
                 else{
                     mAudioPlayer.playRingtone();
-                    ring_control.setBackground(getDrawable(R.drawable.ic_ring_off));
+                    ring_control.setBackground(getDrawable(R.drawable.ic_ring_on));
                 }
             }
         });
+        initText=findViewById(R.id.initText);
         close_call=findViewById(R.id.closecall);
         close_call.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,11 +163,8 @@ public class CallActivity extends AppCompatActivity {
             }
         });
         mDuration=findViewById(R.id.callDuration);
-        mAudioPlayer=new AudioPlayer(this);
-
         isCallEstablished=false;
         firebaseHelper.addUserToChannel();
-        makeCall();
     }
 
     private void sinchInit(){
@@ -143,8 +176,8 @@ public class CallActivity extends AppCompatActivity {
                 .environmentHost("sandbox.sinch.com")
                 .build();
         sinchClient.setSupportCalling(true);
+        sinchClient.setSupportManagedPush(true);
         sinchClient.startListeningOnActiveConnection();
-        sinchClient.start();
         sinchClient.getCallClient().addCallClientListener(new SinchCallClientListener());
     }
 
@@ -164,20 +197,6 @@ public class CallActivity extends AppCompatActivity {
             mDurationTask.cancel();
             mTimer.cancel();
         }catch (Exception e){ Log.d(TAG, "No Timer ");}
-        mAudioPlayer.stopRingtone();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!isCallEstablished)
-            mAudioPlayer.playRingtone();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mAudioPlayer.stopRingtone();
     }
 
     @Override
@@ -199,8 +218,28 @@ public class CallActivity extends AppCompatActivity {
                     }
                 });
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 2) {
+            Log.i("resultcode",""+requestCode);
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.i("resultcode",""+requestCode);
+                sinchClient.start();
+                makeCall();
+            }
+            else {
+                Toast.makeText(getParent(),  "Permission Denied", Toast.LENGTH_SHORT).show();
+                endCall();
+            }
+        }
+    }
 
     public void makeCall(){
+        mAudioPlayer.playRingtone();
         firebaseHelper.getRef().child(getString(R.string.channel))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -226,7 +265,7 @@ public class CallActivity extends AppCompatActivity {
             call=sinchClient.getCallClient().callUser(rcvrID);
             call.addCallListener( new mCallListener());
         }catch(Exception e){
-            Toast.makeText(this,"Low Internet Speed",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Something went wrong! Try Again!",Toast.LENGTH_SHORT).show();
             endCall();
         }
     }
@@ -236,12 +275,27 @@ public class CallActivity extends AppCompatActivity {
         if (call != null) {
             call.hangup();
         }
+        if(isCallEstablished) {
+            Intent intent = new Intent();
+            intent.putExtra(getResources().getString(R.string.fb_dp), mRemoteUserFbDp);
+            intent.putExtra(getResources().getString(R.string.username),mRemoteUserName);
+            intent.putExtra(getResources().getString(R.string.karma),mRemoteUserKarma);
+            intent.putExtra(getResources().getString(R.string.uid),call.getRemoteUserId());
+            setResult(Activity.RESULT_OK, intent);
+        }
+        else
+            setResult(Activity.RESULT_CANCELED);
+        mAudioPlayer.stopRingtone();
         finish();
     }
 
     private void  updateWidgets(String remoteid){
         spinKitView.setVisibility(View.GONE);
         close_call.setVisibility(View.GONE);
+        ring_control.setVisibility(View.GONE);
+        initText.setVisibility(View.GONE);
+        call_controls.setVisibility(View.VISIBLE);
+        call_info.setVisibility(View.VISIBLE);
         mRemoteUser.setVisibility(View.VISIBLE);
         mRemoteUserDp.setVisibility(View.VISIBLE);
         try {
@@ -251,7 +305,10 @@ public class CallActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             UserModel remoteUser = dataSnapshot.getValue(UserModel.class);
-                            mRemoteUser.setText(remoteUser.getUsername());
+                            mRemoteUserKarma=remoteUser.getKarma();
+                            mRemoteUserFbDp=remoteUser.getFb_dp();
+                            mRemoteUserName=StringUtils.extractFirstName(remoteUser.getUsername());
+                            mRemoteUser.setText(mRemoteUserName);
                             mRemoteUserDp.setImageResource((int) remoteUser.getMask());
                         }
 
@@ -265,7 +322,6 @@ public class CallActivity extends AppCompatActivity {
             endCall();
         }
         mDuration.setVisibility(View.VISIBLE);
-        end_btn.setVisibility(View.VISIBLE);
         mTimer = new Timer();
         mDurationTask = new UpdateCallDurationTask();
         mTimer.schedule(mDurationTask, 0, 500);
@@ -290,14 +346,13 @@ public class CallActivity extends AppCompatActivity {
         @Override
         public void onCallEnded(Call call) {
             CallEndCause cause = call.getDetails().getEndCause();
-            d(TAG, "CallActivity ended. Reason: " + cause.toString());
+            Log.d(TAG, "CallActivity ended. Reason: " + cause.toString());
             try {
                 mDurationTask.cancel();
                 mTimer.cancel();
             }catch (Exception e){ Log.d(TAG, "No Timer ");}
             setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
-            String endMsg = "CallActivity ended: " + call.getDetails().toString();
-            Toast.makeText(CallActivity.this, endMsg, Toast.LENGTH_LONG).show();
+            Toast.makeText(CallActivity.this, "Bibidi Bobidi Boo", Toast.LENGTH_LONG).show();
             endCall();
         }
 
@@ -305,6 +360,7 @@ public class CallActivity extends AppCompatActivity {
         public void onCallEstablished(Call call) {
             d(TAG, "CallActivity established");
             isCallEstablished=true;
+            vibe.vibrate(300);
             firebaseHelper.removeUserFromChannel();
             updateWidgets(call.getRemoteUserId());
             mAudioPlayer.stopRingtone();
@@ -315,7 +371,7 @@ public class CallActivity extends AppCompatActivity {
 
         @Override
         public void onCallProgressing(Call call) {
-            d(TAG, "CallActivity progressing");
+            Log.d(TAG, "CallActivity progressing");
         }
 
         @Override
@@ -328,7 +384,6 @@ public class CallActivity extends AppCompatActivity {
         @Override
         public void onIncomingCall(CallClient callClient, Call incomingCall) {
             call = incomingCall;
-            Toast.makeText(CallActivity.this, "incoming call", Toast.LENGTH_SHORT).show();
             call.answer();
             call.addCallListener(new mCallListener());
         }

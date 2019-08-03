@@ -6,15 +6,19 @@ public class UserModel {
     private long karma;
     private String gender;
     private long mask;
+    private String fb_link;
+    private long pixies;
 //    private long age;
 
 
-    public UserModel(String username, String fb_dp, long karma, String gender, long mask) {
+    public UserModel(String username, String fb_dp, long karma, String gender, long mask, String fb_link, long pixies) {
         this.username = username;
         this.fb_dp = fb_dp;
         this.karma = karma;
         this.gender = gender;
         this.mask = mask;
+        this.fb_link = fb_link;
+        this.pixies = pixies;
     }
 
     public UserModel() {
@@ -60,6 +64,22 @@ public class UserModel {
         this.mask = mask;
     }
 
+    public String getFb_link() {
+        return fb_link;
+    }
+
+    public void setFb_link(String fb_link) {
+        this.fb_link = fb_link;
+    }
+
+    public long getPixies() {
+        return pixies;
+    }
+
+    public void setPixies(long pixies) {
+        this.pixies = pixies;
+    }
+
     @Override
     public String toString() {
         return "UserModel{" +
@@ -68,6 +88,8 @@ public class UserModel {
                 ", karma=" + karma +
                 ", gender='" + gender + '\'' +
                 ", mask=" + mask +
+                ", fb_link='" + fb_link + '\'' +
+                ", pixies=" + pixies +
                 '}';
     }
 }

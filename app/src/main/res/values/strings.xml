@@ -36,10 +36,15 @@
     <string name="uid">uid</string>
     <string name="username">username</string>
     <string name="karma">karma</string>
+    <string name="pixies">pixies</string>
     <string name="fb_dp">fb_dp</string>
+    <string name="fb_link">fb_link</string>
     <string name="gender">gender</string>
     <string name="mask">mask</string>
+    <string name="remote">remoteUser</string>
 
+    <!--offline user fields-->
+    <string name="connection">connection</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

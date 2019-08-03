@@ -31,6 +31,7 @@ public class Setting extends AppCompatActivity {
     //vars
     private static int REQUEST_INVITE=100;
     private static int RC_SUCCESS=2;
+    private boolean isChanged=false;
     private DataHelper dataHelper;
 
     @Override
@@ -110,6 +111,7 @@ public class Setting extends AppCompatActivity {
 
         if (requestCode == RC_SUCCESS) {
             if(resultCode == Activity.RESULT_OK){
+                isChanged=true;
                 setMask(data.getIntExtra(getString(R.string.mask),R.drawable.dp_1));
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -136,21 +138,25 @@ public class Setting extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        TwoButtonsDialogFragment.show(
-                getSupportFragmentManager(),
-                getString(R.string.dlg_save_confirm),
-                new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        super.onPositive(dialog);
-                        saveData();
-                    }
+        if (isChanged) {
+            TwoButtonsDialogFragment.show(
+                    getSupportFragmentManager(),
+                    getString(R.string.dlg_save_confirm),
+                    new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            super.onPositive(dialog);
+                            saveData();
+                        }
 
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        super.onNegative(dialog);
-                        Setting.super.onBackPressed();
-                    }
-                });
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
+                            super.onNegative(dialog);
+                            Setting.super.onBackPressed();
+                        }
+                    });
+        }
+        else
+            super.onBackPressed();
     }
 }

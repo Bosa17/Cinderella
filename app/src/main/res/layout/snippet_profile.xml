@@ -1,4 +1,5 @@
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -24,6 +25,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
+                android:maxLines="1"
+                app:autoSizeTextType="uniform"
                 android:textColor="#FFFFFFFF"
                 android:textSize="30sp"
                 android:textStyle="bold" />
@@ -62,12 +65,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Karma"
+                        android:maxLines="1"
+                        app:autoSizeTextType="uniform"
                         android:textColor="@color/colorAccent"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/user_karma"
+                        android:maxLines="1"
+                        app:autoSizeTextType="uniform"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingTop="10dp"
@@ -87,6 +94,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Connections"
+                        android:maxLines="1"
+                        app:autoSizeTextType="uniform"
                         android:textColor="@color/colorAccent"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -95,7 +104,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingTop="10dp"
-                        android:text="1205"
+                        android:maxLines="1"
+                        app:autoSizeTextType="uniform"
+                        android:id="@+id/user_connections"
                         android:textSize="20sp" />
 
                 </LinearLayout>
@@ -111,7 +122,9 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Success"
+                        android:text="Pixies"
+                        android:maxLines="1"
+                        app:autoSizeTextType="uniform"
                         android:textColor="@color/colorAccent"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -120,7 +133,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingTop="10dp"
-                        android:text="60%"
+                        android:maxLines="1"
+                        app:autoSizeTextType="uniform"
+                        android:id="@+id/user_pixies"
+                        android:drawableStart="@drawable/ic_pixies"
                         android:textSize="20sp" />
 
                 </LinearLayout>

@@ -2,7 +2,6 @@ package in.cinderella.testapp.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -18,14 +17,15 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.greenfrvr.hashtagview.HashtagView;
+import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 import com.sinch.android.rtc.calling.Call;
 
 import androidx.annotation.NonNull;
@@ -33,7 +33,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import in.cinderella.testapp.Activities.CallActivity;
@@ -45,16 +44,15 @@ import in.cinderella.testapp.Utils.DataHelper;
 import in.cinderella.testapp.Utils.FirebaseHelper;
 import in.cinderella.testapp.Utils.ShakeListener;
 
-import static org.webrtc.ContextUtils.getApplicationContext;
-
-public class Feed extends Fragment {
+public class Home extends Fragment {
     //vars
-    private static String TAG="Feed_fragment";
+    private static String TAG=Home.class.getSimpleName();
     private FirebaseDatabase database;
     private DatabaseReference myRef;
     private FirebaseHelper firebaseHelper;
     private Call call;
     private DataHelper dataHelper;
+    private boolean isCardVisible;
 
     //widgets
     private RadioButton option0;
@@ -64,7 +62,9 @@ public class Feed extends Fragment {
     private ScrollView scrollView;
     private HashtagView hashtagView;
     private ShakeListener mShaker;
+    private TextView pixies;
     private TextView username;
+    private TextView connection;
     private TextView karma;
     private ImageView settings_btn;
     private ImageView mask;
@@ -72,13 +72,16 @@ public class Feed extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_feed, container, false);
+        View view=inflater.inflate(R.layout.fragment_home, container, false);
         firebaseHelper=new FirebaseHelper(getActivity());
         database = FirebaseDatabase.getInstance();
+        isCardVisible=false;
         myRef = database.getReference();
         dataHelper=new DataHelper(getActivity());;
         mask=(ImageView) view.findViewById(R.id.user_dp);
         scrollView=view.findViewById(R.id.scroll);
+        connection=(TextView) view.findViewById(R.id.user_connections);
+        pixies=(TextView) view.findViewById(R.id.user_pixies);
         username=(TextView) view.findViewById(R.id.username);
         karma=(TextView)  view.findViewById(R.id.user_karma);
         final Vibrator vibe = (Vibrator)getContext().getSystemService(Context.VIBRATOR_SERVICE);
@@ -92,7 +95,7 @@ public class Feed extends Fragment {
             {   Rect scrollBounds = new Rect();
                 scrollView.getHitRect(scrollBounds);
                 if (phone_shake.getLocalVisibleRect(scrollBounds)) {
-                    startActivity(new Intent(getActivity(), CallActivity.class));
+                    startActivityForResult(new Intent(getActivity(), CallActivity.class),2);
                     vibe.vibrate(300);
                 } else {
                     // imageView is not within the visible window
@@ -112,10 +115,9 @@ public class Feed extends Fragment {
         option2=view.findViewById(R.id.option2);
         hashtagView=(HashtagView) view.findViewById(R.id.channel_tags);
         List<ChannelModel> CHANNELS = new ArrayList<ChannelModel>();
-        CHANNELS.add(new ChannelModel ("IceBreakers","Man","Woman", "Any"));
-        CHANNELS.add(new ChannelModel ("MannKiBaat","Man","Woman", "Any"));
-        CHANNELS.add(new ChannelModel ("FiftyShades","Dominant","Submissive", "Any"));
-        CHANNELS.add(new ChannelModel ("Pride","Gay","Trans", "Any"));
+        CHANNELS.add(new ChannelModel ("IceBreakers","Man","Woman", "Any",0));
+        CHANNELS.add(new ChannelModel ("SingersConnect","Man","Woman", "Any",0));
+        CHANNELS.add(new ChannelModel ("FiftyShades","Man","Woman", "Any",0));
 
 
         hashtagView.setData(CHANNELS, new HashtagView.DataTransform<ChannelModel>() {
@@ -148,12 +150,22 @@ public class Feed extends Fragment {
         return view;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==2 && resultCode==-1){
+            new RemoteCardDialog.Builder(getContext(),data.getStringExtra(getResources().getString(R.string.uid)),data.getLongExtra(getResources().getString(R.string.karma),0),data.getStringExtra(getResources().getString(R.string.fb_dp)),data.getStringExtra(getResources().getString(R.string.username))).setOnDismissListener(new remoteCardDismissListener()).build().show();
+            isCardVisible=true;
+        }
+    }
 
     @Override
     public void onResume() {
         super.onResume();
-        mShaker.resume();
-        updateWidgets(dataHelper.get());
+        if (!isCardVisible) {
+            mShaker.resume();
+            updateWidgets(dataHelper.get());
+        }
     }
     @Override
     public void onPause()
@@ -177,6 +189,7 @@ public class Feed extends Fragment {
             }
         });
     }
+
     private void showSettings(){
         Intent intent =new Intent(getActivity(), Setting.class);
         startActivity(intent);
@@ -188,14 +201,24 @@ public class Feed extends Fragment {
      */
     private void updateWidgets(UserModel user){
         if (user != null) {
+            connection.setText(String.valueOf(dataHelper.getConnection()));
             username.setText(user.getUsername());
+            pixies.setText(String.valueOf(user.getPixies()));
             karma.setText(String.valueOf(user.getKarma()));
             mask.setImageResource((int) user.getMask());
         }
         else{
-            //TODO
+            FirebaseAuth.getInstance().signOut();
+            getActivity().finish();
         }
     }
 
+    private class remoteCardDismissListener implements BlurPopupWindow.OnDismissListener {
+        @Override
+        public void onDismiss(BlurPopupWindow popupWindow) {
+            isCardVisible=false;
+            onResume();
+        }
+    }
 
 }

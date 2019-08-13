@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <!--<item name="android:windowLightStatusBar" tools:targetApi="23">true</item>-->
+    </style>
+
+    <style name="ThemeTemptation" parent="AppTheme">
+        <item name="themeName">@string/temptation</item>
+        <item name="colorAccent">@color/the_temptation</item>
+    </style>
+    <style name="ThemeRoyalty" parent="AppTheme">
+        <item name="themeName">@string/royalty</item>
+        <item name="colorAccent">@color/the_royalty</item>
+    </style>
+    <style name="ThemePassion" parent="AppTheme">
+        <item name="themeName">@string/passion</item>
+        <item name="colorAccent">@color/the_passion</item>
+    </style>
+    <style name="ThemeBoss" parent="AppTheme">
+        <item name="themeName">@string/boss</item>
+        <item name="colorAccent">@color/the_boss</item>
+    </style>
+    <style name="ThemeBabe" parent="AppTheme">
+        <item name="themeName">@string/babe</item>
+        <item name="colorAccent">@color/the_babe</item>
+    </style>
+    <style name="ThemeVibrant" parent="AppTheme">
+        <item name="themeName">@string/vibrant</item>
+        <item name="colorAccent">@color/the_vibrant</item>
+    </style>
+    <style name="ThemeSexy" parent="AppTheme">
+        <item name="themeName">@string/sexy</item>
+        <item name="colorAccent">@color/the_sexy</item>
+    </style>
+
+
+</resources>

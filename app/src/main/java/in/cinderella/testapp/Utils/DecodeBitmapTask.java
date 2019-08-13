@@ -1,32 +1,20 @@
 package in.cinderella.testapp.Utils;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.AsyncTask;
-import android.os.Build;
 
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 
 
 public class DecodeBitmapTask extends AsyncTask<Void, Void, Bitmap> {
 
-    private final BackgroundBitmapCache cache;
-    private final Resources resources;
     private final String filePath;
     private final int reqWidth;
-    private final int key;
     private final int reqHeight;
 
     private final Reference<Listener> refListener;
@@ -35,13 +23,10 @@ public class DecodeBitmapTask extends AsyncTask<Void, Void, Bitmap> {
         void onPostExecuted(Bitmap bitmap);
     }
 
-    public DecodeBitmapTask(Resources resources, String filePath,int key,
+    public DecodeBitmapTask( String filePath,
                             int reqWidth, int reqHeight,
                             @NonNull Listener listener)
     {
-        this.key=key;
-        this.cache = BackgroundBitmapCache.getInstance();
-        this.resources = resources;
         this.filePath = filePath;
         this.reqWidth = reqWidth;
         this.reqHeight = reqHeight;
@@ -50,10 +35,6 @@ public class DecodeBitmapTask extends AsyncTask<Void, Void, Bitmap> {
 
     @Override
     protected Bitmap doInBackground(Void... voids) {
-        Bitmap cachedBitmap = cache.getBitmapFromBgMemCache(key);
-        if (cachedBitmap != null) {
-           return cachedBitmap;
-        }
 
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -85,15 +66,8 @@ public class DecodeBitmapTask extends AsyncTask<Void, Void, Bitmap> {
         final Bitmap decodedBitmap = BitmapFactory.decodeFile(filePath,options);
 
         final Bitmap result;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            result = getRoundedCornerBitmap(decodedBitmap,
-                    3, reqWidth, reqHeight);
-            decodedBitmap.recycle();
-        } else {
-            result = decodedBitmap;
-        }
+        result = decodedBitmap;
 
-        cache.addBitmapToBgMemoryCache(key, result);
         return result;
     }
 
@@ -103,41 +77,6 @@ public class DecodeBitmapTask extends AsyncTask<Void, Void, Bitmap> {
         if (listener != null) {
             listener.onPostExecuted(bitmap);
         }
-    }
-
-    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, float pixels, int width, int height) {
-        final Bitmap output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        final Canvas canvas = new Canvas(output);
-
-        final int sourceWidth = bitmap.getWidth();
-        final int sourceHeight = bitmap.getHeight();
-
-        float xScale = (float) width / bitmap.getWidth();
-        float yScale = (float) height / bitmap.getHeight();
-        float scale = Math.max(xScale, yScale);
-
-        float scaledWidth = scale * sourceWidth;
-        float scaledHeight = scale * sourceHeight;
-
-        float left = (width - scaledWidth) / 2;
-        float top = (height - scaledHeight) / 2;
-
-        final int color = 0xff424242;
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, width, height);
-        final RectF rectF = new RectF(rect);
-
-        final RectF targetRect = new RectF(left, top, left + scaledWidth, top + scaledHeight);
-
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-        canvas.drawRoundRect(rectF, pixels, pixels, paint);
-
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, null, targetRect, paint);
-
-        return output;
     }
 
 }

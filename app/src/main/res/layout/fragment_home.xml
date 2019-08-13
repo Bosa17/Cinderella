@@ -3,6 +3,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:overScrollMode="never"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:scrollbars="none"
     android:id="@+id/scroll">
@@ -30,11 +31,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="1.  Select Channel"
+                    android:maxLines="1"
+                    app:autoSizeTextType="uniform"
+                    android:text="1.  Choose Channel"
                     android:textSize="30sp"
                     />
 
-                <com.greenfrvr.hashtagview.HashtagView
+                <in.cinderella.testapp.Utils.HashtagView
                     android:id="@+id/channel_tags"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -51,7 +54,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="2.  Select Preferences"
+                    android:maxLines="1"
+                    app:autoSizeTextType="uniform"
+                    android:text="2.  Partner Preferences"
                     android:textSize="30sp"
                     />
 
@@ -86,7 +91,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="3.  Shake to Start "
+                    android:maxLines="1"
+                    app:autoSizeTextType="uniform"
+                    android:text="3.  Shake to Connect "
                     android:textSize="30sp" />
 
                 <ImageView

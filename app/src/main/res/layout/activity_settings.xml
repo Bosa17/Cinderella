@@ -19,16 +19,18 @@
         </RelativeLayout>
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            android:scrollbars="none">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:id="@+id/relLayout2">
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/imageSharelayout"
                     android:padding="20dp"
                     android:background="@drawable/setting_border"
                     >
@@ -46,7 +48,98 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_below="@+id/imageSharelayout"
+                    android:layout_marginTop="30dp"
+                    android:padding="30dp"
+                    android:background="@drawable/setting_border"
+                    >
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_quote"
+                        android:drawablePadding="10dp"
+                        android:focusableInTouchMode="true"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:imeOptions="actionDone"
+                        android:padding="10dp"
+                        android:hint="   Enter Your Quote (Max : 70)"
+                        android:id="@+id/quoteText"
+                        />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="30dp"
+                    android:padding="30dp"
+                    android:background="@drawable/setting_border"
+                    >
+
+                    <Button
+                        android:background="@drawable/royalty_bg"
+                        android:id="@+id/royalty_switch"
+                        android:layout_width="match_parent"
+                        android:padding="20dp"
+                        style="@style/SettingsComponent"
+                        android:layout_height="wrap_content"
+                        android:text="Royalty" />
+                    <Button
+                        android:background="@drawable/temptation_bg"
+                        android:id="@+id/temptation_switch"
+                        android:layout_width="match_parent"
+                        android:padding="20dp"
+                        style="@style/SettingsComponent"
+                        android:layout_height="wrap_content"
+                        android:text="Temptation" />
+                    <Button
+                        android:background="@drawable/babe_bg"
+                        android:id="@+id/babe_switch"
+                        android:layout_width="match_parent"
+                        android:padding="20dp"
+                        style="@style/SettingsComponent"
+                        android:layout_height="wrap_content"
+                        android:text="Babe" />
+                    <Button
+                        android:background="@drawable/passion_bg"
+                        android:id="@+id/passion_switch"
+                        android:layout_width="match_parent"
+                        android:padding="20dp"
+                        style="@style/SettingsComponent"
+                        android:layout_height="wrap_content"
+                        android:text="Passion" />
+                    <Button
+                        android:background="@drawable/boss_bg"
+                        android:id="@+id/boss_switch"
+                        android:layout_width="match_parent"
+                        android:padding="20dp"
+                        style="@style/SettingsComponent"
+                        android:layout_height="wrap_content"
+                        android:text="Boss" />
+                    <Button
+                        android:background="@drawable/vibrant_bg"
+                        android:id="@+id/vibrant_switch"
+                        android:layout_width="match_parent"
+                        android:padding="20dp"
+                        style="@style/SettingsComponent"
+                        android:layout_height="wrap_content"
+                        android:text="Vibrant" />
+                    <Button
+                        android:background="@drawable/sexy_bg"
+                        android:id="@+id/sexy_switch"
+                        android:layout_width="match_parent"
+                        android:padding="20dp"
+                        style="@style/SettingsComponent"
+                        android:layout_height="wrap_content"
+                        android:text="Sexy" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
                     android:layout_marginTop="30dp"
                     android:padding="30dp"
                     android:background="@drawable/setting_border"
@@ -69,7 +162,7 @@
                         android:id="@+id/feedback"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Feedback"
+                        android:text="@string/feedback"
                         android:textColor="@color/white"
                         android:clickable="true"
                         android:drawableStart="@drawable/ic_feedback"
@@ -100,7 +193,7 @@
 
 
 
-            </RelativeLayout>
+            </LinearLayout>
 
         </ScrollView>
     </LinearLayout>

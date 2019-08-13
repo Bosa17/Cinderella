@@ -4,11 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -54,11 +60,14 @@ import in.cinderella.testapp.Utils.StringUtils;
 
 import static android.util.Log.d;
 
-public class CallActivity extends AppCompatActivity {
+public class CallActivity extends BaseActivity implements SensorEventListener {
 //    vars
     private String TAG= CallActivity.class.getSimpleName();
     private SinchClient sinchClient;
     private Call call;
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
+    private String mRemotuserQuote;
     private String userID;
     private String mRemoteUserFbDp;
     private long mRemoteUserKarma;
@@ -67,18 +76,18 @@ public class CallActivity extends AppCompatActivity {
     private FirebaseHelper firebaseHelper;
     private Vibrator vibe;
     private boolean isCallEstablished;
+    private boolean isAudioPlaying;
+    private boolean isSensorPresent;
 //    widgets
-    private LinearLayout call_info;
-    private LinearLayout call_controls;
+    private LinearLayout call_progressing;
+    private LinearLayout call_init;
     private TextView mDuration;
     private TextView mRemoteUser;
-    private TextView initText;
     private ToggleButton ring_control;
     private ImageView close_call;
     private ImageView mRemoteUserDp;
     private UpdateCallDurationTask mDurationTask;
     private Timer mTimer;
-    private SpinKitView spinKitView;
     private ImageView end_btn;
 
     private class UpdateCallDurationTask extends TimerTask {
@@ -106,8 +115,10 @@ public class CallActivity extends AppCompatActivity {
                         | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                         | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                         | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                        | WindowManager.LayoutParams.FLAG_IGNORE_CHEEK_PRESSES
                         | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         setContentView(R.layout.activity_call);
+
         firebaseHelper=new FirebaseHelper(this);
         userID=firebaseHelper.getUserID();
         vibe = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
@@ -127,11 +138,10 @@ public class CallActivity extends AppCompatActivity {
             sinchClient.start();
             makeCall();
         }
-        call_controls=findViewById(R.id.call_controls);
-        call_info=findViewById(R.id.call_info);
+        call_progressing=findViewById(R.id.call_progressing);
+        call_init=findViewById(R.id.call_init);
         mRemoteUser=findViewById(R.id.remoteUser);
         mRemoteUserDp=findViewById(R.id.remoteUserDp);
-        spinKitView=findViewById(R.id.spin_kit);
         ring_control=findViewById(R.id.ring_control);
         ring_control.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,7 +157,6 @@ public class CallActivity extends AppCompatActivity {
                 }
             }
         });
-        initText=findViewById(R.id.initText);
         close_call=findViewById(R.id.closecall);
         close_call.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,7 +172,15 @@ public class CallActivity extends AppCompatActivity {
             }
         });
         mDuration=findViewById(R.id.callDuration);
+        isSensorPresent=true;
+        try {
+            mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+            mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        }catch (Exception e){
+            isSensorPresent=false;
+        }
         isCallEstablished=false;
+        isAudioPlaying=false;
         firebaseHelper.addUserToChannel();
     }
 
@@ -197,6 +214,38 @@ public class CallActivity extends AppCompatActivity {
             mDurationTask.cancel();
             mTimer.cancel();
         }catch (Exception e){ Log.d(TAG, "No Timer ");}
+        if (isSensorPresent)
+            mSensorManager.unregisterListener(this);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isSensorPresent)
+            mSensorManager.registerListener(this, mSensor,
+                SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        WindowManager.LayoutParams params = getWindow().getAttributes();
+        if (sensorEvent.values[0] == 0){
+            params.screenBrightness = 0.000f;
+            this.getWindow().setAttributes(params);
+            enableDisableViewGroup((ViewGroup)findViewById(R.id.CALL_LAYOUT).getParent(),false);
+            Log.e("onSensorChanged","NEAR");
+        } else {
+            params.screenBrightness = -1.0f;
+            this.getWindow().setAttributes(params);
+            enableDisableViewGroup((ViewGroup)findViewById(R.id.CALL_LAYOUT).getParent(),true);
+            Log.e("onSensorChanged","FAR");
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 
     @Override
@@ -237,9 +286,22 @@ public class CallActivity extends AppCompatActivity {
             }
         }
     }
+    public static void enableDisableViewGroup(ViewGroup viewGroup, boolean enabled) {
+        int childCount = viewGroup.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View view = viewGroup.getChildAt(i);
+            view.setEnabled(enabled);
+            if (view instanceof ViewGroup) {
+                enableDisableViewGroup((ViewGroup) view, enabled);
+            }
+        }
+    }
 
     public void makeCall(){
-        mAudioPlayer.playRingtone();
+        if (!isAudioPlaying){
+            mAudioPlayer.playRingtone();
+            isAudioPlaying=true;
+        }
         firebaseHelper.getRef().child(getString(R.string.channel))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -265,8 +327,7 @@ public class CallActivity extends AppCompatActivity {
             call=sinchClient.getCallClient().callUser(rcvrID);
             call.addCallListener( new mCallListener());
         }catch(Exception e){
-            Toast.makeText(this,"Something went wrong! Try Again!",Toast.LENGTH_SHORT).show();
-            endCall();
+            makeCall();
         }
     }
 
@@ -280,6 +341,7 @@ public class CallActivity extends AppCompatActivity {
             intent.putExtra(getResources().getString(R.string.fb_dp), mRemoteUserFbDp);
             intent.putExtra(getResources().getString(R.string.username),mRemoteUserName);
             intent.putExtra(getResources().getString(R.string.karma),mRemoteUserKarma);
+            intent.putExtra(getResources().getString(R.string.quote),mRemotuserQuote);
             intent.putExtra(getResources().getString(R.string.uid),call.getRemoteUserId());
             setResult(Activity.RESULT_OK, intent);
         }
@@ -290,14 +352,8 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void  updateWidgets(String remoteid){
-        spinKitView.setVisibility(View.GONE);
-        close_call.setVisibility(View.GONE);
-        ring_control.setVisibility(View.GONE);
-        initText.setVisibility(View.GONE);
-        call_controls.setVisibility(View.VISIBLE);
-        call_info.setVisibility(View.VISIBLE);
-        mRemoteUser.setVisibility(View.VISIBLE);
-        mRemoteUserDp.setVisibility(View.VISIBLE);
+        call_init.setVisibility(View.GONE);
+        call_progressing.setVisibility(View.VISIBLE);
         try {
             firebaseHelper.getRef().child(getString(R.string.user_db))
                     .child(remoteid)
@@ -307,6 +363,7 @@ public class CallActivity extends AppCompatActivity {
                             UserModel remoteUser = dataSnapshot.getValue(UserModel.class);
                             mRemoteUserKarma=remoteUser.getKarma();
                             mRemoteUserFbDp=remoteUser.getFb_dp();
+                            mRemotuserQuote=remoteUser.getQuote();
                             mRemoteUserName=StringUtils.extractFirstName(remoteUser.getUsername());
                             mRemoteUser.setText(mRemoteUserName);
                             mRemoteUserDp.setImageResource((int) remoteUser.getMask());
@@ -345,6 +402,8 @@ public class CallActivity extends AppCompatActivity {
 
         @Override
         public void onCallEnded(Call call) {
+            if (!isCallEstablished)
+                makeCall();
             CallEndCause cause = call.getDetails().getEndCause();
             Log.d(TAG, "CallActivity ended. Reason: " + cause.toString());
             try {

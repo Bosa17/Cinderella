@@ -3,60 +3,62 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/CALL_LAYOUT"
     tools:context=".Activities.CallActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:id="@+id/call_init">
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_close"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="30dp"
+            android:id="@+id/closecall"/>
 
-    <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/ic_close"
-        android:layout_marginTop="70dp"
-        android:layout_margin="30dp"
-        android:visibility="visible"
-        android:id="@+id/closecall"/>
-    <ToggleButton
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:background="@drawable/ic_ring_on"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text=""
-        android:textOff=""
-        android:textOn=""
-        android:layout_margin="30dp"
-        android:visibility="visible"
-        android:id="@+id/ring_control"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/ring_control"
-        android:layout_margin="20dp"
-        android:id="@+id/initText"
-        android:visibility="visible"
-        android:textSize="30sp"
-        android:layout_centerHorizontal="true"
-        android:text="Initializing. PLease Wait..."/>
-    <com.github.ybq.android.spinkit.SpinKitView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/spin_kit"
-        android:visibility="visible"
-        style="@style/SpinKitView.Large.MultiplePulseRing"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_centerInParent="true"
-        app:SpinKit_Color="@color/colorAccent" />
+        <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
+            style="@style/SpinKitView.MultiplePulseRing"
+            android:layout_width="match_parent"
+            android:layout_height="450dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            app:SpinKit_Color="?attr/colorAccent" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            android:layout_gravity="center_horizontal"
+            android:textSize="30sp"
+            android:text="Bibbidi Bobbidi Boo"/>
+        <ToggleButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_ring_on"
+            android:layout_gravity="center_horizontal"
+            android:text=""
+            android:textOff=""
+            android:textOn=""
+            android:id="@+id/ring_control"/>
+
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/call_progressing"
+        android:visibility="gone"
         android:weightSum="6">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/colorPrimary"
-            android:id="@+id/call_info"
-            android:visibility="gone"
             android:layout_weight="2"
             android:orientation="vertical"
             >
@@ -91,8 +93,7 @@
             android:id="@+id/remoteUserDp"
             android:padding="20dp"
             android:layout_weight="3"
-            android:layout_gravity="center"
-            android:visibility="gone">
+            android:layout_gravity="center">
 
         </ImageView>
 
@@ -100,8 +101,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/colorPrimary"
-            android:id="@+id/call_controls"
-            android:visibility="gone"
             android:layout_weight="1"
             android:weightSum="3"
             android:orientation="horizontal"

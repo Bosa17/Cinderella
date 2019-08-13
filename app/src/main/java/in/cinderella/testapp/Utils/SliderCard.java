@@ -25,7 +25,7 @@ public class SliderCard extends RecyclerView.ViewHolder implements DecodeBitmapT
     }
 
 
-    void setContent(String filePath,int key) {
+    void setContent(String filePath) {
         if (viewWidth == 0) {
             itemView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
@@ -34,11 +34,11 @@ public class SliderCard extends RecyclerView.ViewHolder implements DecodeBitmapT
 
                     viewWidth = itemView.getWidth();
                     viewHeight = itemView.getHeight();
-                    loadBitmap(filePath,key);
+                    loadBitmap(filePath);
                 }
             });
         } else {
-            loadBitmap(filePath,key);
+            loadBitmap(filePath);
         }
     }
 
@@ -48,8 +48,8 @@ public class SliderCard extends RecyclerView.ViewHolder implements DecodeBitmapT
         }
     }
 
-    private void loadBitmap(String filePath,int key) {
-        task = new DecodeBitmapTask(itemView.getResources(), filePath,key, viewWidth, viewHeight, this);
+    private void loadBitmap(String filePath) {
+        task = new DecodeBitmapTask( filePath, viewWidth, viewHeight, this);
         task.execute();
     }
 

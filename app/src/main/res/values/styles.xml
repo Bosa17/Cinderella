@@ -1,31 +1,25 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <!--<item name="android:windowLightStatusBar" tools:targetApi="23">true</item>-->
-    </style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
     <style name="KarmaTextView">
         <item name="android:textSize">24sp</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <style name="SettingsComponent">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:gravity">center</item>
     </style>
 
     <style name="NameTextView">
         <item name="android:textSize">30sp</item>
         <item name="android:gravity">center</item>
+    </style>
+
+    <style name="QuoteTextView">
+        <item name="android:textSize">30sp</item>
+        <item name="android:gravity">start</item>
     </style>
 </resources>

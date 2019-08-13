@@ -4,6 +4,7 @@
 
     <string name="next">Next</string>
     <string name="selected_image">selected_image</string>
+    <string name="feedback">Feedback</string>
     <string name="image_post">Image Post</string>
     <string name="settings">Settings</string>
     <string name="select_mask">Select Mask</string>
@@ -16,6 +17,7 @@
     <string name="facebook_app_id">858470831208589</string>
     <string name="fb_login_protocol_scheme">fb858470831208589</string>
     <string name="sign_up_with_facebook">Sign Up With Facebook</string>
+    <string name="connect_on_facebook">Connect Directly On Facebook</string>
 
     <!--firebase-->
     <string name="user_db">User</string>
@@ -41,16 +43,19 @@
     <string name="fb_link">fb_link</string>
     <string name="gender">gender</string>
     <string name="mask">mask</string>
+    <string name="quote">quote</string>
     <string name="remote">remoteUser</string>
 
     <!--offline user fields-->
     <string name="connection">connection</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_feedback">Feedback</string>
-    <string name="feedback">Feedback</string>
-
+    <!--Themes-->
+    <string name="royalty">royalty</string>
+    <string name="temptation">temptation</string>
+    <string name="vibrant">vibrant</string>
+    <string name="sexy">sexy</string>
+    <string name="passion">passion</string>
+    <string name="boss">boss</string>
+    <string name="babe">babe</string>
     <!-- Feedback -->
     <string name="feedback_title">Feedback Description</string>
     <string name="feedback_label">

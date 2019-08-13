@@ -3,6 +3,9 @@ package in.cinderella.testapp.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.Selection;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.appinvite.AppInviteInvitation;
@@ -20,13 +22,21 @@ import in.cinderella.testapp.Fragments.TwoButtonsDialogFragment;
 import in.cinderella.testapp.R;
 import in.cinderella.testapp.Utils.DataHelper;
 
-public class Setting extends AppCompatActivity {
+public class Setting extends BaseActivity {
 
     //widgets
     private TextView logout;
     private ImageView image;
+    private EditText quote;
     private TextView invite;
     private TextView feedback;
+    private Button temptation;
+    private Button royalty;
+    private Button babe;
+    private Button passion;
+    private Button boss;
+    private Button vibrant;
+    private Button sexy;
 
     //vars
     private static int REQUEST_INVITE=100;
@@ -37,14 +47,23 @@ public class Setting extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
         dataHelper=new DataHelper(this);
+        setContentView(R.layout.activity_settings);
+        temptation=findViewById(R.id.temptation_switch);
+        passion=findViewById(R.id.passion_switch);
+        royalty=findViewById(R.id.royalty_switch);
+        babe=findViewById(R.id.babe_switch);
+        boss=findViewById(R.id.boss_switch);
+        vibrant=findViewById(R.id.vibrant_switch);
+        sexy=findViewById(R.id.sexy_switch);
+        quote=(EditText) findViewById(R.id.quoteText);
         logout=(TextView) findViewById(R.id.logout);
         invite=(TextView) findViewById(R.id.invite);
         feedback=(TextView) findViewById(R.id.feedback);
         image = (ImageView) findViewById(R.id.imageShare);
         ImageView back = (ImageView) findViewById(R.id.ivBack);
-
+        if (!dataHelper.getQuote().trim().equals(""))
+            quote.setText(dataHelper.getQuote());
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,6 +103,76 @@ public class Setting extends AppCompatActivity {
                 saveData();
             }
         });
+        int position = quote.getText().length();
+        Editable editObj= quote.getText();
+        Selection.setSelection(editObj, position);
+        quote.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                isChanged=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        temptation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dataHelper.putTheme(getString(R.string.temptation));
+                onResume();
+            }
+        });
+        royalty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dataHelper.putTheme(getString(R.string.royalty));
+                onResume();
+            }
+        });
+        babe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dataHelper.putTheme(getString(R.string.babe));
+                onResume();
+            }
+        });
+        boss.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dataHelper.putTheme(getString(R.string.boss));
+                onResume();
+            }
+        });
+        vibrant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dataHelper.putTheme(getString(R.string.vibrant));
+                onResume();
+            }
+        });
+        sexy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dataHelper.putTheme(getString(R.string.sexy));
+                onResume();
+            }
+        });
+        passion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dataHelper.putTheme(getString(R.string.passion));
+                onResume();
+            }
+        });
+
+
         setMask(dataHelper.getMask());
     }
 
@@ -131,6 +220,7 @@ public class Setting extends AppCompatActivity {
         startActivity(intent);
     }
     private void saveData(){
+        dataHelper.putQuote(String.valueOf(quote.getText()));
         dataHelper.putMask((Integer) image.getTag());
         Toast.makeText(this,"Saved Settings Successfully",Toast.LENGTH_SHORT).show();
         super.onBackPressed();
@@ -152,6 +242,7 @@ public class Setting extends AppCompatActivity {
                         @Override
                         public void onNegative(MaterialDialog dialog) {
                             super.onNegative(dialog);
+                            dataHelper.putTheme(dataHelper.getPrevTheme());
                             Setting.super.onBackPressed();
                         }
                     });

@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.widget.Toast;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -24,7 +26,7 @@ import me.majiajie.pagerbottomtabstrip.MaterialMode;
 import me.majiajie.pagerbottomtabstrip.NavigationController;
 import me.majiajie.pagerbottomtabstrip.PageNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
         checkCurrentUser(mAuth.getCurrentUser());
+        checkPermission();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -96,14 +99,16 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
         checkCurrentUser(mAuth.getCurrentUser());
-        checkPermission();
     }
     //Initializing Bottom Navigation Components
     private void initBottomNavigation(PageNavigationView pageNavigationView) {
+        TypedValue typedValue=new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorAccent, typedValue, true);
+        @ColorInt int color = typedValue.data;
         navigationController = pageNavigationView.material()
-                .addItem(R.drawable.ic_home, "",getResources().getColor(R.color.colorAccent,getTheme()))
-                .addItem(R.drawable.ic_call,"",getResources().getColor(R.color.colorAccent,getTheme()))
-                .addItem(R.drawable.ic_pixie_buy, "",getResources().getColor(R.color.colorAccent,getTheme())).setDefaultColor(getResources().getColor(R.color.white,getTheme()))
+                .addItem(R.drawable.ic_home, "",color)
+                .addItem(R.drawable.ic_call,"",color)
+                .addItem(R.drawable.ic_pixie_buy, "",color).setDefaultColor(getResources().getColor(R.color.white,getTheme()))
                 .build();
         BottomNavigationUtils.setupWithNavController(PAGE_IDS, navigationController, mNavController);
     }

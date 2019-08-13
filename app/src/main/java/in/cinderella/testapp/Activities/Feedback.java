@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import in.cinderella.testapp.R;
 
-public class Feedback extends AppCompatActivity {
+public class Feedback extends BaseActivity {
     private  final String DEVICE = "Device: ";
     private  final String SDK_VERSION = "SDK version: ";
     private  final String MODEL = "Model: ";

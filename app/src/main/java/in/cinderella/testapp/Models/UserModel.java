@@ -3,6 +3,7 @@ package in.cinderella.testapp.Models;
 public class UserModel {
     private String username;
     private String fb_dp;
+    private String quote;
     private long karma;
     private String gender;
     private long mask;
@@ -11,9 +12,10 @@ public class UserModel {
 //    private long age;
 
 
-    public UserModel(String username, String fb_dp, long karma, String gender, long mask, String fb_link, long pixies) {
+    public UserModel(String username, String fb_dp, String quote, long karma, String gender, long mask, String fb_link, long pixies) {
         this.username = username;
         this.fb_dp = fb_dp;
+        this.quote = quote;
         this.karma = karma;
         this.gender = gender;
         this.mask = mask;
@@ -22,6 +24,14 @@ public class UserModel {
     }
 
     public UserModel() {
+    }
+
+    public String getQuote() {
+        return quote;
+    }
+
+    public void setQuote(String quote) {
+        this.quote = quote;
     }
 
     public String getUsername() {
@@ -85,6 +95,7 @@ public class UserModel {
         return "UserModel{" +
                 "username='" + username + '\'' +
                 ", fb_dp='" + fb_dp + '\'' +
+                ", quote='" + quote + '\'' +
                 ", karma=" + karma +
                 ", gender='" + gender + '\'' +
                 ", mask=" + mask +

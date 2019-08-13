@@ -24,9 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.greenfrvr.hashtagview.HashtagView;
 import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
-import com.sinch.android.rtc.calling.Call;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,6 +40,7 @@ import in.cinderella.testapp.Models.UserModel;
 import in.cinderella.testapp.R;
 import in.cinderella.testapp.Utils.DataHelper;
 import in.cinderella.testapp.Utils.FirebaseHelper;
+import in.cinderella.testapp.Utils.HashtagView;
 import in.cinderella.testapp.Utils.ShakeListener;
 
 public class Home extends Fragment {
@@ -50,7 +49,6 @@ public class Home extends Fragment {
     private FirebaseDatabase database;
     private DatabaseReference myRef;
     private FirebaseHelper firebaseHelper;
-    private Call call;
     private DataHelper dataHelper;
     private boolean isCardVisible;
 
@@ -60,7 +58,7 @@ public class Home extends Fragment {
     private RadioButton option2;
     private ImageView phone_shake;
     private ScrollView scrollView;
-    private HashtagView hashtagView;
+    private HashtagView hashTagView;
     private ShakeListener mShaker;
     private TextView pixies;
     private TextView username;
@@ -113,14 +111,14 @@ public class Home extends Fragment {
         option0=view.findViewById(R.id.option0);
         option1=view.findViewById(R.id.option1);
         option2=view.findViewById(R.id.option2);
-        hashtagView=(HashtagView) view.findViewById(R.id.channel_tags);
+        hashTagView =(HashtagView) view.findViewById(R.id.channel_tags);
         List<ChannelModel> CHANNELS = new ArrayList<ChannelModel>();
         CHANNELS.add(new ChannelModel ("IceBreakers","Man","Woman", "Any",0));
         CHANNELS.add(new ChannelModel ("SingersConnect","Man","Woman", "Any",0));
         CHANNELS.add(new ChannelModel ("FiftyShades","Man","Woman", "Any",0));
 
 
-        hashtagView.setData(CHANNELS, new HashtagView.DataTransform<ChannelModel>() {
+        hashTagView.setData(CHANNELS, new HashtagView.DataTransform<ChannelModel>() {
 
             @Override
             public CharSequence prepare(ChannelModel item) {
@@ -134,8 +132,7 @@ public class Home extends Fragment {
                 return CHANNELS.indexOf(item)  == 0;
             }
         });
-        hashtagView.setSelectionLimit(1);
-        hashtagView.addOnTagSelectListener(new HashtagView.TagsSelectListener() {
+        hashTagView.addOnTagSelectListener(new HashtagView.TagsSelectListener() {
             @Override
             public void onItemSelected(Object item,boolean selected) {
                 ChannelModel ch=(ChannelModel) item;
@@ -154,7 +151,7 @@ public class Home extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==2 && resultCode==-1){
-            new RemoteCardDialog.Builder(getContext(),data.getStringExtra(getResources().getString(R.string.uid)),data.getLongExtra(getResources().getString(R.string.karma),0),data.getStringExtra(getResources().getString(R.string.fb_dp)),data.getStringExtra(getResources().getString(R.string.username))).setOnDismissListener(new remoteCardDismissListener()).build().show();
+            new RemoteCardDialog.Builder(getContext(),data.getStringExtra(getResources().getString(R.string.uid)),data.getLongExtra(getResources().getString(R.string.karma),0),data.getStringExtra(getResources().getString(R.string.fb_dp)),data.getStringExtra(getResources().getString(R.string.username)),data.getStringExtra(getResources().getString(R.string.quote))).setOnDismissListener(new remoteCardDismissListener()).build().show();
             isCardVisible=true;
         }
     }

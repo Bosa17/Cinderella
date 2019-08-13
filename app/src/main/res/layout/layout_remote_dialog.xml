@@ -3,50 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/remoteScv"
-        android:visibility="gone"
-        android:padding="10dp"
-        android:layout_margin="30dp"
-        android:orientation="vertical"
-        android:layout_centerInParent="true"
-        android:background="@color/cardview_dark_background">
-        <in.cinderella.testapp.Utils.ScratchCardView
-            android:id="@+id/remoteUserMask_scv"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_gravity="center"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/remoteUserName_scv"
-            android:visibility="gone"
-            android:maxLines="1"
-            app:autoSizeTextType="uniform"
-            android:textSize="30sp"
-            android:layout_gravity="center_horizontal"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/remoteUserkarma_scv"
-            android:background="@color/colorAccent"
-            android:textColor="@color/white"
-            android:visibility="gone"
-            android:maxLines="1"
-            app:autoSizeTextType="uniform"
-            android:textSize="20sp"
-            android:layout_gravity="center_horizontal"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:visibility="gone"
-            android:text="Confirm Connection"
-            android:id="@+id/addConnectionConfirm"/>
-    </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -76,10 +33,52 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="Confirm"
-            android:layout_below="@id/remoteUserAddKarma"
             android:layout_margin="20dp"
             android:id="@+id/addKarmaConfirm"/>
     </LinearLayout>
-
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/remoteScv"
+        android:visibility="gone"
+        android:padding="10dp"
+        android:layout_margin="30dp"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:background="@color/cardview_dark_background">
+        <in.cinderella.testapp.Utils.ScratchCardView
+            android:id="@+id/remoteUserMask_scv"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/remoteUserName_scv"
+            android:visibility="gone"
+            android:maxLines="1"
+            app:autoSizeTextType="uniform"
+            android:textSize="30sp"
+            android:layout_gravity="center_horizontal"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/remoteUserkarma_scv"
+            android:background="?attr/colorAccent"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            android:maxLines="1"
+            app:autoSizeTextType="uniform"
+            android:textSize="20sp"
+            android:layout_gravity="center_horizontal"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            android:text="Confirm Connection"
+            android:id="@+id/addConnectionConfirm"/>
+    </LinearLayout>
 
 </RelativeLayout>

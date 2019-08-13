@@ -50,7 +50,7 @@ public class FirebaseHelper {
                 .setValue(user);
 
     }
-    public void addKarma(long karma){
+    public void updateKarma(long karma){
         myRef.child(mContext.getString(R.string.user_db))
                 .child(mAuth.getCurrentUser().getUid())
                 .child(mContext.getString(R.string.karma))
@@ -81,6 +81,12 @@ public class FirebaseHelper {
                 .setValue(mask);
     }
 
+    public void updateQuote(String quote){
+        myRef.child(mContext.getString(R.string.user_db))
+                .child(mAuth.getCurrentUser().getUid())
+                .child(mContext.getString(R.string.quote))
+                .setValue(quote);
+    }
 
 
 }

@@ -1,37 +1,22 @@
 package in.cinderella.testapp.Fragments;
 
-import android.Manifest;
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Rating;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
@@ -41,11 +26,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import in.cinderella.testapp.Models.RemoteUserConnection;
-import in.cinderella.testapp.Models.UserModel;
 import in.cinderella.testapp.R;
 import in.cinderella.testapp.Utils.DataHelper;
 import in.cinderella.testapp.Utils.FileUtils;
-import in.cinderella.testapp.Utils.FirebaseHelper;
 import in.cinderella.testapp.Utils.Permissions;
 import in.cinderella.testapp.Utils.ScratchCardView;
 
@@ -56,6 +39,7 @@ public class RemoteCardDialog extends BlurPopupWindow {
     private static String mRemoteUserFb_dp;
     private static String mRemoteUserId;
     private static String mRemoteUserName;
+    private static String mRemoteUserQuote;
     private static long mRemoteUserKarma;
     private Bitmap bmp;
     private RemoteUserConnection remoteUser;
@@ -74,7 +58,7 @@ public class RemoteCardDialog extends BlurPopupWindow {
 
     @Override
     protected View createContentView(ViewGroup parent) {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.scratchcard_remote, parent, false);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_remote_dialog, parent, false);
         scv=view.findViewById(R.id.remoteUserMask_scv);
         remoteUser=new RemoteUserConnection();
         dataHelper=new DataHelper(getContext());
@@ -170,6 +154,7 @@ public class RemoteCardDialog extends BlurPopupWindow {
             public void onClick(View view) {
                 long conn_no=dataHelper.getConnection()+1;
                 dataHelper.putConnection(conn_no);
+                remoteUser.setRemoteUserQuote(mRemoteUserQuote);
                 remoteUser.setRemoteUserName(mRemoteUserName);
                 remoteUser.setRemoteUserKarma(mRemoteUserKarma);
                 if (Permissions.hasStoragePermissions(getContext())) {
@@ -219,12 +204,13 @@ public class RemoteCardDialog extends BlurPopupWindow {
     }
 
     public static class Builder extends BlurPopupWindow.Builder<RemoteCardDialog> {
-        public Builder(Context context,String ruid,long karma,String url,String name) {
+        public Builder(Context context,String ruid,long karma,String url,String name,String quote) {
             super(context);
             mRemoteUserFb_dp=url;
             mRemoteUserId=ruid;
             mRemoteUserKarma=karma;
             mRemoteUserName=name;
+            mRemoteUserQuote=quote;
             this.setScaleRatio(0.25f).setBlurRadius(8).setTintColor(0x30000000).setDismissOnClickBack(false)
                     .setDismissOnTouchBackground(false);
         }

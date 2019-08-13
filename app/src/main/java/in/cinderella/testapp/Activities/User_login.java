@@ -35,11 +35,10 @@ import com.google.firebase.auth.FirebaseUser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class User_login extends AppCompatActivity {
+public class User_login extends BaseActivity {
 
     private static final String TAG = "User_login Activity";
     private Button btn;
-    private FirebaseHelper firebaseHelper;
     private FirebaseAuth mAuth;
     private DataHelper dataHelper;
     private FacebookHelper facebookHelper;

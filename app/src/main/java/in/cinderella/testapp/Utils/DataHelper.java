@@ -27,6 +27,7 @@ public class DataHelper {
         putUID(userID);
         putMask((int)curr_user.getMask());
         putGender("Male");
+        putQuote("");
         putUsername(curr_user.getUsername());
         putFb_link(curr_user.getFb_link());
         putFb_dp(curr_user.getFb_dp());
@@ -38,23 +39,66 @@ public class DataHelper {
     public void addNewRemoteUser(RemoteUserConnection remoteUser,long conn_no){
         Hawk.put(mContext.getString(R.string.remote)+conn_no,remoteUser);
     }
-    public RemoteUserConnection getRemoteUser(){
-        return Hawk.get(mContext.getString(R.string.remote));
-    }
 
     public ArrayList<String> getRemoteUserDps(){
         ArrayList<String> filePaths=new ArrayList<>();
-        for (int i=1;i<=getConnection();i++){
-            RemoteUserConnection remoteTemp=Hawk.get(mContext.getString(R.string.remote)+i);
-            filePaths.add(remoteTemp.getRemoteUserDp());
+        try {
+            for (long i = getConnection(); i >= 1; i--) {
+                RemoteUserConnection remoteTemp = Hawk.get(mContext.getString(R.string.remote) + i);
+                filePaths.add(remoteTemp.getRemoteUserDp());
+            }
+        }catch(Exception e){
+            e.printStackTrace();
         }
         return filePaths;
+    }
+
+    public ArrayList<String> getRemoteUserNames(){
+        ArrayList<String> Names=new ArrayList<>();
+        try {
+            for (long i = getConnection(); i >= 1; i--)  {
+                RemoteUserConnection remoteTemp = Hawk.get(mContext.getString(R.string.remote) + i);
+                Names.add(remoteTemp.getRemoteUserName());
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return Names;
+    }
+
+    public ArrayList<String> getRemoteUserQuotes(){
+        ArrayList<String> Quotes=new ArrayList<>();
+        try {
+            for (long i = getConnection(); i >= 1; i--)  {
+                RemoteUserConnection remoteTemp = Hawk.get(mContext.getString(R.string.remote) + i);
+                Quotes.add(remoteTemp.getRemoteUserQuote());
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return Quotes;
+    }
+
+
+    public ArrayList<Long> getRemoteUserKarmas(){
+        ArrayList<Long> Karmas=new ArrayList<>();
+        try {
+            for (long i = getConnection(); i >= 1; i--)  {
+                RemoteUserConnection remoteTemp = Hawk.get(mContext.getString(R.string.remote) + i);
+                Karmas.add(remoteTemp.getRemoteUserKarma());
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return Karmas;
     }
 
     public void syncWithFirebase(DataSnapshot dataSnapshot){
         UserModel user=dataSnapshot.getValue(UserModel.class);
         try {
             putKarma(user.getKarma());
+            putUsername(user.getUsername());
+            putPixies(user.getPixies());
         }catch(Exception e){
             putKarma(0);
             Toast.makeText(mContext,"Some Error Occured!",Toast.LENGTH_SHORT).show();
@@ -70,6 +114,7 @@ public class DataHelper {
         user.setFb_dp(getFb_dp());
         user.setFb_link(getFb_link());
         user.setGender(getGender());
+        user.setQuote(getQuote());
         user.setKarma(getKarma());
         user.setUsername(getUsername());
         user.setMask(getMask());
@@ -131,10 +176,30 @@ public class DataHelper {
         return Hawk.get(mContext.getString(R.string.fb_link));
     }
 
+    public void putQuote(String quote){
+        Hawk.put(mContext.getString(R.string.quote), quote);
+        firebaseHelper.updateQuote(quote);
+    }
+    public String getQuote(){
+        return Hawk.get(mContext.getString(R.string.quote),"");
+    }
+
     public void putUID(String uid){
         Hawk.put(mContext.getString(R.string.uid), uid);
     }
     public String getUID(){
         return Hawk.get(mContext.getString(R.string.uid));
+    }
+    public void putPrevTheme(String theme){
+        Hawk.put("prev_theme",theme);
+    }
+    public String getPrevTheme(){
+        return Hawk.get("prev_theme",mContext.getString(R.string.royalty));
+    }
+    public void putTheme(String theme){
+        Hawk.put("theme",theme);
+    }
+    public String getTheme(){
+        return Hawk.get("theme",mContext.getString(R.string.royalty));
     }
 }

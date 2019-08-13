@@ -9,7 +9,7 @@ import android.os.Bundle;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class Splash extends AppCompatActivity {
+public class Splash extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

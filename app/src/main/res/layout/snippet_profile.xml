@@ -67,7 +67,7 @@
                         android:text="Karma"
                         android:maxLines="1"
                         app:autoSizeTextType="uniform"
-                        android:textColor="@color/colorAccent"
+                        android:textColor="?attr/colorAccent"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -96,7 +96,7 @@
                         android:text="Connections"
                         android:maxLines="1"
                         app:autoSizeTextType="uniform"
-                        android:textColor="@color/colorAccent"
+                        android:textColor="?attr/colorAccent"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -125,7 +125,7 @@
                         android:text="Pixies"
                         android:maxLines="1"
                         app:autoSizeTextType="uniform"
-                        android:textColor="@color/colorAccent"
+                        android:textColor="?attr/colorAccent"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 

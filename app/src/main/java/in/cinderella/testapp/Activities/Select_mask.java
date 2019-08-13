@@ -1,13 +1,10 @@
 package in.cinderella.testapp.Activities;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -16,22 +13,21 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import in.cinderella.testapp.R;
+import in.cinderella.testapp.Utils.DataHelper;
 import in.cinderella.testapp.Utils.GridImageAdapter;
 import in.cinderella.testapp.Utils.MaskSelector;
-import in.cinderella.testapp.Utils.Permissions;
 
-public class Select_mask extends AppCompatActivity {
+public class Select_mask extends BaseActivity {
 
     private static String TAG = "Select_Mask";
     private static final int NUM_GRID_COLUMNS = 3;
-
+    private DataHelper dataHelper;
 
     //widgets
     private GridView gridView;
-    private ImageView galleryImage;
+    private ImageView maskImage;
 
 
     //vars
@@ -41,7 +37,8 @@ public class Select_mask extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_mask);
-        galleryImage = (ImageView) findViewById(R.id.galleryImageView);
+        dataHelper=new DataHelper(this);
+        maskImage = (ImageView) findViewById(R.id.galleryImageView);
         gridView = (GridView) findViewById(R.id.gridView);
         Log.d(TAG, "onCreateView: started.");
 
@@ -67,7 +64,7 @@ public class Select_mask extends AppCompatActivity {
 
     private void setupGridView() {
         Log.d(TAG, "setupGridView: directory chosen: ");
-        final Integer[] imgURLs= MaskSelector.maskURLs ;
+        final Integer[] masks= MaskSelector.maskURLs ;
 
         //set the grid column width
         int gridWidth = getResources().getDisplayMetrics().widthPixels;
@@ -75,13 +72,13 @@ public class Select_mask extends AppCompatActivity {
         gridView.setColumnWidth(imageWidth);
 
         //use the grid adapter to adapter the images to gridview
-        GridImageAdapter adapter = new GridImageAdapter(this, R.layout.layout_grid_imageview,  imgURLs);
+        GridImageAdapter adapter = new GridImageAdapter(this, R.layout.layout_grid_imageview,  masks);
         gridView.setAdapter(adapter);
 
         //set the first image to be displayed when the activity fragment view is inflated
         try {
-            setImage(imgURLs[0], galleryImage);
-            mSelectedImage = imgURLs[0];
+            setImage(dataHelper.getMask());
+            mSelectedImage = dataHelper.getMask();
         } catch (ArrayIndexOutOfBoundsException e) {
             Log.e(TAG, "setupGridView: ArrayIndexOutOfBoundsException: " + e.getMessage());
         }
@@ -89,10 +86,10 @@ public class Select_mask extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "onItemClick: selected an image: " + imgURLs[position]);
+                Log.d(TAG, "onItemClick: selected an image: " + masks[position]);
 
-                setImage(imgURLs[position], galleryImage);
-                mSelectedImage = imgURLs[position];
+                setImage(masks[position]);
+                mSelectedImage = masks[position];
             }
         });
 
@@ -103,9 +100,8 @@ public class Select_mask extends AppCompatActivity {
         Toast.makeText(this,"Select Mask and press Next", Toast.LENGTH_SHORT).show();
     }
 
-    private void setImage(Integer imgURL, ImageView image) {
+    private void setImage(int mask) {
         Log.d(TAG, "setImage: setting image");
-        image.setImageResource(imgURL);
-
+        maskImage.setImageResource(mask);
     }
 }

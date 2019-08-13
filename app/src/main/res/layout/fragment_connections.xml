@@ -1,33 +1,103 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Fragments.Connections">
-
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <include layout="@layout/snippet_connections"/>
     </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/empty_connections">
 
-    <ImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:id="@+id/empty_connections"
-        android:layout_centerInParent="true"
-        android:src="@drawable/ic_empty_connections"/>
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:id="@+id/empty_connections_pic"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_empty_connections"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/empty_connections"
-        android:id="@+id/empty_connections_tag"
-        android:layout_margin="30dp"
-        android:layout_centerHorizontal="true"
-        android:textSize="20sp"
-        android:text="Oh no! You have no Connections."/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/empty_connections_pic"
+            android:id="@+id/empty_connections_tag"
+            android:layout_margin="30dp"
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"
+            android:text="Oh no! You have no Connections."/>
 
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:id="@+id/not_empty_connections">
+        <FrameLayout
+            android:layout_width="85dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:layout_gravity="end"
+            android:background="@drawable/switcher">
 
-</RelativeLayout>
+            <TextSwitcher
+                android:id="@+id/karma_switcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+
+        </FrameLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="210dp"
+            android:clipChildren="false"
+            android:overScrollMode="never"
+            app:layoutManager="com.ramotion.cardslider.CardSliderLayoutManager"
+            app:viewUpdater="in.cinderella.testapp.Utils.CardsUpdater"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="40dp">
+
+            <TextSwitcher
+                android:id="@+id/name_switcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"/>
+
+        </FrameLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="40dp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/q"
+                android:src="@drawable/ic_quote"/>
+
+            <TextSwitcher
+                android:id="@+id/quote_switcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/q"
+                android:layout_marginEnd="20dp"
+                app:autoSizeTextType="uniform"
+                android:textSize="30sp"/>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

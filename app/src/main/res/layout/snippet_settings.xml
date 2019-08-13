@@ -40,7 +40,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="15dp"
                     android:textSize="20sp"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="?attr/colorAccent"
                     android:layout_centerVertical="true"
                     android:id="@+id/ivSave"
                     />

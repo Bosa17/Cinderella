@@ -52,9 +52,15 @@ public class FirebaseHelper {
     }
     public void updateKarma(long karma){
         myRef.child(mContext.getString(R.string.user_db))
-                .child(mAuth.getCurrentUser().getUid())
+                .child(getUserID())
                 .child(mContext.getString(R.string.karma))
                 .setValue(karma);
+    }
+    public void updatePixie(long pixie){
+        myRef.child(mContext.getString(R.string.user_db))
+                .child(getUserID())
+                .child(mContext.getString(R.string.pixies))
+                .setValue(pixie);
     }
     public void updateKarmaWithUid(String uid,long karma){
         myRef.child(mContext.getString(R.string.user_db))
@@ -63,27 +69,27 @@ public class FirebaseHelper {
                 .setValue(karma);
     }
 
-    public void addUserToChannel(){
-        myRef.child(mContext.getString(R.string.channel))
-                .child(userID).setValue(1);
+    public void addUserToChannel(String chapter,String partnerPreference){
+        myRef.child(chapter)
+                .child(userID).setValue(partnerPreference);
     }
 
-    public void removeUserFromChannel(){
-        myRef.child(mContext.getString(R.string.channel))
+    public void removeUserFromChannel(String chapter){
+        myRef.child(chapter)
                 .child(userID).removeValue();
     }
 
 
     public void updateMask(long mask){
         myRef.child(mContext.getString(R.string.user_db))
-                .child(mAuth.getCurrentUser().getUid())
+                .child(getUserID())
                 .child(mContext.getString(R.string.mask))
                 .setValue(mask);
     }
 
     public void updateQuote(String quote){
         myRef.child(mContext.getString(R.string.user_db))
-                .child(mAuth.getCurrentUser().getUid())
+                .child(getUserID())
                 .child(mContext.getString(R.string.quote))
                 .setValue(quote);
     }

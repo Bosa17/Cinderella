@@ -9,7 +9,7 @@
         android:id="@+id/relLayout1">
 
         <!-- gallery toolbar -->
-        <include layout="@layout/snippet_select_picture"/>
+        <include layout="@layout/snippet_select_mask"/>
 
     </RelativeLayout>
 

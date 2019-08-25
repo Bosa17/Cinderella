@@ -2,8 +2,10 @@ package in.cinderella.testapp.Fragments;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,15 +24,19 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import in.cinderella.testapp.Activities.Feedback;
+import in.cinderella.testapp.Activities.PartnerCallActivity;
 import in.cinderella.testapp.R;
 import in.cinderella.testapp.Utils.DecodeBitmapTask;
+import in.cinderella.testapp.Utils.SinchService;
 
 public class RemoteConnectionCardDialog extends BlurPopupWindow {
 //    vars
     private static String dp_file;
+    private static String remoteUserId;
     //    widgets
     private ImageView mRemoteUserDp;
-    private Button connectFbButton;
+    private Button connectButton;
     public RemoteConnectionCardDialog(@NonNull Context context) {
         super(context);
     }
@@ -39,7 +45,17 @@ public class RemoteConnectionCardDialog extends BlurPopupWindow {
     protected View createContentView(ViewGroup parent) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_remote_connect_dialog, parent, false);
         mRemoteUserDp=view.findViewById(R.id.remoteUserConnectDp);
-        connectFbButton=view.findViewById(R.id.connect_fb);
+        connectButton=view.findViewById(R.id.connect_fb);
+        connectButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), PartnerCallActivity.class);
+                intent.putExtra("remoteUser",remoteUserId);
+                intent.putExtra(SinchService.CALL_TYPE,"1");
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(intent);
+            }
+        });
         loadBitmap(dp_file);
         LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp.gravity = Gravity.CENTER;
@@ -131,10 +147,11 @@ public class RemoteConnectionCardDialog extends BlurPopupWindow {
     }
 
     public static class Builder extends BlurPopupWindow.Builder<RemoteConnectionCardDialog> {
-        public Builder(Context context, String filePath) {
+        public Builder(Context context, String filePath,String uid) {
             super(context);
             dp_file=filePath;
-            this.setScaleRatio(0.25f).setBlurRadius(8).setTintColor(0x30000000);
+            remoteUserId=uid;
+            this.setScaleRatio(0.75f).setBlurRadius(0).setTintColor(context.getColor(R.color.colorPrimary));
         }
 
         @Override

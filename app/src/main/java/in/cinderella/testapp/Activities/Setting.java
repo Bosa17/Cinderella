@@ -188,7 +188,7 @@ public class Setting extends BaseActivity {
         startActivityForResult(intent, REQUEST_INVITE);
     }
     /**
-     * gets the image url from the incoming bundle and displays the chosen image
+     * gets the image url from the activity_partner_call bundle and displays the chosen image
      */
     private void setMask(int maskID){
         image.setImageResource(maskID);

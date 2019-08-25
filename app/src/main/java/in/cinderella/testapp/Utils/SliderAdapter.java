@@ -1,7 +1,6 @@
 package in.cinderella.testapp.Utils;
 
 
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderCard> {
     public SliderCard onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view = LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.layout_user_listitem, parent, false);
+                .inflate(R.layout.layout_remote_connect_card, parent, false);
 
         if (listener != null) {
             view.setOnClickListener(new View.OnClickListener() {

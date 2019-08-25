@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import in.cinderella.testapp.R;
 import in.cinderella.testapp.Utils.DataHelper;
@@ -72,13 +71,16 @@ public class Select_mask extends BaseActivity {
         gridView.setColumnWidth(imageWidth);
 
         //use the grid adapter to adapter the images to gridview
-        GridImageAdapter adapter = new GridImageAdapter(this, R.layout.layout_grid_imageview,  masks);
+        GridImageAdapter adapter = new GridImageAdapter(this, R.layout.layout_grid_maskview,  masks);
         gridView.setAdapter(adapter);
 
         //set the first image to be displayed when the activity fragment view is inflated
         try {
-            setImage(dataHelper.getMask());
-            mSelectedImage = dataHelper.getMask();
+            int mask=dataHelper.getMask();
+            if (mask==0)
+                mask=R.drawable.dp_1;
+            setImage(mask);
+            mSelectedImage = mask;
         } catch (ArrayIndexOutOfBoundsException e) {
             Log.e(TAG, "setupGridView: ArrayIndexOutOfBoundsException: " + e.getMessage());
         }

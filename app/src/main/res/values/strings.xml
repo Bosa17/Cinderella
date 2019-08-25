@@ -11,7 +11,7 @@
     <string name="user_account">User Account</string>
     <string name="save">Save</string>
     <string name="search">Search…</string>
-    <string name="connections">Connections</string>
+    <string name="partners">Partners</string>
 
     <!--facebook-->
     <string name="facebook_app_id">858470831208589</string>
@@ -47,7 +47,7 @@
     <string name="remote">remoteUser</string>
 
     <!--offline user fields-->
-    <string name="connection">connection</string>
+    <string name="partner">partner</string>
     <!--Themes-->
     <string name="royalty">royalty</string>
     <string name="temptation">temptation</string>

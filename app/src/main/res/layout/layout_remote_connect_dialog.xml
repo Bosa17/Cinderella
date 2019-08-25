@@ -3,6 +3,13 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_close"
+        android:layout_marginStart="30dp"
+        android:layout_above="@id/remoteUserConnectDp"
+        android:id="@+id/closecall"/>
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_margin="20dp"
@@ -13,7 +20,7 @@
         android:id="@+id/connect_fb"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/connect_on_facebook"
+        android:text="Call User"
         android:layout_below="@id/remoteUserConnectDp"
         android:layout_marginTop="30dp"
         android:textColor="@color/white"
@@ -21,5 +28,5 @@
         android:paddingStart="25dp"
         android:layout_marginEnd="25dp"
         android:layout_marginStart="25dp"
-        android:drawableStart="@drawable/ic_fb"/>
+        android:drawableStart="@drawable/ic_call_end"/>
 </RelativeLayout>

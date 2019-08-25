@@ -15,7 +15,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextSwitcher;
@@ -32,20 +31,21 @@ import in.cinderella.testapp.R;
 import in.cinderella.testapp.Utils.DataHelper;
 import in.cinderella.testapp.Utils.SliderAdapter;
 
-public class Connections extends Fragment {
+public class Partner extends Fragment {
     //vars
     private DataHelper dataHelper;
     private int currentPosition;
     private @ColorInt int color;
     private CardSliderLayoutManager layoutManger;
 //    widgets
-    private RelativeLayout empty_connections;
-    private LinearLayout not_empty_connections;
+    private RelativeLayout empty_partner;
+    private LinearLayout not_empty_partner;
     private RecyclerView recyclerView;
     private TextSwitcher nameSwitcher;
     private TextSwitcher karmaSwitcher;
     private TextSwitcher quoteSwitcher;
     private ArrayList<String> pics = new ArrayList<>();
+    private ArrayList<String> ids = new ArrayList<>();
     private ArrayList<String> quotes = new ArrayList<>();
     private ArrayList<String> names = new ArrayList<>();
     private ArrayList<Long> karmas = new ArrayList<>();
@@ -54,17 +54,18 @@ public class Connections extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view= inflater.inflate(R.layout.fragment_connections, container, false);
+        View view= inflater.inflate(R.layout.fragment_partners, container, false);
         dataHelper=new DataHelper(getContext());
         TypedValue outValue = new TypedValue();
         getActivity().getTheme().resolveAttribute(R.attr.colorAccent, outValue, true);
         color = outValue.data;
         pics = dataHelper.getRemoteUserDps();
+        ids=dataHelper.getRemoteUserIds();
         names = dataHelper.getRemoteUserNames();
         karmas = dataHelper.getRemoteUserKarmas();
         quotes=dataHelper.getRemoteUserQuotes();
-        empty_connections=view.findViewById(R.id.empty_connections);
-        not_empty_connections=view.findViewById(R.id.not_empty_connections);
+        empty_partner =view.findViewById(R.id.empty_partners);
+        not_empty_partner =view.findViewById(R.id.not_empty_partners);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         quoteSwitcher = view.findViewById(R.id.quote_switcher);
         nameSwitcher = view.findViewById(R.id.name_switcher);
@@ -81,11 +82,11 @@ public class Connections extends Fragment {
         });
         layoutManger = (CardSliderLayoutManager) recyclerView.getLayoutManager();
         new CardSnapHelper().attachToRecyclerView(recyclerView);
-        if (dataHelper.getConnection()==0){
+        if (dataHelper.getPartners()==0){
             return view;
         }else{
-            empty_connections.setVisibility(View.GONE);
-            not_empty_connections.setVisibility(View.VISIBLE);
+            empty_partner.setVisibility(View.GONE);
+            not_empty_partner.setVisibility(View.VISIBLE);
             initConn();
         }
         return view;
@@ -156,7 +157,7 @@ public class Connections extends Fragment {
 
             final int clickedPosition = recyclerView.getChildAdapterPosition(view);
             if (clickedPosition == activeCardPosition) {
-                new RemoteConnectionCardDialog.Builder(getContext(),pics.get(activeCardPosition)).build().show();
+                new RemoteConnectionCardDialog.Builder(getContext(),pics.get(activeCardPosition),ids.get(activeCardPosition)).build().show();
 
             } else if (clickedPosition > activeCardPosition) {
                 recyclerView.smoothScrollToPosition(clickedPosition);

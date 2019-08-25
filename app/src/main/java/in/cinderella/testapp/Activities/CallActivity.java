@@ -10,14 +10,12 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,10 +24,8 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -54,8 +50,10 @@ import in.cinderella.testapp.Models.UserModel;
 import in.cinderella.testapp.R;
 import in.cinderella.testapp.Utils.AudioPlayer;
 import in.cinderella.testapp.Utils.ConnectivityUtils;
+import in.cinderella.testapp.Utils.DataHelper;
 import in.cinderella.testapp.Utils.FirebaseHelper;
 import in.cinderella.testapp.Utils.Permissions;
+import in.cinderella.testapp.Utils.SinchService;
 import in.cinderella.testapp.Utils.StringUtils;
 
 import static android.util.Log.d;
@@ -65,6 +63,10 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
     private String TAG= CallActivity.class.getSimpleName();
     private SinchClient sinchClient;
     private Call call;
+    private Boolean isPrivate;
+    private String chapter;
+    private String partnerPreference;
+    private long pixieCost;
     private SensorManager mSensorManager;
     private Sensor mSensor;
     private String mRemotuserQuote;
@@ -72,6 +74,7 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
     private String mRemoteUserFbDp;
     private long mRemoteUserKarma;
     private String mRemoteUserName;
+    private String mCallId=null;
     private AudioPlayer mAudioPlayer;
     private FirebaseHelper firebaseHelper;
     private Vibrator vibe;
@@ -118,26 +121,11 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
                         | WindowManager.LayoutParams.FLAG_IGNORE_CHEEK_PRESSES
                         | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         setContentView(R.layout.activity_call);
-
         firebaseHelper=new FirebaseHelper(this);
         userID=firebaseHelper.getUserID();
         vibe = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         call=null;
         mAudioPlayer=new AudioPlayer(this);
-        boolean permissionsGranted = true;
-        if(sinchClient==null)
-            sinchInit();
-        try {
-            //mandatory checks
-            sinchClient.checkManifest();
-        } catch (MissingPermissionException e) {
-            permissionsGranted=false;
-            requestPermissions(Permissions.SINCH_PERMISSIONS, 2);
-        }
-        if(permissionsGranted){
-            sinchClient.start();
-            makeCall();
-        }
         call_progressing=findViewById(R.id.call_progressing);
         call_init=findViewById(R.id.call_init);
         mRemoteUser=findViewById(R.id.remoteUser);
@@ -179,23 +167,56 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
         }catch (Exception e){
             isSensorPresent=false;
         }
+        Bundle callSettings = getIntent().getExtras();
+        chapter = callSettings.getString("chapter");
+        isPrivate = callSettings.getBoolean("isPrivate");
+        partnerPreference = callSettings.getString("partnerPreference");
+        pixieCost = callSettings.getLong("pixieCost");
+        switch(partnerPreference){
+            case "Man": partnerPreference="1";
+                break;
+            case "Woman":partnerPreference="2";
+                break;
+            case "Any":partnerPreference="3";
+                break;
+        }
+        if(isPrivate)
+            partnerPreference="1"+partnerPreference;
         isCallEstablished=false;
         isAudioPlaying=false;
-        firebaseHelper.addUserToChannel();
+        boolean permissionsGranted = true;
+        sinchInit();
+        try {
+            //mandatory checks
+            sinchClient.checkManifest();
+        } catch (MissingPermissionException e) {
+            permissionsGranted = false;
+            requestPermissions(Permissions.SINCH_PERMISSIONS, 2);
+        }
+        if (permissionsGranted) {
+            sinchClient.start();
+            makeCall(chapter, partnerPreference);
+        }
+        firebaseHelper.addUserToChannel(chapter,partnerPreference);
     }
-
     private void sinchInit(){
         sinchClient = Sinch.getSinchClientBuilder()
                 .context(this)
                 .userId(userID)
                 .applicationKey(getString(R.string.sinch_key))
                 .applicationSecret(getString(R.string.sinch_secret))
-                .environmentHost("sandbox.sinch.com")
+                .environmentHost("clientapi.sinch.com")
                 .build();
         sinchClient.setSupportCalling(true);
-        sinchClient.setSupportManagedPush(true);
         sinchClient.startListeningOnActiveConnection();
-        sinchClient.getCallClient().addCallClientListener(new SinchCallClientListener());
+        sinchClient.getCallClient().addCallClientListener(new mCallClientListener());
+    }
+
+    @Override
+    protected void onServiceConnected() {
+        super.onServiceConnected();
+        getSinchServiceInterface().stopClient();
+        unbindService();
     }
 
     @Override
@@ -206,7 +227,6 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
             sinchClient = null;
         }
     }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -247,7 +267,25 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
     public void onAccuracyChanged(Sensor sensor, int i) {
 
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
 
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 2) {
+            Log.i("resultcode",""+requestCode);
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.i("resultcode",""+requestCode);
+                sinchClient.start();
+                makeCall(chapter,partnerPreference);
+            }
+            else {
+                Toast.makeText(getParent(),  "Permission Denied", Toast.LENGTH_SHORT).show();
+                endCall();
+            }
+        }
+    }
     @Override
     public void onBackPressed() {
         TwoButtonsDialogFragment.show(
@@ -267,25 +305,7 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
                     }
                 });
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
 
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == 2) {
-            Log.i("resultcode",""+requestCode);
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.i("resultcode",""+requestCode);
-                sinchClient.start();
-                makeCall();
-            }
-            else {
-                Toast.makeText(getParent(),  "Permission Denied", Toast.LENGTH_SHORT).show();
-                endCall();
-            }
-        }
-    }
     public static void enableDisableViewGroup(ViewGroup viewGroup, boolean enabled) {
         int childCount = viewGroup.getChildCount();
         for (int i = 0; i < childCount; i++) {
@@ -297,12 +317,12 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
         }
     }
 
-    public void makeCall(){
+    public void makeCall(String chapter, String partnerPreference){
         if (!isAudioPlaying){
             mAudioPlayer.playRingtone();
             isAudioPlaying=true;
         }
-        firebaseHelper.getRef().child(getString(R.string.channel))
+        firebaseHelper.getRef().child(chapter)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -324,18 +344,19 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
 
     public void makeCall(String rcvrID){
         try {
+            Log.d("lol", "makeCall: "+sinchClient.isStarted()+" "+sinchClient.getLocalUserId());
             call=sinchClient.getCallClient().callUser(rcvrID);
             call.addCallListener( new mCallListener());
         }catch(Exception e){
-            makeCall();
+            Log.i("Call Ended",e.toString());
+            endCall();
         }
     }
 
     public void endCall() {
-        firebaseHelper.removeUserFromChannel();
-        if (call != null) {
+        firebaseHelper.removeUserFromChannel(chapter);
+        if (call!=null)
             call.hangup();
-        }
         if(isCallEstablished) {
             Intent intent = new Intent();
             intent.putExtra(getResources().getString(R.string.fb_dp), mRemoteUserFbDp);
@@ -343,6 +364,8 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
             intent.putExtra(getResources().getString(R.string.karma),mRemoteUserKarma);
             intent.putExtra(getResources().getString(R.string.quote),mRemotuserQuote);
             intent.putExtra(getResources().getString(R.string.uid),call.getRemoteUserId());
+            intent.putExtra("pixie_cost",pixieCost);
+            intent.putExtra("isPrivate",isPrivate);
             setResult(Activity.RESULT_OK, intent);
         }
         else
@@ -398,12 +421,10 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
         return "";
     }
 
-    public class mCallListener implements CallListener {
+    private class mCallListener implements CallListener {
 
         @Override
         public void onCallEnded(Call call) {
-            if (!isCallEstablished)
-                makeCall();
             CallEndCause cause = call.getDetails().getEndCause();
             Log.d(TAG, "CallActivity ended. Reason: " + cause.toString());
             try {
@@ -411,7 +432,6 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
                 mTimer.cancel();
             }catch (Exception e){ Log.d(TAG, "No Timer ");}
             setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
-            Toast.makeText(CallActivity.this, "Bibidi Bobidi Boo", Toast.LENGTH_LONG).show();
             endCall();
         }
 
@@ -420,7 +440,7 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
             d(TAG, "CallActivity established");
             isCallEstablished=true;
             vibe.vibrate(300);
-            firebaseHelper.removeUserFromChannel();
+            firebaseHelper.removeUserFromChannel(chapter);
             updateWidgets(call.getRemoteUserId());
             mAudioPlayer.stopRingtone();
             setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
@@ -439,7 +459,7 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
         }
 
     }
-    private class SinchCallClientListener implements CallClientListener {
+    private class mCallClientListener implements CallClientListener {
         @Override
         public void onIncomingCall(CallClient callClient, Call incomingCall) {
             call = incomingCall;
@@ -447,5 +467,6 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
             call.addCallListener(new mCallListener());
         }
     }
+
 
 }

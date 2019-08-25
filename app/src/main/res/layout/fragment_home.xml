@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:overScrollMode="never"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:scrollbars="none"
-    android:id="@+id/scroll">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        android:id="@+id/scroll">
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -33,7 +36,7 @@
                     android:layout_gravity="center_horizontal"
                     android:maxLines="1"
                     app:autoSizeTextType="uniform"
-                    android:text="1.  Choose Channel"
+                    android:text="1.  Choose Chapter"
                     android:textSize="30sp"
                     />
 
@@ -43,12 +46,29 @@
                     android:layout_height="match_parent"
                     android:layout_margin="30dp"
                     app:rowMode="wrap"
-                    app:tagBackground="@drawable/channel_bg"
+                    app:tagBackground="@drawable/chapter_bg"
                     app:selectionMode="true"
+                    app:tagPaddingLeft="10dp"
+                    app:tagPaddingRight="10dp"
                     app:tagPaddingBottom="10dp"
                     app:tagPaddingTop="10dp"
-                    app:tagTextSize="14sp"
+                    app:tagTextSize="20sp"
+                    app:composeMode="origin"
+                    app:rowDistribution="random"
                     app:tagTextColor="@color/white" />
+
+                <TextSwitcher
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/chapter_desc"
+                    android:background="@drawable/home_bg"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    app:autoSizeTextType="uniform"
+                    android:textSize="20sp"
+                    />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -63,7 +83,8 @@
                 <RadioGroup
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/channel_preference"
+                    android:background="@drawable/home_bg"
+                    android:id="@+id/parter_preference"
                     android:layout_margin="30dp"
                     android:layout_gravity="center_horizontal"
                     >
@@ -111,4 +132,19 @@
 
         </RelativeLayout>
 
-</ScrollView>
+    </ScrollView>
+
+
+    <TextView
+        android:id="@+id/pixie_cost_switcher"
+        android:layout_width="70dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/pixie_cost_switcher"
+        android:drawableStart="@drawable/ic_pixies"
+        android:gravity="center"
+        android:textSize="24sp"
+        app:layout_anchor="@id/scroll"
+        app:layout_anchorGravity="top|end" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

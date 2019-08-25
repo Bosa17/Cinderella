@@ -32,7 +32,6 @@ import in.cinderella.testapp.Utils.FileUtils;
 import in.cinderella.testapp.Utils.Permissions;
 import in.cinderella.testapp.Utils.ScratchCardView;
 
-import static org.webrtc.ContextUtils.getApplicationContext;
 
 public class RemoteCardDialog extends BlurPopupWindow {
 
@@ -40,12 +39,13 @@ public class RemoteCardDialog extends BlurPopupWindow {
     private static String mRemoteUserId;
     private static String mRemoteUserName;
     private static String mRemoteUserQuote;
+    private static Context mContext;
+    private static boolean mRemoteUserIsPrivate=false;
     private static long mRemoteUserKarma;
     private Bitmap bmp;
     private RemoteUserConnection remoteUser;
     private DataHelper dataHelper;
     private TextView mUserRemote;
-    private TextView mUserRemoteKarma;
     private Button addConnectionConfirm;
     private LinearLayout addKarmaDialog;
     private LinearLayout remoteScv;
@@ -63,8 +63,6 @@ public class RemoteCardDialog extends BlurPopupWindow {
         remoteUser=new RemoteUserConnection();
         dataHelper=new DataHelper(getContext());
         mUserRemote=view.findViewById(R.id.remoteUserName_scv);
-        mUserRemoteKarma=view.findViewById(R.id.remoteUserkarma_scv);
-        mUserRemoteKarma.setText("Karma : "+mRemoteUserKarma);
         mUserAddKarma=view.findViewById(R.id.remoteUserAddKarma);
         addKarmaConfirm=view.findViewById(R.id.addKarmaConfirm);
         remoteScv=view.findViewById(R.id.remoteScv);
@@ -130,8 +128,8 @@ public class RemoteCardDialog extends BlurPopupWindow {
             @Override
             public void onRevealed(ScratchCardView tv) {
                 mUserRemote.setVisibility(VISIBLE);
-                mUserRemoteKarma.setVisibility(VISIBLE);
                 addConnectionConfirm.setVisibility(VISIBLE);
+
             }
 
             @Override
@@ -145,15 +143,15 @@ public class RemoteCardDialog extends BlurPopupWindow {
             @Override
             public void onClick(View view) {
                 dataHelper.updateKarmaWithUid(mRemoteUserId,mRemoteUserKarma+(long)mUserAddKarma.getRating());
-                addKarmaDialog.setVisibility(GONE);
-                remoteScv.setVisibility(VISIBLE);
+                updateWidgets();
             }
         });
         addConnectionConfirm.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                long conn_no=dataHelper.getConnection()+1;
-                dataHelper.putConnection(conn_no);
+                long conn_no=dataHelper.getPartners()+1;
+                dataHelper.putPartner(conn_no);
+                remoteUser.setRemoteUserId(mRemoteUserId);
                 remoteUser.setRemoteUserQuote(mRemoteUserQuote);
                 remoteUser.setRemoteUserName(mRemoteUserName);
                 remoteUser.setRemoteUserKarma(mRemoteUserKarma);
@@ -161,7 +159,7 @@ public class RemoteCardDialog extends BlurPopupWindow {
                     remoteUser.setRemoteUserDp(FileUtils.storeImage(bmp));
                 }
                 else{
-                    Toast.makeText(getApplicationContext(),"Cannot make connections because permissions not granted", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext,"Cannot make connections because permissions not granted", Toast.LENGTH_LONG).show();
                 }
                 dataHelper.addNewRemoteUser(remoteUser,conn_no);
                 dismiss();
@@ -175,7 +173,16 @@ public class RemoteCardDialog extends BlurPopupWindow {
         return view;
     }
 
-
+    private void updateWidgets(){
+        if (!mRemoteUserIsPrivate){
+            addKarmaDialog.setVisibility(GONE);
+            remoteScv.setVisibility(VISIBLE);
+        }
+        else {
+            Toast.makeText(getContext(), "Your partner has decided to keep their identity a secret!", Toast.LENGTH_LONG).show();
+            dismiss();
+        }
+    }
     @Override
     protected void onShow() {
         super.onShow();
@@ -204,13 +211,15 @@ public class RemoteCardDialog extends BlurPopupWindow {
     }
 
     public static class Builder extends BlurPopupWindow.Builder<RemoteCardDialog> {
-        public Builder(Context context,String ruid,long karma,String url,String name,String quote) {
+        public Builder(Context context,String ruid,long karma,String url,String name,String quote,boolean isPrivate) {
             super(context);
+            mContext=context;
             mRemoteUserFb_dp=url;
             mRemoteUserId=ruid;
             mRemoteUserKarma=karma;
             mRemoteUserName=name;
             mRemoteUserQuote=quote;
+            mRemoteUserIsPrivate=isPrivate;
             this.setScaleRatio(0.25f).setBlurRadius(8).setTintColor(0x30000000).setDismissOnClickBack(false)
                     .setDismissOnTouchBackground(false);
         }

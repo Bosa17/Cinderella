@@ -61,17 +61,6 @@
             app:autoSizeTextType="uniform"
             android:textSize="30sp"
             android:layout_gravity="center_horizontal"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/remoteUserkarma_scv"
-            android:background="?attr/colorAccent"
-            android:textColor="@color/white"
-            android:visibility="gone"
-            android:maxLines="1"
-            app:autoSizeTextType="uniform"
-            android:textSize="20sp"
-            android:layout_gravity="center_horizontal"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

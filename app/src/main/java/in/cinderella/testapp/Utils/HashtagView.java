@@ -42,9 +42,7 @@ import java.util.List;
 
 import in.cinderella.testapp.R;
 
-/**
- * Created by greenfrvr
- */
+
 public class HashtagView extends LinearLayout {
 
     @IntDef({GRAVITY_LEFT, GRAVITY_CENTER, GRAVITY_RIGHT})
@@ -186,11 +184,6 @@ public class HashtagView extends LinearLayout {
         data = new ArrayList<>();
     }
 
-    /**
-     * Method returns data that was set previously for that view.
-     *
-     * @return list of original data items
-     */
     @SuppressWarnings("unchecked")
     public <T> List<T> getData() {
         List<T> list = new ArrayList<>();
@@ -204,12 +197,6 @@ public class HashtagView extends LinearLayout {
         return list;
     }
 
-    /**
-     * Method defines data as simple {@link java.lang.String} array. Using this method makes not
-     * possible to use {@link android.text.Spannable} for representing items label.
-     *
-     * @param list {@link java.lang.String} array representing data collection.
-     */
     public <T> void setData(@NonNull List<T> list) {
         widthList.clear();
         data.clear();
@@ -225,159 +212,21 @@ public class HashtagView extends LinearLayout {
         getViewTreeObserver().addOnPreDrawListener(preDrawListener);
     }
 
-    /**
-     * Method defines data as an array of custom data model. Using this method allow you
-     * to use {@link android.text.Spannable} for representing items label.
-     *
-     * @param list        Array of user defined objects representing data collection.
-     * @param transformer Implementation of {@link com.greenfrvr.hashtagview.HashtagView.DataTransform}  or
-     *                    {@link com.greenfrvr.hashtagview.HashtagView.DataStateTransform}
-     *                    interface. Can be used for building label from several custom data model
-     *                    fields or to prepare {@link android.text.Spannable} label representation.
-     * @param <T>         Custom data model
-     */
+
     public <T> void setData(@NonNull List<T> list, @NonNull DataTransform<T> transformer) {
         this.transformer = transformer;
         setData(list);
     }
 
-    /**
-     * Method defines data as an array of custom data model. Using this method allow you
-     * to use {@link android.text.Spannable} for representing items label and define which items
-     * should be preselected items.
-     *
-     * @param list        Array of user defined objects representing data collection.
-     * @param transformer Implementation of {@link com.greenfrvr.hashtagview.HashtagView.DataTransform} or
-     *                    {@link com.greenfrvr.hashtagview.HashtagView.DataStateTransform}
-     *                    interface. Can be used for building label from several custom data model
-     *                    fields or to prepare {@link android.text.Spannable} label representation.
-     * @param selector    Implementation of {@link com.greenfrvr.hashtagview.HashtagView.DataSelector}
-     *                    interface. Can be used to preselect some items.
-     * @param <T>         Custom data model
-     */
+
     public <T> void setData(@NonNull List<T> list, @NonNull DataTransform<T> transformer, @NonNull DataSelector<T> selector) {
         this.selector = selector;
         setData(list, transformer);
     }
 
-    /**
-     * Dynamically adds new item to a widget.
-     *
-     * @param item Object representing new item to be added
-     * @param <T>  Custom data model class
-     * @return true if item was added successfully, false otherwise (for example the item
-     * has been already presented)
-     */
-    public <T> boolean addItem(@NonNull T item) {
-        if (!isDynamic) return false;
 
-        ItemData itemData = new ItemData<>(item);
-        if (viewMap != null && viewMap.values().contains(itemData)) return false;
 
-        if (viewMap != null) {
-            data.addAll(viewMap.values());
-            viewMap.clear();
-        }
-        data.add(itemData);
 
-        getViewTreeObserver().addOnPreDrawListener(preDrawListener);
-        return true;
-    }
-
-    /**
-     * Dynamically removes given item from a widget if it is already presented in a widget.
-     *
-     * @param item Object representing item to be removed
-     * @param <T>  Custom data model class
-     * @return true if item was removed successfully, false otherwise (for example there
-     * was no item to remove)
-     */
-    public <T> boolean removeItem(@NonNull T item) {
-        if (!isDynamic || viewMap == null || viewMap.isEmpty()) return false;
-
-        ItemData itemData = new ItemData<>(item);
-        if (!viewMap.values().contains(itemData)) return false;
-
-        data.addAll(viewMap.values());
-        data.remove(itemData);
-        if (data.isEmpty()) removeAllViews();
-        viewMap.clear();
-
-        getViewTreeObserver().addOnPreDrawListener(preDrawListener);
-        return true;
-    }
-
-    /**
-     * Dynamically removes all previously added items from a widget.
-     *
-     * @return true if item was removed successfully, false otherwise (for example there
-     * was no item to remove)
-     */
-    public boolean removeAll() {
-        if (!isDynamic || viewMap == null || viewMap.isEmpty()) return false;
-
-        data.clear();
-        viewMap.clear();
-        removeAllViews();
-
-        return true;
-    }
-
-    /**
-     * @param transformer Implementation of {@link com.greenfrvr.hashtagview.HashtagView.DataTransform} or
-     *                    {@link com.greenfrvr.hashtagview.HashtagView.DataStateTransform}
-     *                    interface. Can be used for building label from several custom data model
-     *                    fields or to prepare {@link android.text.Spannable} label representation.
-     * @param <T>         Custom data model
-     */
-    public <T> void setTransformer(@NonNull DataTransform<T> transformer) {
-        this.transformer = transformer;
-    }
-
-    /**
-     * @return List of selected items. Consists of objects corresponding to custom data model defined by setData() method
-     */
-    @SuppressWarnings("unchecked")
-    public <T> List<T> getSelectedItems() {
-        List<T> selected = new ArrayList<>();
-
-        if (viewMap != null && !viewMap.isEmpty()) {
-            for (ItemData item : viewMap.values()) {
-                if (item.isSelected) selected.add((T) item.data);
-            }
-        }
-
-        return selected;
-    }
-
-    /**
-     * Adding single item click listener
-     *
-     * @param listener {@link com.greenfrvr.hashtagview.HashtagView.TagsClickListener}
-     */
-    public void addOnTagClickListener(TagsClickListener listener) {
-        if (clickListeners == null) {
-            clickListeners = new ArrayList<>();
-        }
-        clickListeners.add(listener);
-    }
-
-    /**
-     * Removing single item click listener
-     *
-     * @param listener {@link com.greenfrvr.hashtagview.HashtagView.TagsClickListener}
-     */
-    public void removeOnTagClickListener(TagsClickListener listener) {
-        if (clickListeners != null) {
-            clickListeners.remove(listener);
-        }
-    }
-
-    /**
-     * Adding selection items listener
-     *
-     * @param listener {@link com.greenfrvr.hashtagview.HashtagView.TagsSelectListener}
-     */
     public void addOnTagSelectListener(TagsSelectListener listener) {
         if (selectListeners == null) {
             selectListeners = new ArrayList<>();
@@ -385,46 +234,8 @@ public class HashtagView extends LinearLayout {
         selectListeners.add(listener);
     }
 
-    /**
-     * Removing selection items listener
-     *
-     * @param listener {@link com.greenfrvr.hashtagview.HashtagView.TagsSelectListener}
-     */
-    public void removeOnTagSelectListener(TagsSelectListener listener) {
-        if (selectListeners != null) {
-            selectListeners.remove(listener);
-        }
-    }
-
-    /**
-     * Removing all defined listeners
-     */
-    public void removeListeners() {
-        if (clickListeners != null) {
-            clickListeners.clear();
-        }
-
-        if (selectListeners != null) {
-            selectListeners.clear();
-        }
-    }
 
 
-    public int getSelectionLimit() {
-        return selectionLimit;
-    }
-
-    public void setSelectionLimit(int selectionLimit) {
-        this.selectionLimit = selectionLimit > 0 ? selectionLimit : -1;
-
-        if (viewMap != null) {
-            for (ItemData item : viewMap.values()) {
-                item.isSelected = false;
-                item.displaySelection(leftDrawable, leftSelectedDrawable, rightDrawable, rightSelectedDrawable);
-                item.decorateText(transformer);
-            }
-        }
-    }
 
     public void setItemMargin(int itemMargin) {
         this.itemMargin = itemMargin;

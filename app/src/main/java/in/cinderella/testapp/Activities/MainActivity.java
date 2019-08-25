@@ -34,8 +34,8 @@ public class MainActivity extends BaseActivity {
     static NavigationController navigationController;
     private final int[] PAGE_IDS = {
             R.id.Home_fragment,
-            R.id.Connections_fragment,
-            R.id.Search_fragment,
+            R.id.Partner_fragment,
+            R.id.Pixies_fragment,
     };
 
     private NavController mNavController;
@@ -46,7 +46,7 @@ public class MainActivity extends BaseActivity {
         FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
         checkCurrentUser(mAuth.getCurrentUser());
-        checkPermission();
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -71,6 +71,7 @@ public class MainActivity extends BaseActivity {
         mNavController = Navigation.findNavController(this, R.id.nav_main_fragment);
 
         initBottomNavigation(mNavigation);
+        checkPermission();
 
     }
 
@@ -116,8 +117,6 @@ public class MainActivity extends BaseActivity {
 
     private void checkPermission() {
         if (!Permissions.hasAllPermissions(this) ){
-            Toast.makeText(getApplicationContext(),"Accept all the permissions for seamless app use!",Toast.LENGTH_SHORT).show();
-
             requestPermissions(Permissions.PERMISSIONS, 2);
         }else {
             //write your code here. if permission already granted

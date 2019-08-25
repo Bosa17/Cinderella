@@ -10,38 +10,48 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:visibility="visible"
+        android:weightSum="9"
         android:id="@+id/call_init">
         <ImageView
             android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_height="0dp"
             android:src="@drawable/ic_close"
+            android:layout_weight="1"
             android:layout_marginTop="30dp"
             android:layout_marginStart="30dp"
             android:id="@+id/closecall"/>
 
         <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
-            style="@style/SpinKitView.MultiplePulseRing"
+            app:SpinKit_Style="MultiplePulseRing"
             android:layout_width="match_parent"
-            android:layout_height="450dp"
+            android:layout_height="0dp"
+            android:layout_weight="7"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
             app:SpinKit_Color="?attr/colorAccent" />
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
-            android:layout_gravity="center_horizontal"
-            android:textSize="30sp"
-            android:text="Bibbidi Bobbidi Boo"/>
-        <ToggleButton
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/ic_ring_on"
-            android:layout_gravity="center_horizontal"
-            android:text=""
-            android:textOff=""
-            android:textOn=""
-            android:id="@+id/ring_control"/>
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="30dp"
+                android:layout_gravity="center_horizontal"
+                android:textSize="30sp"
+                android:text="Bibbidi Bobbidi Boo"/>
+            <ToggleButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/ic_ring_on"
+                android:layout_gravity="center_horizontal"
+                android:text=""
+                android:textOff=""
+                android:textOn=""
+                android:id="@+id/ring_control"/>
+        </LinearLayout>
+
 
 
     </LinearLayout>
@@ -77,7 +87,7 @@
                 android:id="@+id/callDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center_horizontal|bottom"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="4dp"
                 android:text="00:00"

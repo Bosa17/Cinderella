@@ -6,15 +6,6 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -22,6 +13,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import in.cinderella.testapp.R;
+import in.cinderella.testapp.Utils.SinchService;
+
 
 public class Feedback extends BaseActivity {
     private  final String DEVICE = "Device: ";
@@ -55,8 +48,19 @@ public class Feedback extends BaseActivity {
         setContentView(R.layout.activity_feedback);
         feedbackTypesRadioGroup= findViewById(R.id.feedback_types_radiogroup);
         send=findViewById(R.id.tvNext);
+        Context mContext=this;
         ImageView back = (ImageView) findViewById(R.id.ivBack);
-
+        ImageView call= findViewById(R.id.call_test);
+        call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Feedback.this, PartnerCallActivity.class);
+                intent.putExtra("remoteUser","ZYwuHxyQBGftwAmHOatpUfHWl6E3");
+                intent.putExtra(SinchService.CALL_TYPE,"1");
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

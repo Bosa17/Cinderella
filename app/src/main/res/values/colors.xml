@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#212121</color>
+    <color name="colorPrimary">#101010</color>
+    <color name="colorPrimaryLight">#202020</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#FFD700</color>
     <color name="the_vibrant">#CDDC39</color>
     <color name="the_sexy">#00C853</color>
     <color name="the_passion">#00BCD4</color>
-    <color name="the_boss">#7E57C2</color>
+    <color name="the_boss">#8A2BE2</color>
     <color name="the_royalty">#FFD700</color>
     <color name="the_temptation">#FF5722</color>
-    <color name="the_babe">#F06292</color>
+    <color name="the_babe">#FF69B4</color>
     <color name="ic_launcher_background">#212121</color>
     <color name="dark_gray">#424242</color>
     <color name="white">#FFFFFF</color>

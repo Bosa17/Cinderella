@@ -10,14 +10,20 @@
             android:layout_height="wrap_content"
             android:id="@+id/linearlayout"
             android:orientation="vertical">
+            <ImageView
+                android:id="@+id/private_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/ic_private" />
 
             <ImageView
                 android:id="@+id/user_dp"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp"
-                android:src="@drawable/dp_1" />
+                android:layout_gravity="center_horizontal" />
 
             <TextView
                 android:id="@+id/username"
@@ -27,7 +33,7 @@
                 android:layout_marginTop="10dp"
                 android:maxLines="1"
                 app:autoSizeTextType="uniform"
-                android:textColor="#FFFFFFFF"
+                android:textColor="@color/white"
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
@@ -44,6 +50,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:cardBackgroundColor="#303030"
             android:layout_below="@id/linearlayout"
             android:layout_centerHorizontal="true">
 
@@ -77,6 +84,7 @@
                         app:autoSizeTextType="uniform"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/white"
                         android:paddingTop="10dp"
                         android:textSize="20sp" />
 
@@ -93,7 +101,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Connections"
+                        android:text="@string/partners"
                         android:maxLines="1"
                         app:autoSizeTextType="uniform"
                         android:textColor="?attr/colorAccent"
@@ -105,8 +113,9 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="10dp"
                         android:maxLines="1"
+                        android:textColor="@color/white"
                         app:autoSizeTextType="uniform"
-                        android:id="@+id/user_connections"
+                        android:id="@+id/user_partners"
                         android:textSize="20sp" />
 
                 </LinearLayout>
@@ -135,8 +144,8 @@
                         android:paddingTop="10dp"
                         android:maxLines="1"
                         app:autoSizeTextType="uniform"
+                        android:textColor="@color/white"
                         android:id="@+id/user_pixies"
-                        android:drawableStart="@drawable/ic_pixies"
                         android:textSize="20sp" />
 
                 </LinearLayout>

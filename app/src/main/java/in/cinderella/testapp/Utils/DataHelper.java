@@ -1,13 +1,13 @@
 package in.cinderella.testapp.Utils;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import in.cinderella.testapp.Models.RemoteUserConnection;
 import in.cinderella.testapp.Models.UserModel;
@@ -31,9 +31,10 @@ public class DataHelper {
         putUsername(curr_user.getUsername());
         putFb_link(curr_user.getFb_link());
         putFb_dp(curr_user.getFb_dp());
-        putConnection(0L);
+        putIsPrivate(false);
+        putPartner(0L);
         putKarma(0L);
-        putPixies(0L);
+        putPixies(30L);
         firebaseHelper.addNewUser(userID,get());
     }
     public void addNewRemoteUser(RemoteUserConnection remoteUser,long conn_no){
@@ -43,7 +44,7 @@ public class DataHelper {
     public ArrayList<String> getRemoteUserDps(){
         ArrayList<String> filePaths=new ArrayList<>();
         try {
-            for (long i = getConnection(); i >= 1; i--) {
+            for (long i = getPartners(); i >= 1; i--) {
                 RemoteUserConnection remoteTemp = Hawk.get(mContext.getString(R.string.remote) + i);
                 filePaths.add(remoteTemp.getRemoteUserDp());
             }
@@ -56,7 +57,7 @@ public class DataHelper {
     public ArrayList<String> getRemoteUserNames(){
         ArrayList<String> Names=new ArrayList<>();
         try {
-            for (long i = getConnection(); i >= 1; i--)  {
+            for (long i = getPartners(); i >= 1; i--)  {
                 RemoteUserConnection remoteTemp = Hawk.get(mContext.getString(R.string.remote) + i);
                 Names.add(remoteTemp.getRemoteUserName());
             }
@@ -69,7 +70,7 @@ public class DataHelper {
     public ArrayList<String> getRemoteUserQuotes(){
         ArrayList<String> Quotes=new ArrayList<>();
         try {
-            for (long i = getConnection(); i >= 1; i--)  {
+            for (long i = getPartners(); i >= 1; i--)  {
                 RemoteUserConnection remoteTemp = Hawk.get(mContext.getString(R.string.remote) + i);
                 Quotes.add(remoteTemp.getRemoteUserQuote());
             }
@@ -79,11 +80,23 @@ public class DataHelper {
         return Quotes;
     }
 
+    public ArrayList<String> getRemoteUserIds(){
+        ArrayList<String> Ids=new ArrayList<>();
+        try {
+            for (long i = getPartners(); i >= 1; i--)  {
+                RemoteUserConnection remoteTemp = Hawk.get(mContext.getString(R.string.remote) + i);
+                Ids.add(remoteTemp.getRemoteUserId());
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return Ids;
+    }
 
     public ArrayList<Long> getRemoteUserKarmas(){
         ArrayList<Long> Karmas=new ArrayList<>();
         try {
-            for (long i = getConnection(); i >= 1; i--)  {
+            for (long i = getPartners(); i >= 1; i--)  {
                 RemoteUserConnection remoteTemp = Hawk.get(mContext.getString(R.string.remote) + i);
                 Karmas.add(remoteTemp.getRemoteUserKarma());
             }
@@ -95,6 +108,7 @@ public class DataHelper {
 
     public void syncWithFirebase(DataSnapshot dataSnapshot){
         UserModel user=dataSnapshot.getValue(UserModel.class);
+        putUID(firebaseHelper.getUserID());
         try {
             putKarma(user.getKarma());
             putUsername(user.getUsername());
@@ -107,6 +121,15 @@ public class DataHelper {
 
     public void updateKarmaWithUid(String uid,long karma){
         firebaseHelper.updateKarmaWithUid(uid,karma);
+    }
+    public int rewardPixies(){
+        int pixies_won=new Random().nextInt(4);
+        firebaseHelper.updatePixie(getPixies()+pixies_won);
+        return pixies_won;
+    }
+
+    public void usePixies(long pixie_cost){
+        firebaseHelper.updatePixie(getPixies()-pixie_cost);
     }
 
     public UserModel get(){
@@ -129,12 +152,12 @@ public class DataHelper {
     public int getMask(){
         return Hawk.get(mContext.getString(R.string.mask),R.drawable.dp_1);
     }
-    public void putConnection(long connection){
-        Hawk.put(mContext.getString(R.string.connection), connection);
+    public void putPartner(long partners){
+        Hawk.put(mContext.getString(R.string.partner), partners);
     }
 
-    public long getConnection(){
-        return Hawk.get(mContext.getString(R.string.connection),0L);
+    public long getPartners(){
+        return Hawk.get(mContext.getString(R.string.partner),0L);
     }
 
     public void putKarma(long karma){
@@ -188,7 +211,7 @@ public class DataHelper {
         Hawk.put(mContext.getString(R.string.uid), uid);
     }
     public String getUID(){
-        return Hawk.get(mContext.getString(R.string.uid));
+        return Hawk.get(mContext.getString(R.string.uid),"" );
     }
     public void putPrevTheme(String theme){
         Hawk.put("prev_theme",theme);
@@ -202,4 +225,14 @@ public class DataHelper {
     public String getTheme(){
         return Hawk.get("theme",mContext.getString(R.string.royalty));
     }
+    public boolean getIsPrivate(){
+        return Hawk.get("isPrivate",true);
+    }
+    public void selectPrivate(){
+        putIsPrivate(!getIsPrivate());
+    }
+    public void putIsPrivate(boolean isPrivate){
+        Hawk.put("isPrivate",isPrivate);
+    }
 }
+

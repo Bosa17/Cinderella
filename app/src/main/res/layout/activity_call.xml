@@ -125,12 +125,23 @@
             android:weightSum="3"
             android:orientation="horizontal"
             >
-            <ImageView
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_ring_off"/>
+                android:layout_gravity="center_vertical">
+                <ToggleButton
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/ic_ring_off"
+                    android:layout_centerInParent="true"
+                    android:text=""
+                    android:textOff=""
+                    android:textOn=""
+                    android:id="@+id/speaker_control"/>
+            </RelativeLayout>
+
+
             <ImageView
                 android:id="@+id/hangupButton"
                 android:layout_width="0dp"

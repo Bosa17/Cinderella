@@ -291,11 +291,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:id="@+id/buypixie"
+                android:id="@+id/get_premium"
                 android:background="@drawable/button_bg"
                 android:layout_marginBottom="20dp"
                 android:layout_alignParentBottom="true"
-                android:text="₹299/month"/>
+                android:text="₹249/month"/>
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

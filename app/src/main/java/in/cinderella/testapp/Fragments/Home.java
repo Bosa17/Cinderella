@@ -70,6 +70,7 @@ public class Home extends Fragment {
     private HashtagView hashTagView;
     private ShakeListener mShaker;
     private TextView pixies;
+    private TextView isPremiumTextView;
     private TextSwitcher pixies_cost_switcher;
     private TextSwitcher situation_desc;
     private TextView username;
@@ -93,6 +94,7 @@ public class Home extends Fragment {
         PartnerPreferenceRadioGroup=view.findViewById(R.id.parter_preference);
         privateMode=view.findViewById(R.id.private_btn);
         partner =(TextView) view.findViewById(R.id.user_partners);
+        isPremiumTextView =(TextView) view.findViewById(R.id.isPremiumTextView);
         pixies=(TextView) view.findViewById(R.id.user_pixies);
         pixies_cost_switcher=(TextSwitcher) view.findViewById(R.id.pixie_cost_switcher);
         username=(TextView) view.findViewById(R.id.username);
@@ -156,6 +158,8 @@ public class Home extends Fragment {
                 setPixieCost();
             }
         });
+        if (dataHelper.getIsPremium())
+            isPremiumTextView.setVisibility(View.VISIBLE);
         hashTagView =(HashtagView) view.findViewById(R.id.channel_tags);
         initElements();
         initPrivateMode();
@@ -215,7 +219,6 @@ public class Home extends Fragment {
         double hours = millis/(1000 * 60 * 60);
         if (hours>1.0){
             dataHelper.putLast_sign_at(System.currentTimeMillis());
-            dataHelper.congoPixies();
             dataHelper.putAds_watched(0);
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -223,6 +226,9 @@ public class Home extends Fragment {
                         try {
                             new CongoPixiesDialog.Builder(getContext(),dataHelper.getIsPremium()).build().show();
                         }catch(Exception ignore){
+                        }
+                        finally {
+                            dataHelper.congoPixies();
                         }
                 }
             }, 2000);

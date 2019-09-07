@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
 import java.io.IOException;
@@ -43,6 +45,7 @@ public class RemoteCardDialog extends BlurPopupWindow {
     private static String mRemoteUserName;
     private static String mRemoteUserQuote;
     private static Context mContext;
+    private InterstitialAd mInterstitialAd;
     private static boolean mRemoteUserIsPrivate=false;
     private static long mRemoteUserSkill;
     private Bitmap bmp;
@@ -175,16 +178,23 @@ public class RemoteCardDialog extends BlurPopupWindow {
                     Toast.makeText(mContext,"Cannot make connections because permissions not granted", Toast.LENGTH_LONG).show();
                 }
                 dataHelper.addNewRemoteUser(remoteUser,conn_no);
+                if (mInterstitialAd.isLoaded())
+                    mInterstitialAd.show();
                 dismiss();
             }
         });
         cont2.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
+                if (mInterstitialAd.isLoaded() && !dataHelper.getIsPremium())
+                    mInterstitialAd.show();
                 dismiss();
             }
         });
         mUserRemote.setText(mRemoteUserName);
+        mInterstitialAd = new InterstitialAd(getContext());
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
         LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp.gravity = Gravity.CENTER;
         view.setLayoutParams(lp);

@@ -78,7 +78,7 @@ public class Partner extends Fragment {
             public void onClick(View view) {
                 final CardSliderLayoutManager lm =  (CardSliderLayoutManager) recyclerView.getLayoutManager();
                 final int activeCardPosition = lm.getActiveCardPosition();
-                new RemoteConnectionCardDialog.Builder(getContext(),pics.get(activeCardPosition),ids.get(activeCardPosition)).build().show();
+                new PartnerDialog.Builder(getContext(),pics.get(activeCardPosition),ids.get(activeCardPosition)).build().show();
             }
         });
         recyclerView.setAdapter(sliderAdapter);
@@ -167,7 +167,7 @@ public class Partner extends Fragment {
 
             final int clickedPosition = recyclerView.getChildAdapterPosition(view);
             if (clickedPosition == activeCardPosition) {
-                new RemoteConnectionCardDialog.Builder(getContext(),pics.get(activeCardPosition),ids.get(activeCardPosition)).build().show();
+                new PartnerDialog.Builder(getContext(),pics.get(activeCardPosition),ids.get(activeCardPosition)).build().show();
 
             } else if (clickedPosition > activeCardPosition) {
                 recyclerView.smoothScrollToPosition(clickedPosition);

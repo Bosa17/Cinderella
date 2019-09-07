@@ -129,6 +129,10 @@ public class DataHelper {
     public void updateSkillWithUid(String uid, long skill){
         firebaseHelper.updateSkillWithUid(uid,skill);
     }
+
+    public void boughtPixies(int pixies_bought){
+        firebaseHelper.updatePixie(getPixies()+pixies_bought);
+    }
     public int rewardPixies(){
         int pixies_won=new Random().nextInt(4);
         firebaseHelper.updatePixie(getPixies()+pixies_won);

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,19 +20,12 @@ import androidx.annotation.NonNull;
 
 import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import in.cinderella.testapp.Activities.Feedback;
 import in.cinderella.testapp.Activities.PartnerCallActivity;
 import in.cinderella.testapp.R;
 import in.cinderella.testapp.Utils.DataHelper;
-import in.cinderella.testapp.Utils.DecodeBitmapTask;
 import in.cinderella.testapp.Utils.SinchService;
 
-public class RemoteConnectionCardDialog extends BlurPopupWindow {
+public class PartnerDialog extends BlurPopupWindow {
 //    vars
     private static String dp_file;
     private static String remoteUserId;
@@ -41,7 +33,7 @@ public class RemoteConnectionCardDialog extends BlurPopupWindow {
     //    widgets
     private ImageView mRemoteUserDp;
     private Button connectButton;
-    public RemoteConnectionCardDialog(@NonNull Context context) {
+    public PartnerDialog(@NonNull Context context) {
         super(context);
     }
 
@@ -55,7 +47,7 @@ public class RemoteConnectionCardDialog extends BlurPopupWindow {
         connectButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if (dataHelper.getPixies()<3){
+                if (dataHelper.getPixies()<3 && !dataHelper.getIsPremium()){
                     new PurchaseDialog.Builder(getContext()).build().show();
                     Toast.makeText(getContext(), R.string.insufficient_pixies, Toast.LENGTH_LONG).show();
                 }
@@ -63,6 +55,7 @@ public class RemoteConnectionCardDialog extends BlurPopupWindow {
                     Intent intent = new Intent(getContext(), PartnerCallActivity.class);
                     intent.putExtra("remoteUser", remoteUserId);
                     intent.putExtra("userName", dataHelper.getUsername());
+                    intent.putExtra("isPremium",dataHelper.getIsPremium());
                     intent.putExtra("pixies",dataHelper.getPixies());
                     intent.putExtra(SinchService.CALL_TYPE, "1");
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -169,7 +162,7 @@ public class RemoteConnectionCardDialog extends BlurPopupWindow {
         return ObjectAnimator.ofFloat(getContentView(), "translationY", 0, height).setDuration(getAnimationDuration());
     }
 
-    public static class Builder extends BlurPopupWindow.Builder<RemoteConnectionCardDialog> {
+    public static class Builder extends BlurPopupWindow.Builder<PartnerDialog> {
         public Builder(Context context, String filePath,String uid) {
             super(context);
             dp_file=filePath;
@@ -179,8 +172,8 @@ public class RemoteConnectionCardDialog extends BlurPopupWindow {
         }
 
         @Override
-        protected RemoteConnectionCardDialog createPopupWindow() {
-            return new RemoteConnectionCardDialog(mContext);
+        protected PartnerDialog createPopupWindow() {
+            return new PartnerDialog(mContext);
         }
     }
 }

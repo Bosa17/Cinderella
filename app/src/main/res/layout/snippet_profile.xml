@@ -30,16 +30,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="3dp"
                 android:maxLines="1"
                 app:autoSizeTextType="uniform"
                 android:textColor="@color/white"
                 android:textSize="30sp"
                 android:textStyle="bold" />
+            <TextView
+                android:id="@+id/isPremiumTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"
+                android:layout_marginTop="5dp"
+                android:text="Premium User"
+                android:textColor="?attr/colorAccent"
+                android:textSize="10sp"/>
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="30dp"
                 android:orientation="horizontal">
                 <ImageView

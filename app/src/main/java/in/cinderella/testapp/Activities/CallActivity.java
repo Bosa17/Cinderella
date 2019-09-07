@@ -90,6 +90,7 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
     private TextView situationOptionTextView;
     private TextView mRemoteUser;
     private ToggleButton ring_control;
+    private ToggleButton speaker_control;
     private ImageView close_call;
     private ImageView mRemoteUserDp;
     private ImageView call_warn;
@@ -107,6 +108,7 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
                     if (call.getDetails().getDuration()/60==6 && call.getDetails().getDuration()%60==45)
                     {
                         vibe.vibrate(300);
+                        Toast.makeText(CallActivity.this, "You will be charged 3 pixies per minute after 7 minutes", Toast.LENGTH_SHORT).show();
                         mDuration.setTextColor(getResources().getColor(R.color.the_temptation));
                     }
                     if (call.getDetails().getDuration()/60>=7 && call.getDetails().getDuration()%60==0)
@@ -158,6 +160,21 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
                 else{
                     mAudioHelper.playMusic();
                     ring_control.setBackground(getDrawable(R.drawable.ic_ring_on));
+                }
+            }
+        });
+        speaker_control=findViewById(R.id.speaker_control);
+        speaker_control.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean checked=speaker_control.isChecked();
+                if (!checked){
+                    sinchClient.getAudioController().disableSpeaker();
+                    speaker_control.setBackground(getDrawable(R.drawable.ic_ring_off));
+                }
+                else{
+                    sinchClient.getAudioController().enableSpeaker();
+                    speaker_control.setBackground(getDrawable(R.drawable.ic_ring_on));
                 }
             }
         });
@@ -336,19 +353,23 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
         }
     }
 
-    public void makeCall(String chapter, String partnerPreference){
+    public void makeCall(String situation, String partnerPreference){
         if (!isAudioPlaying){
             mAudioHelper.playMusic();
             isAudioPlaying=true;
         }
         try {
-            firebaseHelper.getRef().child(chapter)
+            firebaseHelper.getRef().child(situation)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot channelSnapshot : dataSnapshot.getChildren()) {
-                                if (!channelSnapshot.getKey().equals(firebaseHelper.getUserID())) {
-                                    makeCall(channelSnapshot.getKey());
+                            for (DataSnapshot remoteUserSnapshot : dataSnapshot.getChildren()) {
+                                if (!remoteUserSnapshot.getKey().equals(firebaseHelper.getUserID())) {
+                                    makeCall(remoteUserSnapshot.getKey());
+                                    if (((String)remoteUserSnapshot.getValue()).length()==2)
+                                        isPrivate=true;
+                                    else
+                                        isPrivate=false;
                                     break;
                                 }
                             }
@@ -466,27 +487,6 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
         public void onCallEstablished(Call call) {
             d(TAG, "CallActivity established");
             vibe.vibrate(300);
-            try {
-                firebaseHelper.getRef().child(situation.getName())
-                        .child(call.getRemoteUserId())
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot prefSnapshot) {
-                                    if (String.valueOf(prefSnapshot.getValue()).length()==2){
-                                        isPrivate=true;
-                                    }else{
-                                        isPrivate=false;
-                                    }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-            }catch(Exception ignore){
-                isCallEstablished=false;
-            }
             isCallEstablished=true;
             firebaseHelper.removeUserFromChannel(situation.getName());
             updateWidgets(call.getRemoteUserId());
@@ -513,6 +513,27 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
         @Override
         public void onIncomingCall(CallClient callClient, Call incomingCall) {
             call = incomingCall;
+            try {
+                firebaseHelper.getRef().child(situation.getName())
+                        .child(call.getRemoteUserId())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot prefSnapshot) {
+                                if (String.valueOf(prefSnapshot.getValue()).length()==2){
+                                    isPrivate=true;
+                                }else{
+                                    isPrivate=false;
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+            }catch(Exception ignore){
+
+            }
             call.answer();
             isIncomingCall=true;
             call.addCallListener(new mCallListener());

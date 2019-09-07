@@ -19,6 +19,7 @@ public class NotificationHelper {
     public final static int NOTIFICATION_ID = NotificationHelper.class.hashCode();
     private String CHANNEL_ID = "Cinderella Push Notification Channel";
     private static final String CHANNEL_ONE_NAME = "Cinderella Notifications";
+    private static final String CHANNEL_TWO_NAME = "Cinderella Missed Calls";
 
     public NotificationHelper(Context context) {
         this.mContext = context;
@@ -37,13 +38,26 @@ public class NotificationHelper {
             notificationManager.createNotificationChannel(notificationChannel);
         }
     }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void createMissedCallNotificationChannel(NotificationManager notificationManager) {
+        if (notificationManager.getNotificationChannel(CHANNEL_ID) == null) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID,
+                    CHANNEL_TWO_NAME, importance);
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(R.color.colorAccent);
+            notificationChannel.setShowBadge(true);
+            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+    }
 
     public void createMissedCallNotification(String userId) {
         NotificationManager mNotificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel(mNotificationManager);
+            createMissedCallNotificationChannel(mNotificationManager);
         }
 
         PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0,

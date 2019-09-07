@@ -84,6 +84,7 @@ public class PartnerCallActivity extends BaseActivity implements SensorEventList
                     if (call.getDetails().getDuration()/60==6 && call.getDetails().getDuration()%60==45)
                     {
                         ((Vibrator)getSystemService(Context.VIBRATOR_SERVICE)).vibrate(300);
+                        Toast.makeText(PartnerCallActivity.this, "You will be charged 3 pixies per minute after 7 minutes", Toast.LENGTH_SHORT).show();
                         mDuration.setTextColor(getResources().getColor(R.color.the_temptation));
                     }
                     if (call.getDetails().getDuration()/60>=7 && call.getDetails().getDuration()%60==0)
@@ -127,7 +128,10 @@ public class PartnerCallActivity extends BaseActivity implements SensorEventList
         mDuration=findViewById(R.id.callDuration);
         isCallEstablished=false;
         isSensorPresent=true;
-        pixieCost=3;
+        if (getIntent().getBooleanExtra("isPremium",false))
+            pixieCost=0;
+        else
+            pixieCost=3;
         try {
             mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
             mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);

@@ -30,7 +30,7 @@ public class SinchService extends Service {
     public static final String CALL_TYPE = "CALL_TYPE";
     static final String TAG = SinchService.class.getSimpleName();
 
-    private DataHelper dataHelper;
+    private ServiceDataHelper dataHelper;
     private SinchServiceInterface mSinchServiceInterface = new SinchServiceInterface();
     private SinchClient mSinchClient;
 
@@ -39,12 +39,12 @@ public class SinchService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        dataHelper = new DataHelper(getApplicationContext());
+        dataHelper = new ServiceDataHelper(getApplicationContext());
         attemptAutoStart();
     }
 
     private void attemptAutoStart() {
-        if (!dataHelper.getUID().isEmpty() ) {
+        if (!dataHelper.getUID().equals("") ) {
             start(dataHelper.getUID());
         }
     }
@@ -111,12 +111,9 @@ public class SinchService extends Service {
         public Call callUser(String userId) {
             return mSinchClient.getCallClient().callUser(userId);
         }
-
-        public String getUserName() {
-            return mSinchClient != null ? mSinchClient.getLocalUserId() : "";
+        public Call callUserWithHeader(String userId,Map<String,String> header) {
+            return mSinchClient.getCallClient().callUser(userId,header);
         }
-
-        public void retryStartAfterPermissionGranted() { SinchService.this.attemptAutoStart(); }
 
         public boolean isStarted() {
             return SinchService.this.isStarted();
@@ -222,7 +219,6 @@ public class SinchService extends Service {
             intent.putExtra("remoteUser",call.getRemoteUserId().substring(0,call.getRemoteUserId().length()-3));
             intent.putExtra(CALL_ID,call.getCallId());
             intent.putExtra(CALL_TYPE,"0");
-            Log.d("lol", "onIncomingCall: "+call.getRemoteUserId()+" "+mSinchClient.getLocalUserId());
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             SinchService.this.startActivity(intent);
         }

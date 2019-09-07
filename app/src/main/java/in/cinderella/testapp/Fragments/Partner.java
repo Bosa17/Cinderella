@@ -15,6 +15,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextSwitcher;
@@ -42,13 +43,13 @@ public class Partner extends Fragment {
     private LinearLayout not_empty_partner;
     private RecyclerView recyclerView;
     private TextSwitcher nameSwitcher;
-    private TextSwitcher karmaSwitcher;
+    private TextSwitcher skillSwitcher;
     private TextSwitcher quoteSwitcher;
     private ArrayList<String> pics = new ArrayList<>();
     private ArrayList<String> ids = new ArrayList<>();
     private ArrayList<String> quotes = new ArrayList<>();
     private ArrayList<String> names = new ArrayList<>();
-    private ArrayList<Long> karmas = new ArrayList<>();
+    private ArrayList<Long> skills = new ArrayList<>();
 
 
     @Nullable
@@ -62,15 +63,24 @@ public class Partner extends Fragment {
         pics = dataHelper.getRemoteUserDps();
         ids=dataHelper.getRemoteUserIds();
         names = dataHelper.getRemoteUserNames();
-        karmas = dataHelper.getRemoteUserKarmas();
+        skills = dataHelper.getRemoteUserSkills();
         quotes=dataHelper.getRemoteUserQuotes();
         empty_partner =view.findViewById(R.id.empty_partners);
         not_empty_partner =view.findViewById(R.id.not_empty_partners);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         quoteSwitcher = view.findViewById(R.id.quote_switcher);
         nameSwitcher = view.findViewById(R.id.name_switcher);
-        karmaSwitcher = view.findViewById(R.id.karma_switcher);
+        skillSwitcher = view.findViewById(R.id.skill_switcher);
         final SliderAdapter sliderAdapter = new SliderAdapter(pics, pics.size(), new OnCardClickListener());
+        Button call_partner= view.findViewById(R.id.call_partner);
+        call_partner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final CardSliderLayoutManager lm =  (CardSliderLayoutManager) recyclerView.getLayoutManager();
+                final int activeCardPosition = lm.getActiveCardPosition();
+                new RemoteConnectionCardDialog.Builder(getContext(),pics.get(activeCardPosition),ids.get(activeCardPosition)).build().show();
+            }
+        });
         recyclerView.setAdapter(sliderAdapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -100,8 +110,8 @@ public class Partner extends Fragment {
 
         nameSwitcher.setFactory(new TextViewFactory(R.style.NameTextView, true));
         nameSwitcher.setCurrentText(names.get(0));
-        karmaSwitcher.setFactory(new TextViewFactory(R.style.KarmaTextView, true));
-        karmaSwitcher.setCurrentText(String.valueOf(karmas.get(0)));
+        skillSwitcher.setFactory(new TextViewFactory(R.style.SkillTextView, true));
+        skillSwitcher.setCurrentText("Skill: "+ skills.get(0));
     }
 
     private void onActiveCardChange() {
@@ -128,9 +138,9 @@ public class Partner extends Fragment {
         nameSwitcher.setOutAnimation(getContext(), animH[1]);
         nameSwitcher.setText(names.get(pos));
 
-        karmaSwitcher.setInAnimation(getContext(), animV[0]);
-        karmaSwitcher.setOutAnimation(getContext(), animV[1]);
-        karmaSwitcher.setText(String.valueOf(karmas.get(pos)));
+        skillSwitcher.setInAnimation(getContext(), animV[0]);
+        skillSwitcher.setOutAnimation(getContext(), animV[1]);
+        skillSwitcher.setText("Skill: "+ skills.get(pos));
 
         String quote=quotes.get(pos);
         String finalQuote =quote+" <large><font color = "+color +">\"</font></large>";

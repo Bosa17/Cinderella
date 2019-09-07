@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -27,6 +29,7 @@ import java.net.URL;
 import in.cinderella.testapp.Activities.Feedback;
 import in.cinderella.testapp.Activities.PartnerCallActivity;
 import in.cinderella.testapp.R;
+import in.cinderella.testapp.Utils.DataHelper;
 import in.cinderella.testapp.Utils.DecodeBitmapTask;
 import in.cinderella.testapp.Utils.SinchService;
 
@@ -34,6 +37,7 @@ public class RemoteConnectionCardDialog extends BlurPopupWindow {
 //    vars
     private static String dp_file;
     private static String remoteUserId;
+    private DataHelper dataHelper;
     //    widgets
     private ImageView mRemoteUserDp;
     private Button connectButton;
@@ -44,19 +48,38 @@ public class RemoteConnectionCardDialog extends BlurPopupWindow {
     @Override
     protected View createContentView(ViewGroup parent) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_remote_connect_dialog, parent, false);
+        dataHelper=new DataHelper(getContext());
+        LinearLayout call_cost=view.findViewById(R.id.call_cost);
         mRemoteUserDp=view.findViewById(R.id.remoteUserConnectDp);
-        connectButton=view.findViewById(R.id.connect_fb);
+        connectButton=view.findViewById(R.id.call_partner);
         connectButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), PartnerCallActivity.class);
-                intent.putExtra("remoteUser",remoteUserId);
-                intent.putExtra(SinchService.CALL_TYPE,"1");
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().startActivity(intent);
+                if (dataHelper.getPixies()<3){
+                    new PurchaseDialog.Builder(getContext()).build().show();
+                    Toast.makeText(getContext(), R.string.insufficient_pixies, Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Intent intent = new Intent(getContext(), PartnerCallActivity.class);
+                    intent.putExtra("remoteUser", remoteUserId);
+                    intent.putExtra("userName", dataHelper.getUsername());
+                    intent.putExtra("pixies",dataHelper.getPixies());
+                    intent.putExtra(SinchService.CALL_TYPE, "1");
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getContext().startActivity(intent);
+                }
+            }
+        });
+        ImageView closeDialog= view.findViewById(R.id.closeDialog);
+        closeDialog.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                dismiss();
             }
         });
         loadBitmap(dp_file);
+        if(dataHelper.getIsPremium())
+            call_cost.setVisibility(GONE);
         LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp.gravity = Gravity.CENTER;
         view.setLayoutParams(lp);
@@ -151,7 +174,8 @@ public class RemoteConnectionCardDialog extends BlurPopupWindow {
             super(context);
             dp_file=filePath;
             remoteUserId=uid;
-            this.setScaleRatio(0.75f).setBlurRadius(0).setTintColor(context.getColor(R.color.colorPrimary));
+            this.setScaleRatio(0.75f).setBlurRadius(0).setTintColor(context.getColor(R.color.colorPrimary))
+                    .setDismissOnTouchBackground(false);
         }
 
         @Override

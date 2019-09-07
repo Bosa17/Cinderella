@@ -58,6 +58,7 @@ public class Permissions {
             Manifest.permission.MODIFY_AUDIO_SETTINGS,
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.SET_ALARM
     };
 
     public static final String[] SINCH_PERMISSIONS={

@@ -51,8 +51,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="scalingPercent" value="77" />
-                                                <entry key="trimmed" value="true" />
+                                                <entry key="scalingPercent" value="70" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -62,9 +61,10 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="212121" />
-                                      <entry key="foregroundImage" value="$PROJECT_DIR$/app/src/main/res/drawable/cin.xml" />
+                                      <entry key="backgroundImage" value="$PROJECT_DIR$/app/src/main/res/drawable/ic_launcher_background.xml" />
+                                      <entry key="foregroundImage" value="$PROJECT_DIR$/app/src/main/res/drawable/ic_logo.xml" />
+                                      <entry key="legacyIconShape" value="CIRCLE" />
+                                      <entry key="webIconShape" value="CIRCLE" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -137,7 +137,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/snap/android-studio/77/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/social/ic_sentiment_dissatisfied_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/snap/android-studio/78/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/alert/ic_warning_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -147,11 +147,10 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="assetSourceType" value="FILE" />
                             <entry key="autoMirrored" value="true" />
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_man" />
-                            <entry key="sourceFile" value="$PROJECT_DIR$/../mars.svg" />
+                            <entry key="outputName" value="ic_warning" />
+                            <entry key="sourceFile" value="$PROJECT_DIR$/../swipe.svg" />
                           </map>
                         </option>
                       </PersistentState>

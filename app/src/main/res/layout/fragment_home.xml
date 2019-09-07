@@ -36,7 +36,7 @@
                     android:layout_gravity="center_horizontal"
                     android:maxLines="1"
                     app:autoSizeTextType="uniform"
-                    android:text="1.  Choose Chapter"
+                    android:text="1.  Choose Situation"
                     android:textSize="30sp"
                     />
 
@@ -61,6 +61,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
+                    android:textAlignment="center"
                     android:id="@+id/chapter_desc"
                     android:background="@drawable/home_bg"
                     android:layout_marginBottom="30dp"
@@ -135,16 +136,28 @@
     </ScrollView>
 
 
-    <TextView
-        android:id="@+id/pixie_cost_switcher"
+    <LinearLayout
         android:layout_width="70dp"
         android:layout_height="50dp"
         android:layout_marginTop="30dp"
+        android:orientation="horizontal"
         android:background="@drawable/pixie_cost_switcher"
-        android:drawableStart="@drawable/ic_pixies"
-        android:gravity="center"
-        android:textSize="24sp"
         app:layout_anchor="@id/scroll"
-        app:layout_anchorGravity="top|end" />
+        app:layout_anchorGravity="top|end">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_pixies"/>
+        <TextSwitcher
+            android:id="@+id/pixie_cost_switcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="7dp"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"/>
+
+    </LinearLayout>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

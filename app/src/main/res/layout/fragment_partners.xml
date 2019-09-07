@@ -39,15 +39,15 @@
         android:visibility="gone"
         android:id="@+id/not_empty_partners">
         <FrameLayout
-            android:layout_width="85dp"
-            android:layout_height="40dp"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp"
             android:layout_gravity="end"
             android:background="@drawable/karma_switcher">
 
             <TextSwitcher
-                android:id="@+id/karma_switcher"
+                android:id="@+id/skill_switcher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"/>
@@ -98,6 +98,17 @@
                 android:textSize="30sp"/>
 
         </RelativeLayout>
+        <Button
+            android:id="@+id/call_partner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Call Partner"
+            android:layout_marginTop="30dp"
+            android:textColor="@color/white"
+            android:background="@drawable/button_bg"
+            android:layout_marginEnd="25dp"
+            android:layout_marginStart="25dp"/>
+
     </LinearLayout>
 
 </LinearLayout>

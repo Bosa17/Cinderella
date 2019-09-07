@@ -8,17 +8,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
 import in.cinderella.testapp.R;
-import in.cinderella.testapp.Utils.AdUtil;
 import in.cinderella.testapp.Utils.DataHelper;
 
 public class RewardedVideoAdDialog extends BlurPopupWindow implements RewardedVideoAdListener {
@@ -26,12 +30,13 @@ public class RewardedVideoAdDialog extends BlurPopupWindow implements RewardedVi
         super(context);
     }
     private DataHelper dataHelper;
-    private AdUtil adUtil;
+    private RewardedVideoAd mRewardedVideoAd;
     private LinearLayout adLoading;
     private LinearLayout congo;
     private LinearLayout ohoh;
     private TextView congo_pixies;
     private TextView msg;
+    private Button watch_more_btn;
     private Button cont;
     private Button cont2;
     private boolean rewarded=false;
@@ -40,15 +45,33 @@ public class RewardedVideoAdDialog extends BlurPopupWindow implements RewardedVi
     @Override
     protected View createContentView(ViewGroup parent) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_ad_dialog, parent, false);
-        adUtil=new AdUtil(getContext());
+        MobileAds.initialize(getContext(), "ca-app-pub-3940256099942544~3347511713");
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getContext());
+        mRewardedVideoAd.setRewardedVideoAdListener(this);
+        loadRewardedVideoAd();
         dataHelper=new DataHelper(getContext());
-        adUtil.setmRewardedVideoAdListener(this);
-        adUtil.loadRewardedVideoAd();
         congo= view.findViewById(R.id.congo);
         ohoh=view.findViewById(R.id.ohoh);
         msg=view.findViewById(R.id.msg);
         adLoading=view.findViewById(R.id.adLoading);
+        ImageView closeDialog= view.findViewById(R.id.closeDialog);
+        closeDialog.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                bye();
+            }
+        });
         congo_pixies= view.findViewById(R.id.congo_pixies);
+        watch_more_btn=view.findViewById(R.id.watch_more);
+        watch_more_btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if (dataHelper.getAds_watched()<=3)
+                    watch_more();
+                else
+                    Toast.makeText(getContext(), "lol", Toast.LENGTH_SHORT).show();
+            }
+        });
         cont=view.findViewById(R.id.cont);
         cont.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -70,7 +93,12 @@ public class RewardedVideoAdDialog extends BlurPopupWindow implements RewardedVi
         return view;
     }
     private void bye(){
+        mRewardedVideoAd.destroy(getContext());
         dismiss();
+    }
+    public void loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+                new AdRequest.Builder().build());
     }
 
 
@@ -95,10 +123,16 @@ public class RewardedVideoAdDialog extends BlurPopupWindow implements RewardedVi
         if (pixies_won==0)
             pixies_won=1;
         congo_pixies.setText(String.valueOf(pixies_won));
+
     }
     private void failed2load(){
         adLoading.setVisibility(GONE);
         ohoh.setVisibility(VISIBLE);
+    }
+    private void watch_more(){
+        congo.setVisibility(GONE);
+        adLoading.setVisibility(VISIBLE);
+        loadRewardedVideoAd();
     }
     private void watchfull(){
         adLoading.setVisibility(GONE);
@@ -108,7 +142,7 @@ public class RewardedVideoAdDialog extends BlurPopupWindow implements RewardedVi
 
     @Override
     public void onRewardedVideoAdLoaded() {
-        adUtil.showmRewardVideoAd();
+        mRewardedVideoAd.show();
     }
 
     @Override
@@ -123,8 +157,10 @@ public class RewardedVideoAdDialog extends BlurPopupWindow implements RewardedVi
 
     @Override
     public void onRewardedVideoAdClosed() {
-        if (rewarded)
+        if (rewarded){
             congo();
+            dataHelper.Ads_watched();
+        }
         else
             watchfull();
     }

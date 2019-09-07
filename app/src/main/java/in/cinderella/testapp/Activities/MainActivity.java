@@ -3,20 +3,29 @@ package in.cinderella.testapp.Activities;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import in.cinderella.testapp.R;
@@ -46,6 +55,30 @@ public class MainActivity extends BaseActivity {
         FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
         checkCurrentUser(mAuth.getCurrentUser());
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(getIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+                        // Get deep link from result (may be null if no link is found)
+                        Uri deepLink = null;
+                        if (pendingDynamicLinkData != null) {
+                            deepLink = pendingDynamicLinkData.getLink();
+                        }
+                        //
+                        // If the user isn't signed in and the pending Dynamic Link is
+                        // an invitation, sign in the user anonymously, and record the
+                        // referrer's UID.
+                        //
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user == null
+                                && deepLink != null
+                                && deepLink.getBooleanQueryParameter("invitedby", false)) {
+                            String referrerUid = deepLink.getQueryParameter("invitedby");
+//                            createAnonymousAccountWithReferrerInfo(referrerUid);
+                        }
+                    }
+                });
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -86,6 +119,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -108,10 +142,21 @@ public class MainActivity extends BaseActivity {
         @ColorInt int color = typedValue.data;
         navigationController = pageNavigationView.material()
                 .addItem(R.drawable.ic_home, "",color)
-                .addItem(R.drawable.ic_call,"",color)
+                .addItem(R.drawable.ic_partners,"",color)
                 .addItem(R.drawable.ic_pixie_buy, "",color).setDefaultColor(getResources().getColor(R.color.white,getTheme()))
                 .build();
         BottomNavigationUtils.setupWithNavController(PAGE_IDS, navigationController, mNavController);
+    }
+
+    public  void navigateToPixie(){
+        NavOptions options = new NavOptions.Builder()
+                .setLaunchSingleTop(true)
+                .setEnterAnim(R.anim.nav_default_enter_anim)
+                .setExitAnim(R.anim.nav_default_exit_anim)
+                .setPopEnterAnim(R.anim.nav_default_pop_enter_anim)
+                .setPopExitAnim(R.anim.nav_default_pop_exit_anim)
+                .build();
+        mNavController.navigate(PAGE_IDS[2],null,options);
     }
 
 

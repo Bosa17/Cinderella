@@ -22,3 +22,8 @@
 ##---------------Begin: proguard configuration for RenderScript  ----------
 -keep class androidx.renderscript.** { *; }
 ##---------------End: proguard configuration for RenderScript  ----------
+##---------------Begin: proguard configuration for Paytm  ----------
+-keepclassmembers class com.paytm.pgsdk.paytmWebView$PaytmJavaScriptInterface {
+   public *;
+}
+##---------------End: proguard configuration for Paytm  ----------

@@ -1,10 +1,8 @@
 package in.cinderella.testapp.Models;
 
-import android.graphics.Bitmap;
-
 public class RemoteUserConnection {
     private String remoteUserName;
-    private long remoteUserKarma;
+    private long remoteUserSkill;
     private String remoteUserId;
     private String remoteUserDp;
     private String remoteUserQuote;
@@ -37,12 +35,12 @@ public class RemoteUserConnection {
         this.remoteUserName = remoteUserName;
     }
 
-    public long getRemoteUserKarma() {
-        return remoteUserKarma;
+    public long getRemoteUserSkill() {
+        return remoteUserSkill;
     }
 
-    public void setRemoteUserKarma(long remoteUserKarma) {
-        this.remoteUserKarma = remoteUserKarma;
+    public void setRemoteUserSkill(long remoteUserSkill) {
+        this.remoteUserSkill = remoteUserSkill;
     }
 
     public String getRemoteUserDp() {

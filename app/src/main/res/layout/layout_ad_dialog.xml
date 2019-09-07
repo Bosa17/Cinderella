@@ -3,6 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_close"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="30dp"
+        android:id="@+id/closeDialog"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,6 +42,13 @@
                 android:textSize="27sp"
                 android:id="@+id/congo_pixies"/>
         </LinearLayout>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_marginTop="30dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/watch_more"
+            android:background="@drawable/button_bg"
+            android:text="Watch More"/>
         <Button
             android:layout_width="match_parent"
             android:layout_marginTop="30dp"
@@ -76,6 +91,7 @@
         android:layout_centerInParent="true"
         android:orientation="vertical"
         android:id="@+id/adLoading">
+
         <com.github.ybq.android.spinkit.SpinKitView
             android:layout_width="150dp"
             android:layout_height="150dp"

@@ -4,22 +4,19 @@ public class UserModel {
     private String username;
     private String fb_dp;
     private String quote;
-    private long karma;
-    private String gender;
+    private long skill;
+    private boolean isPremium;
     private long mask;
-    private String fb_link;
     private long pixies;
-//    private long age;
 
 
-    public UserModel(String username, String fb_dp, String quote, long karma, String gender, long mask, String fb_link, long pixies) {
+    public UserModel(String username, String fb_dp, String quote, long skill, boolean isPremium, long mask, long pixies) {
         this.username = username;
         this.fb_dp = fb_dp;
         this.quote = quote;
-        this.karma = karma;
-        this.gender = gender;
+        this.skill = skill;
+        this.isPremium = isPremium;
         this.mask = mask;
-        this.fb_link = fb_link;
         this.pixies = pixies;
     }
 
@@ -50,21 +47,22 @@ public class UserModel {
         this.fb_dp = fb_dp;
     }
 
-    public long getKarma() {
-        return karma;
+    public long getSkill() {
+        return skill;
     }
 
-    public void setKarma(long karma) {
-        this.karma = karma;
+    public void setSkill(long skill) {
+        this.skill = skill;
     }
 
-    public String getGender() {
-        return gender;
+    public boolean isPremium() {
+        return isPremium;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setPremium(boolean premium) {
+        isPremium = premium;
     }
+
 
     public long getMask() {
         return mask;
@@ -74,13 +72,6 @@ public class UserModel {
         this.mask = mask;
     }
 
-    public String getFb_link() {
-        return fb_link;
-    }
-
-    public void setFb_link(String fb_link) {
-        this.fb_link = fb_link;
-    }
 
     public long getPixies() {
         return pixies;
@@ -96,10 +87,9 @@ public class UserModel {
                 "username='" + username + '\'' +
                 ", fb_dp='" + fb_dp + '\'' +
                 ", quote='" + quote + '\'' +
-                ", karma=" + karma +
-                ", gender='" + gender + '\'' +
+                ", skill=" + skill +
+                ", isPremium=" + isPremium +
                 ", mask=" + mask +
-                ", fb_link='" + fb_link + '\'' +
                 ", pixies=" + pixies +
                 '}';
     }

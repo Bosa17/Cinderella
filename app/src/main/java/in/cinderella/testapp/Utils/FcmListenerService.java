@@ -2,16 +2,11 @@ package in.cinderella.testapp.Utils;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 
-import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.sinch.android.rtc.NotificationResult;
 import com.sinch.android.rtc.SinchHelpers;
 import com.sinch.android.rtc.calling.CallNotificationResult;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -20,22 +15,17 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.IBinder;
 
-import androidx.core.app.NotificationCompat;
-
 import java.util.Map;
 
-import in.cinderella.testapp.Activities.Splash;
-import in.cinderella.testapp.R;
 
 public class FcmListenerService extends FirebaseMessagingService {
-
-    private String CHANNEL_ID = "Sinch Push Notification Channel";
-    private final String PREFERENCE_FILE = "com.sinch.android.rtc.sample.push.shared_preferences";
+    private final String PREFERENCE_FILE = "in.Cinderella.testapp.push.shared_preferences";
     SharedPreferences sharedPreferences;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage){
         Map data = remoteMessage.getData();
+        NotificationHelper notificationHelper=new NotificationHelper(getApplicationContext());
         if (SinchHelpers.isSinchPushPayload(data)) {
             new ServiceConnection() {
                 private Map payload;
@@ -52,17 +42,15 @@ public class FcmListenerService extends FirebaseMessagingService {
                             // here is example for notifying user about missed/canceled call:
                             if (result.isValid() && result.isCall()) {
                                 CallNotificationResult callResult = result.getCallResult();
+                                Map<String, String> customHeaders = callResult.getHeaders();
                                 if (callResult != null && result.getDisplayName() != null) {
                                     SharedPreferences.Editor editor = sharedPreferences.edit();
                                     editor.putString(callResult.getRemoteUserId(), result.getDisplayName());
                                     editor.commit();
                                 }
-                                if (callResult.isCallCanceled()) {
-                                    String displayName = result.getDisplayName();
-                                    if (displayName == null) {
-                                        displayName = sharedPreferences.getString(callResult.getRemoteUserId(),"n/a");
-                                    }
-                                    createNotification(displayName != null && !displayName.isEmpty() ? displayName : callResult.getRemoteUserId());
+                                if (callResult.isCallCanceled() || callResult.isTimedOut()) {
+                                    String displayName = customHeaders.get("userName");
+                                    notificationHelper.createMissedCallNotification(displayName != null && !displayName.isEmpty() ? displayName : callResult.getRemoteUserId());
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                         context.deleteSharedPreferences(PREFERENCE_FILE);
                                     }
@@ -82,40 +70,5 @@ public class FcmListenerService extends FirebaseMessagingService {
                 }
             }.relayMessageData(data);
         }
-    }
-
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Sinch";
-            String description = "Incoming Sinch Push Notifications.";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
-    private void createNotification(String userId) {
-
-        createNotificationChannel();
-
-        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,
-                new Intent(getApplicationContext(), Splash.class), 0);
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_cinderella)
-                        .setContentTitle("Missed call from:")
-                        .setContentText(userId);
-        mBuilder.setContentIntent(contentIntent);
-        mBuilder.setDefaults(Notification.DEFAULT_SOUND);
-        mBuilder.setAutoCancel(true);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(1, mBuilder.build());
     }
 }

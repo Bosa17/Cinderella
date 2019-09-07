@@ -19,8 +19,7 @@ public class FileUtils {
     public static String storeImage(Bitmap image) {
         File pictureFile = getOutputMediaFile();
         if (pictureFile == null) {
-            Log.d(TAG,
-                    "Error creating media file, check storage permissions: ");// e.getMessage());
+            Log.d(TAG, "Error creating media file, check storage permissions: ");// e.getMessage());
             return "";
         }
         try {
@@ -59,4 +58,5 @@ public class FileUtils {
         mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
         return mediaFile;
     }
+
 }

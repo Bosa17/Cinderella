@@ -18,7 +18,6 @@ import in.cinderella.testapp.Utils.DataHelper;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 
 public class Pixies extends Fragment  {
-    private RewardedVideoAd mRewardedVideoAd;
     private DataHelper dataHelper;
     private Button getpixies;
     private Button buypixies;
@@ -32,13 +31,23 @@ public class Pixies extends Fragment  {
         dataHelper=new DataHelper(getContext());
         pixies_layout=view.findViewById(R.id.pixies_layout);
         getpixies=view.findViewById(R.id.getpixie);
+
         getpixies.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new RewardedVideoAdDialog.Builder(getContext()).build().show();
+                if (dataHelper.getAds_watched()<=3)
+                    new RewardedVideoAdDialog.Builder(getContext()).build().show();
+                else
+                    Toast.makeText(getContext(), "You can only watch 3 ads every hour", Toast.LENGTH_SHORT).show();
             }
         });
-
+        buypixies=view.findViewById(R.id.buypixie);
+        buypixies.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new PurchaseDialog.Builder(getContext()).build().show();
+            }
+        });
         animationDrawable=(AnimationDrawable) pixies_layout.getBackground();
         animationDrawable.setEnterFadeDuration(3000);
         animationDrawable.setExitFadeDuration(3000);

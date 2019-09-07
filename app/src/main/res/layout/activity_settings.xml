@@ -48,6 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:focusableInTouchMode="true"
                     android:layout_marginTop="30dp"
                     android:padding="30dp"
                     android:background="@drawable/setting_border"
@@ -57,15 +58,13 @@
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_quote"
                         android:drawablePadding="10dp"
-                        android:focusableInTouchMode="true"
-                        android:clickable="true"
-                        android:focusable="true"
                         android:imeOptions="actionDone"
+                        android:singleLine="true"
+                        android:maxLength="35"
                         android:padding="10dp"
-                        android:hint="   Enter Your Quote (Max : 70)"
+                        android:hint="   Enter Your Quote (Max : 40)"
                         android:id="@+id/quoteText"
                         />
-
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -75,6 +74,41 @@
                     android:padding="30dp"
                     android:background="@drawable/setting_border"
                     >
+                    <Button
+                        android:background="@drawable/boss_bg"
+                        android:id="@+id/boss_switch"
+                        android:layout_width="match_parent"
+                        android:padding="20dp"
+                        style="@style/SettingsComponent"
+                        android:layout_height="wrap_content"
+                        android:text="Boss" />
+
+                    <Button
+                        android:background="@drawable/passion_bg"
+                        android:id="@+id/passion_switch"
+                        android:layout_width="match_parent"
+                        android:padding="20dp"
+                        style="@style/SettingsComponent"
+                        android:layout_height="wrap_content"
+                        android:text="Passion" />
+
+                    <Button
+                        android:background="@drawable/sexy_bg"
+                        android:id="@+id/sexy_switch"
+                        android:layout_width="match_parent"
+                        android:padding="20dp"
+                        style="@style/SettingsComponent"
+                        android:layout_height="wrap_content"
+                        android:text="Sexy" />
+
+                    <Button
+                        android:background="@drawable/vibrant_bg"
+                        android:id="@+id/vibrant_switch"
+                        android:layout_width="match_parent"
+                        android:padding="20dp"
+                        style="@style/SettingsComponent"
+                        android:layout_height="wrap_content"
+                        android:text="Vibrant" />
 
                     <Button
                         android:background="@drawable/royalty_bg"
@@ -84,14 +118,7 @@
                         style="@style/SettingsComponent"
                         android:layout_height="wrap_content"
                         android:text="Royalty" />
-                    <Button
-                        android:background="@drawable/temptation_bg"
-                        android:id="@+id/temptation_switch"
-                        android:layout_width="match_parent"
-                        android:padding="20dp"
-                        style="@style/SettingsComponent"
-                        android:layout_height="wrap_content"
-                        android:text="Temptation" />
+
                     <Button
                         android:background="@drawable/babe_bg"
                         android:id="@+id/babe_switch"
@@ -100,38 +127,15 @@
                         style="@style/SettingsComponent"
                         android:layout_height="wrap_content"
                         android:text="Babe" />
+
                     <Button
-                        android:background="@drawable/passion_bg"
-                        android:id="@+id/passion_switch"
+                        android:background="@drawable/temptation_bg"
+                        android:id="@+id/temptation_switch"
                         android:layout_width="match_parent"
                         android:padding="20dp"
                         style="@style/SettingsComponent"
                         android:layout_height="wrap_content"
-                        android:text="Passion" />
-                    <Button
-                        android:background="@drawable/boss_bg"
-                        android:id="@+id/boss_switch"
-                        android:layout_width="match_parent"
-                        android:padding="20dp"
-                        style="@style/SettingsComponent"
-                        android:layout_height="wrap_content"
-                        android:text="Boss" />
-                    <Button
-                        android:background="@drawable/vibrant_bg"
-                        android:id="@+id/vibrant_switch"
-                        android:layout_width="match_parent"
-                        android:padding="20dp"
-                        style="@style/SettingsComponent"
-                        android:layout_height="wrap_content"
-                        android:text="Vibrant" />
-                    <Button
-                        android:background="@drawable/sexy_bg"
-                        android:id="@+id/sexy_switch"
-                        android:layout_width="match_parent"
-                        android:padding="20dp"
-                        style="@style/SettingsComponent"
-                        android:layout_height="wrap_content"
-                        android:text="Sexy" />
+                        android:text="Temptation" />
 
                 </LinearLayout>
 

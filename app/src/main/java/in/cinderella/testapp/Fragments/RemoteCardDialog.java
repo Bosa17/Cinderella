@@ -10,7 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -41,15 +44,18 @@ public class RemoteCardDialog extends BlurPopupWindow {
     private static String mRemoteUserQuote;
     private static Context mContext;
     private static boolean mRemoteUserIsPrivate=false;
-    private static long mRemoteUserKarma;
+    private static long mRemoteUserSkill;
     private Bitmap bmp;
     private RemoteUserConnection remoteUser;
     private DataHelper dataHelper;
     private TextView mUserRemote;
-    private Button addConnectionConfirm;
+    private Button cont;
+    private Button cont2;
     private LinearLayout addKarmaDialog;
     private LinearLayout remoteScv;
-    private RatingBar mUserAddKarma;
+    private LinearLayout remotePrivate;
+    private RatingBar mUserAddSkill;
+    private ImageView scratch;
     private Button addKarmaConfirm;
     private ScratchCardView scv;
     public RemoteCardDialog(@NonNull Context context) {
@@ -63,10 +69,13 @@ public class RemoteCardDialog extends BlurPopupWindow {
         remoteUser=new RemoteUserConnection();
         dataHelper=new DataHelper(getContext());
         mUserRemote=view.findViewById(R.id.remoteUserName_scv);
-        mUserAddKarma=view.findViewById(R.id.remoteUserAddKarma);
+        scratch = view.findViewById(R.id.scratch);
+        mUserAddSkill =view.findViewById(R.id.remoteUserAddSkill);
         addKarmaConfirm=view.findViewById(R.id.addKarmaConfirm);
         remoteScv=view.findViewById(R.id.remoteScv);
-        addConnectionConfirm=view.findViewById(R.id.addConnectionConfirm);
+        remotePrivate=view.findViewById(R.id.remotePrivate);
+        cont=view.findViewById(R.id.cont);
+        cont2=view.findViewById(R.id.cont2);
         addKarmaDialog=view.findViewById(R.id.addKarmaDialog);
         new AsyncTask<Void, Void, Bitmap>(){
 
@@ -128,12 +137,16 @@ public class RemoteCardDialog extends BlurPopupWindow {
             @Override
             public void onRevealed(ScratchCardView tv) {
                 mUserRemote.setVisibility(VISIBLE);
-                addConnectionConfirm.setVisibility(VISIBLE);
+                cont.setVisibility(VISIBLE);
 
             }
 
             @Override
             public void onRevealPercentChangedListener(ScratchCardView siv, float percent) {
+                if (percent>0.1){
+                    scratch.clearAnimation();
+                    scratch.setVisibility(GONE);
+                }
                 if (percent>0.7){
                     siv.reveal();
                 }
@@ -142,11 +155,11 @@ public class RemoteCardDialog extends BlurPopupWindow {
         addKarmaConfirm.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                dataHelper.updateKarmaWithUid(mRemoteUserId,mRemoteUserKarma+(long)mUserAddKarma.getRating());
+                dataHelper.updateSkillWithUid(mRemoteUserId, mRemoteUserSkill +(long) mUserAddSkill.getRating());
                 updateWidgets();
             }
         });
-        addConnectionConfirm.setOnClickListener(new OnClickListener() {
+        cont.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 long conn_no=dataHelper.getPartners()+1;
@@ -154,7 +167,7 @@ public class RemoteCardDialog extends BlurPopupWindow {
                 remoteUser.setRemoteUserId(mRemoteUserId);
                 remoteUser.setRemoteUserQuote(mRemoteUserQuote);
                 remoteUser.setRemoteUserName(mRemoteUserName);
-                remoteUser.setRemoteUserKarma(mRemoteUserKarma);
+                remoteUser.setRemoteUserSkill(mRemoteUserSkill);
                 if (Permissions.hasStoragePermissions(getContext())) {
                     remoteUser.setRemoteUserDp(FileUtils.storeImage(bmp));
                 }
@@ -162,6 +175,12 @@ public class RemoteCardDialog extends BlurPopupWindow {
                     Toast.makeText(mContext,"Cannot make connections because permissions not granted", Toast.LENGTH_LONG).show();
                 }
                 dataHelper.addNewRemoteUser(remoteUser,conn_no);
+                dismiss();
+            }
+        });
+        cont2.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
                 dismiss();
             }
         });
@@ -177,10 +196,13 @@ public class RemoteCardDialog extends BlurPopupWindow {
         if (!mRemoteUserIsPrivate){
             addKarmaDialog.setVisibility(GONE);
             remoteScv.setVisibility(VISIBLE);
+            Animation animShake = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
+            animShake.setStartOffset(300);
+            scratch.startAnimation(animShake);
         }
         else {
-            Toast.makeText(getContext(), "Your partner has decided to keep their identity a secret!", Toast.LENGTH_LONG).show();
-            dismiss();
+            addKarmaDialog.setVisibility(GONE);
+            remotePrivate.setVisibility(VISIBLE);
         }
     }
     @Override
@@ -211,12 +233,12 @@ public class RemoteCardDialog extends BlurPopupWindow {
     }
 
     public static class Builder extends BlurPopupWindow.Builder<RemoteCardDialog> {
-        public Builder(Context context,String ruid,long karma,String url,String name,String quote,boolean isPrivate) {
+        public Builder(Context context,String ruid,long skill,String url,String name,String quote,boolean isPrivate) {
             super(context);
             mContext=context;
             mRemoteUserFb_dp=url;
             mRemoteUserId=ruid;
-            mRemoteUserKarma=karma;
+            mRemoteUserSkill =skill;
             mRemoteUserName=name;
             mRemoteUserQuote=quote;
             mRemoteUserIsPrivate=isPrivate;

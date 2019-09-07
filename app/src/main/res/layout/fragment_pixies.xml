@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:text="Do more with Pixies"
-        android:textAlignment="center"
+        android:gravity="bottom"
         app:autoSizeTextType="uniform"
         android:layout_marginBottom="20dp"
         android:layout_weight="0.5"
@@ -104,7 +104,7 @@
                 android:background="@drawable/button_bg"
                 android:layout_marginBottom="20dp"
                 android:layout_alignParentBottom="true"
-                android:text="Help! I am poor"/>
+                android:text="Watch Ad "/>
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
@@ -192,7 +192,7 @@
                 android:background="@drawable/button_bg"
                 android:layout_marginBottom="20dp"
                 android:layout_alignParentBottom="true"
-                android:text="LOve it! Support Cinderella"/>
+                android:text="Visit Cinderella Store"/>
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>

@@ -11,7 +11,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Map;
 
 import in.cinderella.testapp.Models.UserModel;
 import in.cinderella.testapp.R;
@@ -37,7 +40,6 @@ public class FirebaseHelper {
             userID = mAuth.getCurrentUser().getUid();
         }
     }
-
     public DatabaseReference getRef(){return myRef;}
 
     public String getUserID(){
@@ -50,11 +52,11 @@ public class FirebaseHelper {
                 .setValue(user);
 
     }
-    public void updateKarma(long karma){
+    public void updateTimestamp(){
         myRef.child(mContext.getString(R.string.user_db))
                 .child(getUserID())
-                .child(mContext.getString(R.string.karma))
-                .setValue(karma);
+                .child(mContext.getString(R.string.last_sign_at))
+                .setValue(ServerValue.TIMESTAMP);
     }
     public void updatePixie(long pixie){
         myRef.child(mContext.getString(R.string.user_db))
@@ -62,11 +64,11 @@ public class FirebaseHelper {
                 .child(mContext.getString(R.string.pixies))
                 .setValue(pixie);
     }
-    public void updateKarmaWithUid(String uid,long karma){
+    public void updateSkillWithUid(String uid, long skill){
         myRef.child(mContext.getString(R.string.user_db))
                 .child(uid)
-                .child(mContext.getString(R.string.karma))
-                .setValue(karma);
+                .child(mContext.getString(R.string.skill))
+                .setValue(skill);
     }
 
     public void addUserToChannel(String chapter,String partnerPreference){

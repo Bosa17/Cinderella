@@ -1,8 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="KarmaTextView">
-        <item name="android:textSize">24sp</item>
+    <style name="SkillTextView">
+        <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:gravity">center</item>
+    </style>
+    <style name="PixieCostTextView">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/white</item>
     </style>
     <style name="SettingsComponent">
         <item name="android:textSize">20sp</item>
@@ -14,7 +18,7 @@
         <item name="android:textSize">30sp</item>
         <item name="android:gravity">center</item>
     </style>
-    <style name="ChapterTextView">
+    <style name="SituationTextView">
         <item name="android:textSize">20sp</item>
         <item name="android:gravity">center</item>
     </style>

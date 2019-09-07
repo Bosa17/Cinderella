@@ -13,12 +13,12 @@
         android:layout_margin="30dp"
         android:orientation="vertical"
         android:layout_centerInParent="true"
-        android:background="@color/cardview_dark_background">
+        android:background="@color/colorPrimaryLight">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="How would you rate this user's Karma?"
+            android:text="How would you rate this user's Skill?"
             android:textSize="20sp"
             android:layout_gravity="center_horizontal"/>
         <RatingBar
@@ -26,13 +26,15 @@
             android:layout_height="wrap_content"
             android:stepSize="1"
             android:layout_gravity="center"
-            android:id="@+id/remoteUserAddKarma"
+            android:id="@+id/remoteUserAddSkill"
             />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Confirm"
+            android:text="@string/continue_string"
+            android:background="@drawable/button_bg"
+            android:padding="20dp"
             android:layout_margin="20dp"
             android:id="@+id/addKarmaConfirm"/>
     </LinearLayout>
@@ -40,18 +42,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/remoteScv"
-        android:visibility="gone"
         android:padding="10dp"
         android:layout_margin="30dp"
         android:orientation="vertical"
+        android:visibility="gone"
         android:layout_centerInParent="true"
-        android:background="@color/cardview_dark_background">
-        <in.cinderella.testapp.Utils.ScratchCardView
-            android:id="@+id/remoteUserMask_scv"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_gravity="center"
-            />
+        android:background="@color/colorPrimaryLight">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+            <in.cinderella.testapp.Utils.ScratchCardView
+                android:id="@+id/remoteUserMask_scv"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center"
+                />
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/scratch"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="210dp"
+                android:src="@drawable/ic_scratch"/>
+        </RelativeLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,12 +77,40 @@
             android:textSize="30sp"
             android:layout_gravity="center_horizontal"/>
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:visibility="gone"
-            android:text="Confirm Connection"
-            android:id="@+id/addConnectionConfirm"/>
+            android:background="@drawable/button_bg"
+            android:layout_margin="10dp"
+            android:text="@string/continue_string"
+            android:id="@+id/cont"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/remotePrivate"
+        android:padding="10dp"
+        android:layout_margin="30dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:background="@color/colorPrimaryLight">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your Partner has decided to remain private!"
+            android:textSize="30sp"
+            android:layout_margin="10dp"
+            android:layout_gravity="center_horizontal"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_bg"
+            android:layout_margin="10dp"
+            android:text="@string/continue_string"
+            android:id="@+id/cont2"/>
     </LinearLayout>
 
 </RelativeLayout>

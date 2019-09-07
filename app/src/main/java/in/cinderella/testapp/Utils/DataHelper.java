@@ -28,12 +28,13 @@ public class DataHelper {
         putMask((int)curr_user.getMask());
         putGender("Male");
         putQuote("");
+        putLast_sign_at(System.currentTimeMillis());
         putUsername(curr_user.getUsername());
-        putFb_link(curr_user.getFb_link());
         putFb_dp(curr_user.getFb_dp());
         putIsPrivate(false);
+        putIsPremium(false);
         putPartner(0L);
-        putKarma(0L);
+        putSkill(0L);
         putPixies(30L);
         firebaseHelper.addNewUser(userID,get());
     }
@@ -93,39 +94,52 @@ public class DataHelper {
         return Ids;
     }
 
-    public ArrayList<Long> getRemoteUserKarmas(){
-        ArrayList<Long> Karmas=new ArrayList<>();
+    public void deleteRemoteUser(int index){
+        for (long i = getPartners(); i >= index; i--)  {
+
+            RemoteUserConnection remoteTemp = Hawk.get(mContext.getString(R.string.remote) + i);
+        }
+    }
+    public ArrayList<Long> getRemoteUserSkills(){
+        ArrayList<Long> Skills=new ArrayList<>();
         try {
             for (long i = getPartners(); i >= 1; i--)  {
                 RemoteUserConnection remoteTemp = Hawk.get(mContext.getString(R.string.remote) + i);
-                Karmas.add(remoteTemp.getRemoteUserKarma());
+                Skills.add(remoteTemp.getRemoteUserSkill());
             }
         }catch(Exception e){
             e.printStackTrace();
         }
-        return Karmas;
+        return Skills;
     }
 
     public void syncWithFirebase(DataSnapshot dataSnapshot){
         UserModel user=dataSnapshot.getValue(UserModel.class);
         putUID(firebaseHelper.getUserID());
         try {
-            putKarma(user.getKarma());
+            putSkill(user.getSkill());
             putUsername(user.getUsername());
             putPixies(user.getPixies());
         }catch(Exception e){
-            putKarma(0);
+            putSkill(0);
             Toast.makeText(mContext,"Some Error Occured!",Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void updateKarmaWithUid(String uid,long karma){
-        firebaseHelper.updateKarmaWithUid(uid,karma);
+    public void updateSkillWithUid(String uid, long skill){
+        firebaseHelper.updateSkillWithUid(uid,skill);
     }
     public int rewardPixies(){
         int pixies_won=new Random().nextInt(4);
         firebaseHelper.updatePixie(getPixies()+pixies_won);
         return pixies_won;
+    }
+
+    public void congoPixies(){
+        if (getIsPremium())
+            firebaseHelper.updatePixie(getPixies()+7);
+        else
+            firebaseHelper.updatePixie(getPixies()+3);
     }
 
     public void usePixies(long pixie_cost){
@@ -135,12 +149,11 @@ public class DataHelper {
     public UserModel get(){
         UserModel user=new UserModel();
         user.setFb_dp(getFb_dp());
-        user.setFb_link(getFb_link());
-        user.setGender(getGender());
         user.setQuote(getQuote());
-        user.setKarma(getKarma());
+        user.setSkill(getSkill());
         user.setUsername(getUsername());
         user.setMask(getMask());
+        user.setPremium(getIsPremium());
         user.setPixies(getPixies());
         return user;
     }
@@ -160,12 +173,12 @@ public class DataHelper {
         return Hawk.get(mContext.getString(R.string.partner),0L);
     }
 
-    public void putKarma(long karma){
-        Hawk.put(mContext.getString(R.string.karma), karma);
+    public void putSkill(long skill){
+        Hawk.put(mContext.getString(R.string.skill), skill);
     }
 
-    public long getKarma(){
-        return Hawk.get(mContext.getString(R.string.karma),0L);
+    public long getSkill(){
+        return Hawk.get(mContext.getString(R.string.skill),0L);
     }
     public long getPixies(){
         return Hawk.get(mContext.getString(R.string.pixies),0L);
@@ -191,14 +204,6 @@ public class DataHelper {
     public String getFb_dp(){
         return Hawk.get(mContext.getString(R.string.fb_dp));
     }
-
-    public void putFb_link(String fb_link){
-        Hawk.put(mContext.getString(R.string.fb_link), fb_link);
-    }
-    public String getFb_link(){
-        return Hawk.get(mContext.getString(R.string.fb_link));
-    }
-
     public void putQuote(String quote){
         Hawk.put(mContext.getString(R.string.quote), quote);
         firebaseHelper.updateQuote(quote);
@@ -212,12 +217,6 @@ public class DataHelper {
     }
     public String getUID(){
         return Hawk.get(mContext.getString(R.string.uid),"" );
-    }
-    public void putPrevTheme(String theme){
-        Hawk.put("prev_theme",theme);
-    }
-    public String getPrevTheme(){
-        return Hawk.get("prev_theme",mContext.getString(R.string.royalty));
     }
     public void putTheme(String theme){
         Hawk.put("theme",theme);
@@ -233,6 +232,33 @@ public class DataHelper {
     }
     public void putIsPrivate(boolean isPrivate){
         Hawk.put("isPrivate",isPrivate);
+    }
+    public boolean getIsPremium(){
+        return Hawk.get(mContext.getString(R.string.isPremium),false);
+    }
+    public void putIsPremium(boolean IsPremium){
+        Hawk.put(mContext.getString(R.string.isPremium),IsPremium);
+    }
+    public void putLast_sign_at(long last_sign_at){
+        Hawk.put(mContext.getString(R.string.last_sign_at), last_sign_at);
+    }
+    public long getLast_sign_at(){
+        return Hawk.get(mContext.getString(R.string.last_sign_at),0L);
+    }
+    public void putAds_watched(int ads_watched){
+        Hawk.put("ads_watched", ads_watched);
+    }
+    public void Ads_watched(){
+        Hawk.put("ads_watched", getAds_watched()+1);
+    }
+    public int getAds_watched(){
+        return Hawk.get("ads_watched",0);
+    }
+    public boolean isTutorialShown(){
+        return Hawk.get("isTutorialShown",false);
+    }
+    public void putTutorialShown(boolean isTutorialShown){
+        Hawk.put("isTutorialShown",isTutorialShown);
     }
 }
 

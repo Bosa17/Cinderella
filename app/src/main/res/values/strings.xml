@@ -37,10 +37,11 @@
     <!--user fields-->
     <string name="uid">uid</string>
     <string name="username">username</string>
-    <string name="karma">karma</string>
+    <string name="skill">skill</string>
     <string name="pixies">pixies</string>
     <string name="fb_dp">fb_dp</string>
-    <string name="fb_link">fb_link</string>
+    <string name="last_sign_at">last_sign_at</string>
+    <string name="isPremium">isPremium</string>
     <string name="gender">gender</string>
     <string name="mask">mask</string>
     <string name="quote">quote</string>
@@ -63,11 +64,13 @@
         This information will help us to find the source of the issue. Kindly give us as many details as possible. Thank you.
     </string>
     <string name="feedback_bug_type">Bug</string>
-    <string name="feedback_improvement_type">Improvement</string>
-    <string name="feedback_suggestion_type">Suggestion</string>
+    <string name="feedback_improvement_type">Service Support</string>
+    <string name="feedback_suggestion_type">Request Feature/Situation</string>
     <string name="feedback_support_email">ababhirupbose21@gmail.com</string>
     <string name="feedback_choose_email_provider">Choose an email provider:</string>
     <string name="feedback_write_email">Write an Email</string>
+    <string name="insufficient_pixies">You do not have sufficient Pixies. Get Pixies from the store!</string>
+    <string name="continue_string">Continue</string>
 
 
 </resources>

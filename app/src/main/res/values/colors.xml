@@ -7,11 +7,10 @@
     <color name="the_vibrant">#CDDC39</color>
     <color name="the_sexy">#00C853</color>
     <color name="the_passion">#00BCD4</color>
-    <color name="the_boss">#8A2BE2</color>
+    <color name="the_boss">#536DFE</color>
     <color name="the_royalty">#FFD700</color>
     <color name="the_temptation">#FF5722</color>
     <color name="the_babe">#FF69B4</color>
-    <color name="ic_launcher_background">#212121</color>
     <color name="dark_gray">#424242</color>
     <color name="white">#FFFFFF</color>
 </resources>

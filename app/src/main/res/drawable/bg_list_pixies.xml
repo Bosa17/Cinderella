@@ -2,9 +2,9 @@
 <animation-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:duration="3000"
-        android:drawable="@drawable/gradient_pixies_1"/>
+        android:drawable="@drawable/gradient_pixies_2"/>
 
     <item android:duration="3000"
-        android:drawable="@drawable/gradient_pixies_2"/>
+        android:drawable="@drawable/gradient_pixies_1"/>
 
 </animation-list>

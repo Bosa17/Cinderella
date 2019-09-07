@@ -3,7 +3,6 @@ package in.cinderella.testapp.Utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
@@ -12,7 +11,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Shader;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
@@ -143,7 +141,7 @@ public class ScratchCardView extends AppCompatImageView {
         mErasePath = new Path();
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 
-//        Bitmap scratchBitmap = getBitmap(R.drawable.ic_launcher_foreground);
+//        Bitmap scratchBitmap = getBitmap(R.drawable.ic_launcher_foreground1);
         mDrawable =getResources().getDrawable(R.drawable.ic_launcher_foreground);
 //        mDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
 

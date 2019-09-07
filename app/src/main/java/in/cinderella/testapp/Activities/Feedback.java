@@ -13,7 +13,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import in.cinderella.testapp.R;
-import in.cinderella.testapp.Utils.SinchService;
 
 
 public class Feedback extends BaseActivity {
@@ -50,17 +49,6 @@ public class Feedback extends BaseActivity {
         send=findViewById(R.id.tvNext);
         Context mContext=this;
         ImageView back = (ImageView) findViewById(R.id.ivBack);
-        ImageView call= findViewById(R.id.call_test);
-        call.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Feedback.this, PartnerCallActivity.class);
-                intent.putExtra("remoteUser","ZYwuHxyQBGftwAmHOatpUfHWl6E3");
-                intent.putExtra(SinchService.CALL_TYPE,"1");
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            }
-        });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -6,9 +6,9 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/ic_close"
-        android:layout_marginStart="30dp"
+        android:layout_margin="30dp"
         android:layout_above="@id/remoteUserConnectDp"
-        android:id="@+id/closecall"/>
+        android:id="@+id/closeDialog"/>
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="300dp"
@@ -17,16 +17,37 @@
         android:layout_centerInParent="true"/>
 
     <Button
-        android:id="@+id/connect_fb"
+        android:id="@+id/call_partner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Call User"
+        android:text="Call Partner"
         android:layout_below="@id/remoteUserConnectDp"
         android:layout_marginTop="30dp"
         android:textColor="@color/white"
-        android:background="@drawable/fb_button"
-        android:paddingStart="25dp"
+        android:background="@drawable/button_bg"
         android:layout_marginEnd="25dp"
-        android:layout_marginStart="25dp"
-        android:drawableStart="@drawable/ic_call_end"/>
+        android:layout_marginStart="25dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/call_cost"
+        android:layout_gravity="center"
+        android:layout_margin="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/call_partner"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_pixies"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="7dp"
+            android:paddingEnd="7dp"
+            android:textSize="27sp"
+            android:text="3"/>
+    </LinearLayout>
 </RelativeLayout>

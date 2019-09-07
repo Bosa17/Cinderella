@@ -1,9 +1,12 @@
 package in.cinderella.testapp.Fragments;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -20,6 +23,7 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,10 +43,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.cinderella.testapp.Activities.CallActivity;
+import in.cinderella.testapp.Activities.MainActivity;
 import in.cinderella.testapp.Activities.Setting;
-import in.cinderella.testapp.Models.ChapterModel;
+import in.cinderella.testapp.Models.SituationModel;
 import in.cinderella.testapp.Models.UserModel;
 import in.cinderella.testapp.R;
+import in.cinderella.testapp.Utils.AlarmReceiver;
 import in.cinderella.testapp.Utils.DataHelper;
 import in.cinderella.testapp.Utils.HashtagView;
 import in.cinderella.testapp.Utils.ShakeListener;
@@ -53,7 +59,7 @@ public class Home extends Fragment {
     private FirebaseDatabase database;
     private DatabaseReference myRef;
     private DataHelper dataHelper;
-    private ChapterModel selectedChapter;
+    private SituationModel selectedSituation;
     private boolean isCardVisible;
 
     //widgets
@@ -64,11 +70,12 @@ public class Home extends Fragment {
     private HashtagView hashTagView;
     private ShakeListener mShaker;
     private TextView pixies;
-    private TextView pixies_cost_switcher;
-    private TextSwitcher chapter_desc;
+    private TextSwitcher pixies_cost_switcher;
+    private TextSwitcher situation_desc;
     private TextView username;
     private TextView partner;
-    private TextView karma;
+    private TextView skill;
+    private ImageView tutorial_btn;
     private ImageView settings_btn;
     private ImageView mask;
 
@@ -80,16 +87,16 @@ public class Home extends Fragment {
         isCardVisible=false;
         myRef = database.getReference();
         dataHelper=new DataHelper(getActivity());
-        chapter_desc =view.findViewById(R.id.chapter_desc);
+        situation_desc =view.findViewById(R.id.chapter_desc);
         mask=(ImageView) view.findViewById(R.id.user_dp);
         scrollView=view.findViewById(R.id.scroll);
         PartnerPreferenceRadioGroup=view.findViewById(R.id.parter_preference);
         privateMode=view.findViewById(R.id.private_btn);
         partner =(TextView) view.findViewById(R.id.user_partners);
         pixies=(TextView) view.findViewById(R.id.user_pixies);
-        pixies_cost_switcher=(TextView) view.findViewById(R.id.pixie_cost_switcher);
+        pixies_cost_switcher=(TextSwitcher) view.findViewById(R.id.pixie_cost_switcher);
         username=(TextView) view.findViewById(R.id.username);
-        karma=(TextView)  view.findViewById(R.id.user_karma);
+        skill =(TextView)  view.findViewById(R.id.user_skill);
         final Vibrator vibe = (Vibrator)getContext().getSystemService(Context.VIBRATOR_SERVICE);
         final Animation animShake = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
         animShake.setStartOffset(300);
@@ -101,13 +108,19 @@ public class Home extends Fragment {
             {   Rect scrollBounds = new Rect();
                 scrollView.getHitRect(scrollBounds);
                 if (phone_shake.getLocalVisibleRect(scrollBounds)) {
-                    Bundle bundle=new Bundle();
-                    bundle.putBoolean("isPrivate",dataHelper.getIsPrivate());
-                    bundle.putLong("pixieCost",getPixieCost());
-                    bundle.putString("chapter",selectedChapter.getName());
-                    bundle.putString("partnerPreference",getSelectedPartnerPreference());
-                    startActivityForResult(new Intent(getActivity(), CallActivity.class).putExtras(bundle),2);
-                    vibe.vibrate(300);
+                    if(getPixieCost()<=dataHelper.getPixies()) {
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean("isPrivate", dataHelper.getIsPrivate());
+                        bundle.putLong("pixieCost", getPixieCost());
+                        bundle.putString("partnerPreference", getSelectedPartnerPreference());
+                        startActivityForResult(new Intent(getActivity(), CallActivity.class).putExtras(bundle).putExtra("situation",selectedSituation), 2);
+                        vibe.vibrate(300);
+                    }else{
+                        ((MainActivity)getActivity()).navigateToPixie();
+                        isCardVisible=true;
+                        onPause();
+                        Toast.makeText(getContext(), R.string.insufficient_pixies, Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     // imageView is not within the visible window
                 }
@@ -119,6 +132,13 @@ public class Home extends Fragment {
             @Override
             public void onClick(View view) {
                 showSettings();
+            }
+        });
+        tutorial_btn=(ImageView) view.findViewById(R.id.tutorial_btn);
+        tutorial_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new TutorialDialog.Builder(getContext()).build().show();
             }
         });
         privateMode.setOnClickListener(new View.OnClickListener() {
@@ -140,9 +160,23 @@ public class Home extends Fragment {
         initElements();
         initPrivateMode();
 
+        pixies_cost_switcher.setFactory(new TextViewFactory(R.style.PixieCostTextView, true));
+        setPixieCost();
         // Read from the database
         sync();
         updateWidgets(dataHelper.get());
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!dataHelper.isTutorialShown())
+                    try {
+                        tutorial_btn.performClick();
+                        dataHelper.putTutorialShown(true);
+                    }catch(Exception e){
+                        dataHelper.putTutorialShown(false);
+                    }
+            }
+        }, 2000);
         return view;
     }
 
@@ -150,7 +184,7 @@ public class Home extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==2 && resultCode==-1){
-            new RemoteCardDialog.Builder(getContext(),data.getStringExtra(getResources().getString(R.string.uid)),data.getLongExtra(getResources().getString(R.string.karma),0),data.getStringExtra(getResources().getString(R.string.fb_dp)),data.getStringExtra(getResources().getString(R.string.username)),data.getStringExtra(getResources().getString(R.string.quote)),data.getBooleanExtra("isPrivate",false)).setOnDismissListener(new remoteCardDismissListener()).build().show();
+            new RemoteCardDialog.Builder(getContext(),data.getStringExtra(getResources().getString(R.string.uid)),data.getLongExtra(getResources().getString(R.string.skill),0),data.getStringExtra(getResources().getString(R.string.fb_dp)),data.getStringExtra(getResources().getString(R.string.username)),data.getStringExtra(getResources().getString(R.string.quote)),data.getBooleanExtra("isPrivate",false)).setOnDismissListener(new remoteCardDismissListener()).build().show();
             isCardVisible=true;
             dataHelper.usePixies(data.getLongExtra("pixie_cost",0));
         }
@@ -159,11 +193,15 @@ public class Home extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        sync();
         setPixieCost();
         if (!isCardVisible) {
             mShaker.resume();
             updateWidgets(dataHelper.get());
         }
+
+
+
     }
     @Override
     public void onPause()
@@ -173,6 +211,27 @@ public class Home extends Fragment {
     }
 
     private void sync(){
+        double millis=System.currentTimeMillis()-dataHelper.getLast_sign_at();
+        double hours = millis/(1000 * 60 * 60);
+        if (hours>1.0){
+            dataHelper.putLast_sign_at(System.currentTimeMillis());
+            dataHelper.congoPixies();
+            dataHelper.putAds_watched(0);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                        try {
+                            new CongoPixiesDialog.Builder(getContext(),dataHelper.getIsPremium()).build().show();
+                        }catch(Exception ignore){
+                        }
+                }
+            }, 2000);
+            Intent intent1 = new Intent(getContext(), AlarmReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0,intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+            AlarmManager am = (AlarmManager)getContext().getSystemService(getContext().ALARM_SERVICE);
+            am.set(AlarmManager.RTC_WAKEUP, dataHelper.getLast_sign_at()+1000 * 60 * 60, pendingIntent);
+        }
+
         myRef.child(getString(R.string.user_db))
                 .child(dataHelper.getUID()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -188,7 +247,11 @@ public class Home extends Fragment {
         });
     }
     private long getPixieCost(){
-        return Long.valueOf(pixies_cost_switcher.getText().toString());
+        TextView pixie_cost = (TextView) pixies_cost_switcher.getCurrentView();
+        if (pixie_cost.getText().toString().length()>0) {
+            return Long.valueOf(pixie_cost.getText().toString());
+        }
+        return 0;
     }
 
     private void initPrivateMode(){
@@ -198,43 +261,42 @@ public class Home extends Fragment {
             privateMode.setImageResource(R.drawable.ic_private);
     }
     private void initElements(){
-        List<ChapterModel> chapters = new ArrayList<ChapterModel>();
-        chapters.add(new ChapterModel("Chapter1","Once upon a time, in a land far far away, you meet someone special and meandering conversations flow into your soul, connecting you with a real friend... ",1));
-        chapters.add(new ChapterModel("Chapter7","Time stands still, the spark with your partner ignites and melts all obstacles away...",1));
-        chapters.add(new ChapterModel("Chapter69","Desires Overpower your fears and you live out the kinky life you always wanted...",2));
-        selectedChapter=chapters.get(0);
-        chapter_desc.setFactory(new TextViewFactory(R.style.ChapterTextView, true));
-        chapter_desc.setCurrentText(chapters.get(0).getDesc());
+        List<SituationModel> situations = new ArrayList<SituationModel>();
+        situations.add(new SituationModel("TheInterview","An Employer interviews an extremely unqualified but determined Candidate","Employer","Candidate"));
+        situations.add(new SituationModel("ScriptFight","The Movie Star and the Director have a bombastic arguement about the ENDING of the blockbuster movie! ","Movie Star","Director"));
+        situations.add(new SituationModel("OnTheRun","A Spy on the run discusses with the handler what to do next!","Spy","Handler"));
+        selectedSituation=situations.get(0);
+        situation_desc.setFactory(new TextViewFactory(R.style.SituationTextView, false));
+        situation_desc.setCurrentText(situations.get(0).getDesc());
         hashTagView.addOnTagSelectListener(new HashtagView.TagsSelectListener() {
             @Override
             public void onItemSelected(Object item,boolean selected) {
-                ChapterModel ch=(ChapterModel) item;
-                chapter_desc.setInAnimation(getContext(), R.anim.fade_in);
-                chapter_desc.setOutAnimation(getContext(), R.anim.fade_out);
-                chapter_desc.setText(ch.getDesc());
-                selectedChapter=ch;
-                setPixieCost();
+                SituationModel ch=(SituationModel) item;
+                situation_desc.setInAnimation(getContext(), R.anim.fade_in);
+                situation_desc.setOutAnimation(getContext(), R.anim.fade_out);
+                situation_desc.setText(ch.getDesc());
+                selectedSituation=ch;
             }
         });
-        hashTagView.setData(chapters, new HashtagView.DataStateTransform<ChapterModel>() {
+        hashTagView.setData(situations, new HashtagView.DataStateTransform<SituationModel>() {
 
             @Override
-            public CharSequence prepare(ChapterModel item) {
+            public CharSequence prepare(SituationModel item) {
                 SpannableString spannableString = new SpannableString("#" + item.getName());
                 spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimaryDark)), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 return spannableString;
             }
 
             @Override
-            public CharSequence prepareSelected(ChapterModel item) {
+            public CharSequence prepareSelected(SituationModel item) {
                 SpannableString spannableString = new SpannableString("#" + item.getName());
                 spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimaryDark)), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 return spannableString;
             }
-        },new HashtagView.DataSelector<ChapterModel>() {
+        },new HashtagView.DataSelector<SituationModel>() {
             @Override
-            public boolean preselect(ChapterModel item) {
-                return chapters.indexOf(item)  == 0;
+            public boolean preselect(SituationModel item) {
+                return situations.indexOf(item)  == 0;
             }
         });
     }
@@ -246,17 +308,20 @@ public class Home extends Fragment {
     }
 
     private void setPixieCost(){
-        long s1=selectedChapter.getCost();
-        long s2=dataHelper.getIsPrivate()?1:0;
-        long s3=0;
+        long s1=dataHelper.getIsPrivate()?1:0;
+        long s2=0;
         switch (getSelectedPartnerPreference()){
-            case "Man":s3=0;
+            case "Man":s2=4;
             break;
-            case"Woman":s3=1;
+            case"Woman":s2=4;
             break;
-            case "Any": s3=0;
+            case"Any":s2=0;
+            break;
         }
-        pixies_cost_switcher.setText(String.valueOf(s1+s2+s3));
+        int[] animV = new int[]{R.anim.slide_in_top, R.anim.slide_out_bottom};
+        pixies_cost_switcher.setInAnimation(getContext(), animV[0]);
+        pixies_cost_switcher.setOutAnimation(getContext(), animV[1]);
+        pixies_cost_switcher.setText(String.valueOf(String.valueOf(s1+s2+3)));
     }
 
     private String getSelectedPartnerPreference() {
@@ -269,11 +334,12 @@ public class Home extends Fragment {
      * @param user
      */
     private void updateWidgets(UserModel user){
+
         if (user != null) {
             partner.setText(String.valueOf(dataHelper.getPartners()));
             username.setText(user.getUsername());
             pixies.setText(String.valueOf(user.getPixies()));
-            karma.setText(String.valueOf(user.getKarma()));
+            skill.setText(String.valueOf(user.getSkill()));
             mask.setImageResource((int) user.getMask());
         }
         else{

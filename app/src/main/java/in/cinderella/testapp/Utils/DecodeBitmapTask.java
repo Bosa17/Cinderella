@@ -35,40 +35,41 @@ public class DecodeBitmapTask extends AsyncTask<Void, Void, Bitmap> {
 
     @Override
     protected Bitmap doInBackground(Void... voids) {
+        try {
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
 
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(filePath,options);
+            final int width = options.outWidth;
+            final int height = options.outHeight;
 
-        final int width = options.outWidth;
-        final int height = options.outHeight;
+            int inSampleSize = 1;
+            if (height > reqHeight || width > reqWidth) {
+                int halfWidth = width / 2;
+                int halfHeight = height / 2;
 
-        int inSampleSize = 1;
-        if (height > reqHeight || width > reqWidth) {
-            int halfWidth = width / 2;
-            int halfHeight = height / 2;
-
-            while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth
-                    && !isCancelled() )
-            {
-                inSampleSize *= 2;
+                while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth
+                        && !isCancelled()) {
+                    inSampleSize *= 2;
+                }
             }
-        }
 
-        if (isCancelled()) {
+            if (isCancelled()) {
+                return null;
+            }
+
+            options.inSampleSize = inSampleSize;
+            options.inJustDecodeBounds = false;
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
+            final Bitmap decodedBitmap = BitmapFactory.decodeFile(filePath, options);
+
+            final Bitmap result;
+            result = decodedBitmap;
+
+            return result;
+        }catch (Exception e){
             return null;
         }
-
-        options.inSampleSize = inSampleSize;
-        options.inJustDecodeBounds = false;
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-
-        final Bitmap decodedBitmap = BitmapFactory.decodeFile(filePath,options);
-
-        final Bitmap result;
-        result = decodedBitmap;
-
-        return result;
     }
 
     @Override

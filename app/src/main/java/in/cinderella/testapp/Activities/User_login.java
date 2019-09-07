@@ -43,8 +43,8 @@ public class User_login extends BaseActivity {
     private DataHelper dataHelper;
     private FacebookHelper facebookHelper;
     private UserModel userModel;
-    private static int RC_SUCCESS=2;
-
+    private static int RC_SUCCESS_MASK=2;
+    private static int RC_SUCCESS_QUOTE=3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,7 +133,6 @@ public class User_login extends BaseActivity {
 
                         if (Profile.getCurrentProfile()!=null)
                         {
-                            userModel.setFb_link(""+Profile.getCurrentProfile().getLinkUri());
                             userModel.setFb_dp(""+Profile.getCurrentProfile().getProfilePictureUri(200, 200));
                             Log.i("Login", "ProfilePic" + Profile.getCurrentProfile().getProfilePictureUri(200, 200));
                         }
@@ -151,16 +150,23 @@ public class User_login extends BaseActivity {
         request.executeAsync();
     }
     private void startSelect_mask(){
-        startActivityForResult(new Intent(this,Select_mask.class),RC_SUCCESS);
+        startActivityForResult(new Intent(this,Select_mask.class),RC_SUCCESS_MASK);
     }
-
+    private void startQuoteActivity(){
+        startActivityForResult(new Intent(this,QuoteActivity.class),RC_SUCCESS_QUOTE);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode==RC_SUCCESS){
+        if (requestCode==RC_SUCCESS_MASK){
             dataHelper.putMask(data.getIntExtra(getString(R.string.mask),R.drawable.dp_1));
+
+            startQuoteActivity();
+        }
+        else if (requestCode==RC_SUCCESS_QUOTE){
+            dataHelper.putQuote(data.getStringExtra(getString(R.string.quote)));
             startMainActivity();
         }
         else {

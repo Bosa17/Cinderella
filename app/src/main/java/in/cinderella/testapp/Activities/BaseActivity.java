@@ -1,5 +1,7 @@
 package in.cinderella.testapp.Activities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -9,13 +11,25 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.util.Log;
 import android.util.TypedValue;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.time.Duration;
+
+import in.cinderella.testapp.Fragments.CongoPixiesDialog;
 import in.cinderella.testapp.R;
+import in.cinderella.testapp.Utils.AlarmReceiver;
 import in.cinderella.testapp.Utils.DataHelper;
 import in.cinderella.testapp.Utils.SinchService;
 
@@ -25,8 +39,8 @@ public class BaseActivity extends AppCompatActivity implements ServiceConnection
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bindService();
         dataHelper=new DataHelper(this);
+        bindService();
         if (dataHelper.getTheme().equals(getString(R.string.temptation))){
             setTheme(R.style.ThemeTemptation);
         }
@@ -82,12 +96,7 @@ public class BaseActivity extends AppCompatActivity implements ServiceConnection
     private void bindService() {
         Intent serviceIntent = new Intent(this, SinchService.class);
         getApplicationContext().bindService(serviceIntent, this, BIND_AUTO_CREATE);
-
     }
-    protected void unbindService(){
-        getApplicationContext().unbindService(this);
-    }
-
 
 
     @Override
@@ -97,7 +106,6 @@ public class BaseActivity extends AppCompatActivity implements ServiceConnection
         getTheme().resolveAttribute(R.attr.themeName, outValue, true);
         String themeName=String.valueOf(outValue.string);
         if(!themeName.equals(dataHelper.getTheme())){
-            dataHelper.putPrevTheme(themeName);
             recreate();
         }
     }

@@ -10,13 +10,14 @@ import com.sinch.android.rtc.calling.Call;
 import com.sinch.android.rtc.calling.CallEndCause;
 import com.sinch.android.rtc.calling.CallListener;
 
-import android.content.Intent;
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,15 +30,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import in.cinderella.testapp.Fragments.TwoButtonsDialogFragment;
 import in.cinderella.testapp.Models.UserModel;
 import in.cinderella.testapp.R;
-import in.cinderella.testapp.Utils.AudioPlayer;
+import in.cinderella.testapp.Utils.AudioHelper;
 import in.cinderella.testapp.Utils.ConnectivityUtils;
 import in.cinderella.testapp.Utils.FirebaseHelper;
 import in.cinderella.testapp.Utils.SinchService;
@@ -62,12 +65,14 @@ public class PartnerCallActivity extends BaseActivity implements SensorEventList
     private TextView remoteUser_outgoing;
     private ImageView remoteMask_outgoing;
     private TextView remoteUserState_outgoing;
-    private AudioPlayer mAudioPlayer;
+    private AudioHelper mAudioHelper;
     private String name;
     private int mask;
+    private int pixieCost;
     private Call call;
     private UpdateCallDurationTask mDurationTask;
     private Timer mTimer;
+    private boolean isCallEstablished;
     private boolean isSensorPresent;
     private class UpdateCallDurationTask extends TimerTask {
 
@@ -76,6 +81,13 @@ public class PartnerCallActivity extends BaseActivity implements SensorEventList
             PartnerCallActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    if (call.getDetails().getDuration()/60==6 && call.getDetails().getDuration()%60==45)
+                    {
+                        ((Vibrator)getSystemService(Context.VIBRATOR_SERVICE)).vibrate(300);
+                        mDuration.setTextColor(getResources().getColor(R.color.the_temptation));
+                    }
+                    if (call.getDetails().getDuration()/60>=7 && call.getDetails().getDuration()%60==0)
+                        pixieCost+=3;
                     mDuration.setText(updateCallDuration());
                 }
             });
@@ -86,6 +98,10 @@ public class PartnerCallActivity extends BaseActivity implements SensorEventList
         super.onCreate(savedInstanceState);
         if(!ConnectivityUtils.isNetworkAvailable(this)){
             Toast.makeText(this,"No Network Available!",Toast.LENGTH_SHORT).show();
+            finish();
+        }
+        if (ConnectivityUtils.isNetworkSlow(this)){
+            Toast.makeText(this,"2G and 3G connections are not supported",Toast.LENGTH_SHORT).show();
             finish();
         }
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -109,7 +125,9 @@ public class PartnerCallActivity extends BaseActivity implements SensorEventList
         remoteUser_outgoing=findViewById(R.id.remoteUser_outgoing);
         remoteUserState_outgoing=findViewById(R.id.callState_outgoing);
         mDuration=findViewById(R.id.callDuration);
+        isCallEstablished=false;
         isSensorPresent=true;
+        pixieCost=3;
         try {
             mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
             mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
@@ -149,8 +167,7 @@ public class PartnerCallActivity extends BaseActivity implements SensorEventList
             incoming.setVisibility(View.GONE);
             outgoing.setVisibility(View.VISIBLE );
         }
-        mAudioPlayer = new AudioPlayer(this);
-        mAudioPlayer.playRingtone();
+        mAudioHelper = new AudioHelper(this);
 
     }
 
@@ -158,6 +175,8 @@ public class PartnerCallActivity extends BaseActivity implements SensorEventList
     @Override
     protected void onServiceConnected() {
         if(mCallType.equals("0")) {
+            getSinchServiceInterface().getAudioController().enableSpeaker();
+            mAudioHelper.playRingtone();
             mCallId = getIntent().getStringExtra(SinchService.CALL_ID);
             String mRemoteUserId = getIntent().getStringExtra("remoteUser");
             updateWidgetsIncoming(mRemoteUserId);
@@ -171,7 +190,10 @@ public class PartnerCallActivity extends BaseActivity implements SensorEventList
         }
         else if(mCallType.equals("1")){
             String mRemoteUserId = getIntent().getStringExtra("remoteUser");
-            call=getSinchServiceInterface().callUser(mRemoteUserId+"lol");
+            String userName=getIntent().getStringExtra("userName");
+            Map<String,String> header=new HashMap<>();
+            header.put("userName",StringUtils.extractFirstName(userName));
+            call=getSinchServiceInterface().callUserWithHeader(mRemoteUserId+"lol",header);
             if (call != null) {
                 remoteUserState_outgoing.setText(call.getState().toString());
                 call.addCallListener(new SinchCallListener());
@@ -193,6 +215,12 @@ public class PartnerCallActivity extends BaseActivity implements SensorEventList
             mSensorManager.unregisterListener(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (isCallEstablished && mCallType.equals("1"))
+            firebaseHelper.updatePixie(getIntent().getLongExtra("pixies",0)-pixieCost);
+    }
 
     @Override
     protected void onResume() {
@@ -252,7 +280,7 @@ public class PartnerCallActivity extends BaseActivity implements SensorEventList
     }
 
     private void answerClicked() {
-        mAudioPlayer.stopRingtone();
+        mAudioHelper.stopRingtone();
         if (call != null) {
             Log.d(TAG, "Answering call");
             call.answer();
@@ -262,16 +290,16 @@ public class PartnerCallActivity extends BaseActivity implements SensorEventList
     }
 
     private void declineClicked() {
-        mAudioPlayer.stopRingtone();
+        mAudioHelper.stopRingtone();
         endCall();
     }
     private  void endCall(){
         if (call!=null)
             call.hangup();
-        mAudioPlayer.stopRingtone();
-        Intent mainActivity = new Intent(PartnerCallActivity.this, MainActivity.class);
-        mainActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(mainActivity);
+        mAudioHelper.stopRingtone();
+        mAudioHelper.stopProgressTone();
+        if (isCallEstablished && mCallType.equals("1"))
+            firebaseHelper.updatePixie(getIntent().getLongExtra("pixies",0)-pixieCost);
         finish();
     }
 
@@ -354,6 +382,7 @@ public class PartnerCallActivity extends BaseActivity implements SensorEventList
         public void onCallEnded(Call call) {
             CallEndCause cause = call.getDetails().getEndCause();
             Log.d(TAG, "Call ended, cause: " + cause.toString());
+            mAudioHelper.stopProgressTone();
             try {
                 mDurationTask.cancel();
                 mTimer.cancel();
@@ -365,8 +394,10 @@ public class PartnerCallActivity extends BaseActivity implements SensorEventList
 
         @Override
         public void onCallEstablished(Call call) {
+            isCallEstablished=true;
             updateWidgetsProgressing();
-            mAudioPlayer.stopRingtone();
+            mAudioHelper.stopRingtone();
+            mAudioHelper.stopProgressTone();
             setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
             AudioController audioController = getSinchServiceInterface().getAudioController();
             audioController.disableSpeaker();
@@ -375,6 +406,7 @@ public class PartnerCallActivity extends BaseActivity implements SensorEventList
         @Override
         public void onCallProgressing(Call call) {
             Log.d(TAG, "Call progressing");
+            mAudioHelper.playProgressTone();
         }
 
         @Override

@@ -2,10 +2,14 @@ package in.cinderella.testapp.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.Selection;
+import android.text.Spanned;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,7 +20,11 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.appinvite.AppInviteInvitation;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 
 import in.cinderella.testapp.Fragments.TwoButtonsDialogFragment;
 import in.cinderella.testapp.R;
@@ -41,7 +49,8 @@ public class Setting extends BaseActivity {
     //vars
     private static int REQUEST_INVITE=100;
     private static int RC_SUCCESS=2;
-    private boolean isChanged=false;
+    private Uri mInvitationUrl;
+    private boolean isChanged;
     private DataHelper dataHelper;
 
     @Override
@@ -103,6 +112,20 @@ public class Setting extends BaseActivity {
                 saveData();
             }
         });
+        InputFilter filtertxt = new InputFilter() {
+            public CharSequence filter(CharSequence source, int start, int end,
+                                       Spanned dest, int dstart, int dend) {
+                for (int i = start; i < end; i++) {
+                    if (Character.isDigit(source.charAt(i))) {
+                        Toast.makeText(Setting.this,"No Numbers are allowed inside Quote",Toast.LENGTH_SHORT).show();
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
+
+        quote.setFilters(new InputFilter[]{filtertxt,new InputFilter.LengthFilter(40)});
         int position = quote.getText().length();
         Editable editObj= quote.getText();
         Selection.setSelection(editObj, position);
@@ -181,11 +204,30 @@ public class Setting extends BaseActivity {
     }
 
     private void onInviteClicked() {
+        String uid=dataHelper.getUID();
+        String link = "https://play.google.com/store/apps/details?id=org.telegram.messenger&hl=en/?invitedby=" + uid;
+        FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLink(Uri.parse(link))
+                .setDomainUriPrefix("https://khxt6.app.goo.gl")
+                .setAndroidParameters(
+                        new DynamicLink.AndroidParameters.Builder("com.example.android")
+                                .setMinimumVersion(125)
+                                .build())
+                .buildShortDynamicLink()
+                .addOnSuccessListener(new OnSuccessListener<ShortDynamicLink>() {
+                    @Override
+                    public void onSuccess(ShortDynamicLink shortDynamicLink) {
+                        mInvitationUrl = shortDynamicLink.getShortLink();
+                    }
+                });
+
         Intent intent = new AppInviteInvitation.IntentBuilder("Cinderella App invitation")
                 .setMessage("Come to Cinderella")
+                .setDeepLink(mInvitationUrl)
                 .setCallToActionText("Lets go!")
                 .build();
         startActivityForResult(intent, REQUEST_INVITE);
+
     }
     /**
      * gets the image url from the activity_partner_call bundle and displays the chosen image
@@ -207,6 +249,16 @@ public class Setting extends BaseActivity {
                 //Write your code if there's no result
             }
         }
+        if (requestCode == REQUEST_INVITE) {
+            if (resultCode == RESULT_OK) {
+                // Get the invitation IDs of all sent messages
+                String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
+
+            } else {
+                // Sending failed or it was canceled, show failure message to the user
+                // ...
+            }
+        }
     }//onActivityResult
 
     private void startSigninActivity(){
@@ -222,30 +274,13 @@ public class Setting extends BaseActivity {
     private void saveData(){
         dataHelper.putQuote(String.valueOf(quote.getText()));
         dataHelper.putMask((Integer) image.getTag());
-        Toast.makeText(this,"Saved Settings Successfully",Toast.LENGTH_SHORT).show();
         super.onBackPressed();
     }
 
     @Override
     public void onBackPressed() {
         if (isChanged) {
-            TwoButtonsDialogFragment.show(
-                    getSupportFragmentManager(),
-                    getString(R.string.dlg_save_confirm),
-                    new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
-                            super.onPositive(dialog);
-                            saveData();
-                        }
-
-                        @Override
-                        public void onNegative(MaterialDialog dialog) {
-                            super.onNegative(dialog);
-                            dataHelper.putTheme(dataHelper.getPrevTheme());
-                            Setting.super.onBackPressed();
-                        }
-                    });
+            saveData();
         }
         else
             super.onBackPressed();

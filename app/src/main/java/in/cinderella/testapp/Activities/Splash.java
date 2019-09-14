@@ -14,7 +14,7 @@ public class Splash extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, User_login.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         Thread timer=new Thread(){
             public void run(){

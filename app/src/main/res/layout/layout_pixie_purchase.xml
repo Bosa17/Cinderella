@@ -295,7 +295,7 @@
                 android:background="@drawable/button_bg"
                 android:layout_marginBottom="20dp"
                 android:layout_alignParentBottom="true"
-                android:text="₹249/month"/>
+                android:text="Coming Soon"/>
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

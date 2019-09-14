@@ -66,7 +66,7 @@ public class RewardedVideoAdDialog extends BlurPopupWindow implements RewardedVi
         watch_more_btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if (dataHelper.getAds_watched()<=3)
+                if (dataHelper.getAds_watched()<3)
                     watch_more();
                 else
                     Toast.makeText(getContext(), "lol", Toast.LENGTH_SHORT).show();

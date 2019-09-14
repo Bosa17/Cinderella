@@ -38,21 +38,36 @@
         android:orientation="vertical"
         android:visibility="gone"
         android:id="@+id/not_empty_partners">
-        <FrameLayout
-            android:layout_width="90dp"
-            android:layout_height="50dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp"
             android:layout_gravity="end"
-            android:background="@drawable/karma_switcher">
-
-            <TextSwitcher
-                android:id="@+id/skill_switcher"
+            android:orientation="horizontal">
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"/>
+                android:text="Charisma"
+                android:textSize="24sp"
+                android:layout_marginEnd="20dp"
+                android:layout_gravity="center_vertical"/>
+            <FrameLayout
+                android:layout_width="70dp"
+                android:layout_height="50dp"
+                android:background="@drawable/karma_switcher">
 
-        </FrameLayout>
+                <TextSwitcher
+                    android:id="@+id/skill_switcher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"/>
+
+
+
+            </FrameLayout>
+        </LinearLayout>
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"

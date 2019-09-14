@@ -51,7 +51,7 @@ public class IsPrivateDialog extends BlurPopupWindow {
             isPrivate.setVisibility(GONE);
             isNotPrivate.setVisibility(VISIBLE);
         }
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp.gravity = Gravity.CENTER;
         view.setLayoutParams(lp);
         view.setVisibility(INVISIBLE);

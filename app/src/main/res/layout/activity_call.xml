@@ -95,7 +95,7 @@
                 android:textColor="@color/white"
                 android:textSize="32sp"/>
             <TextView
-                android:id="@+id/situationOptionTextView"
+                android:id="@+id/sceneOptionTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom"

@@ -218,15 +218,32 @@ public class HashtagView extends LinearLayout {
         setData(list);
     }
 
+    public <T> boolean addItem(@NonNull T item) {
+        if (!isDynamic) return false;
 
-    public <T> void setData(@NonNull List<T> list, @NonNull DataTransform<T> transformer, @NonNull DataSelector<T> selector) {
-        this.selector = selector;
-        setData(list, transformer);
+        ItemData itemData = new ItemData<>(item);
+        if (viewMap != null && viewMap.values().contains(itemData)) return false;
+
+        if (viewMap != null) {
+            data.addAll(viewMap.values());
+            viewMap.clear();
+        }
+        data.add(itemData);
+
+        getViewTreeObserver().addOnPreDrawListener(preDrawListener);
+        return true;
     }
 
 
+    public boolean removeAll() {
+        if (!isDynamic || viewMap == null || viewMap.isEmpty()) return false;
 
+        data.clear();
+        viewMap.clear();
+        removeAllViews();
 
+        return true;
+    }
     public void addOnTagSelectListener(TagsSelectListener listener) {
         if (selectListeners == null) {
             selectListeners = new ArrayList<>();
@@ -234,147 +251,8 @@ public class HashtagView extends LinearLayout {
         selectListeners.add(listener);
     }
 
-
-
-
-    public void setItemMargin(int itemMargin) {
-        this.itemMargin = itemMargin;
-    }
-
-    public void setItemMarginRes(@DimenRes int marginRes) {
-        this.itemMargin = getResources().getDimensionPixelOffset(marginRes);
-    }
-
-    public void setItemPadding(int left, int right, int top, int bottom) {
-        this.itemPaddingLeft = left;
-        this.itemPaddingRight = right;
-        this.itemPaddingTop = top;
-        this.itemPaddingBottom = bottom;
-    }
-
-    public void setItemPaddingRes(@DimenRes int left, @DimenRes int right, @DimenRes int top, @DimenRes int bottom) {
-        this.itemPaddingLeft = getResources().getDimensionPixelOffset(left);
-        this.itemPaddingRight = getResources().getDimensionPixelOffset(right);
-        this.itemPaddingTop = getResources().getDimensionPixelOffset(top);
-        this.itemPaddingBottom = getResources().getDimensionPixelOffset(bottom);
-    }
-
-    public void setMinItemWidth(int minWidth) {
-        this.minItemWidth = minWidth;
-    }
-
-    public void setMinItemWidthRes(@DimenRes int minWidth) {
-        this.minItemWidth = getResources().getDimensionPixelOffset(minWidth);
-    }
-
-    public void setMaxItemWidth(int maxWidth) {
-        this.maxItemWidth = maxWidth;
-    }
-
-    public void setMaxItemWidthRes(@DimenRes int maxWidth) {
-        this.maxItemWidth = getResources().getDimensionPixelOffset(maxWidth);
-    }
-
-    public void setItemTextColor(int textColor) {
-        this.itemTextColorStateList = ColorStateList.valueOf(textColor);
-    }
-
-    public void setItemTextColorRes(@ColorRes int textColor) {
-        int colorValue = ContextCompat.getColor(getContext(), textColor);
-        this.itemTextColorStateList = ColorStateList.valueOf(colorValue);
-    }
-
-    public void setItemTextColorStateList(ColorStateList stateList) {
-        this.itemTextColorStateList = stateList;
-    }
-
-    public void setItemTextColorStateListRes(@ColorRes int colorStateRes) {
-        this.itemTextColorStateList = ContextCompat.getColorStateList(getContext(), colorStateRes);
-    }
-
-    public void setItemTextGravity(int itemTextGravity) {
-        this.itemTextGravity = itemTextGravity;
-    }
-
-    public void setItemTextSize(float textSize) {
-        this.itemTextSize = textSize;
-    }
-
-    public void setItemTextSizeRes(@DimenRes int textSize) {
-        this.itemTextSize = getResources().getDimension(textSize);
-    }
-
-    public void setRowMargin(int rowMargin) {
-        this.rowMargin = rowMargin;
-    }
-
-    public void setRowMarginRes(@DimenRes int rowMargin) {
-        this.rowMargin = getResources().getDimensionPixelOffset(rowMargin);
-    }
-
-    public void setRowGravity(@GravityMode int rowGravity) {
-        this.rowGravity = rowGravity;
-    }
-
-    public void setRowMode(@StretchMode int rowMode) {
-        this.rowMode = rowMode;
-    }
-
-    public void setRowDistribution(@RowDistribution int rowDistribution) {
-        this.rowDistribution = rowDistribution;
-    }
-
-    public void setComposeMode(@Compose int composeMode) {
-        this.composeMode = composeMode;
-        prepareComposeHelper();
-    }
-
-    public void setRowCount(int count) {
-        if (count >= 0) this.rowCount = count;
-    }
-
-    public void setBackgroundDrawable(@DrawableRes int backgroundDrawable) {
-        this.backgroundDrawable = backgroundDrawable;
-    }
-
     public void setBackgroundColor(@ColorRes int backgroundDrawable) {
         this.backgroundDrawable = backgroundDrawable;
-    }
-
-    public void setForegroundDrawable(@DrawableRes int foregroundDrawable) {
-        this.foregroundDrawable = foregroundDrawable;
-    }
-
-    public void setLeftDrawable(@DrawableRes int drawableRes) {
-        this.leftDrawable = drawableRes;
-    }
-
-    public void setLeftSelectedDrawable(@DrawableRes int drawableRes) {
-        this.leftSelectedDrawable = drawableRes;
-    }
-
-    public void setRightDrawable(@DrawableRes int drawableRes) {
-        this.rightDrawable = drawableRes;
-    }
-
-    public void setRightSelectedDrawable(@DrawableRes int drawableRes) {
-        this.rightSelectedDrawable = drawableRes;
-    }
-
-    public void setInSelectMode(boolean selectMode) {
-        isInSelectMode = selectMode;
-    }
-
-    public void setDynamicMode(boolean dynamicMode) {
-        isDynamic = dynamicMode;
-    }
-
-    public void setTypeface(Typeface typeface) {
-        this.typeface = typeface;
-    }
-
-    public void setEllipsize(@Ellipsize int ellipsizeMode) {
-        itemTextEllipsize = ellipsizeMode;
     }
 
     private void extractAttributes(AttributeSet attrs) {
@@ -778,43 +656,21 @@ public class HashtagView extends LinearLayout {
         void sortingLoop(int start, int end, int[] widths, boolean hasExtra);
     }
 
-    /**
-     * Listener used to handle item click events.
-     */
     public interface TagsClickListener {
         void onItemClicked(Object item);
     }
 
-    /**
-     * Listener used to handle item selection events.
-     */
     public interface TagsSelectListener {
         void onItemSelected(Object item, boolean selected);
     }
 
-    /**
-     * Prepare the formatting and appearance of data to be displayed on each item.
-     * As it returns {@link CharSequence}, item text can be represented as a {@link android.text.SpannableString}.
-     * Avoid using spans which may produce item width change (such as {@link android.text.style.BulletSpan} or {@link android.text.style.RelativeSizeSpan})
-     */
     public interface DataTransform<T> {
         CharSequence prepare(T item);
     }
-
-    /**
-     * Prepare the formatting and appearance of data to be displayed on each item, for both selected and
-     * non-selected state.
-     * As it returns {@link CharSequence}, item text can be represented as a {@link android.text.SpannableString}.
-     * Avoid using spans which may produce item width change (such as {@link android.text.style.BulletSpan} or {@link android.text.style.RelativeSizeSpan})
-     */
     public interface DataStateTransform<T> extends DataTransform<T> {
         CharSequence prepareSelected(T item);
     }
 
-    /**
-     * Allows to define whether item should be preselected or not. Returning true (or false) for exact
-     * item will cause initial state of this item to be set to selected (or unselected).
-     */
     public interface DataSelector<T> {
         boolean preselect(T item);
     }

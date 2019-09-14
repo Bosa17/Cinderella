@@ -2,6 +2,8 @@ package in.cinderella.testapp.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import in.cinderella.testapp.Fragments.InvitationDialog;
 import in.cinderella.testapp.Fragments.ProgressDialogFragment;
 import in.cinderella.testapp.Models.UserModel;
 import in.cinderella.testapp.R;
@@ -11,6 +13,7 @@ import in.cinderella.testapp.Utils.FacebookHelper;
 import in.cinderella.testapp.Utils.FirebaseHelper;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,12 +28,16 @@ import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,16 +56,18 @@ public class User_login extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth=FirebaseAuth.getInstance();
+        checkCurrentUser(mAuth.getCurrentUser());
+
         userModel=new UserModel();
         dataHelper=new DataHelper(this);
-        facebookHelper=new FacebookHelper(this);
+        facebookHelper=new FacebookHelper(this,new FacebookLoginCallback());
         setContentView(R.layout.activity_user_login);
         btn=findViewById(R.id.sign_in);
 
         btn.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 if(ConnectivityUtils.isNetworkAvailable(getApplicationContext()))
-                    facebookHelper.login(new FacebookLoginCallback());
+                    facebookHelper.login();
                 else
                     Toast.makeText(getApplicationContext(),"No Internet Connection",Toast.LENGTH_SHORT).show();
             }
@@ -68,19 +77,23 @@ public class User_login extends BaseActivity {
     @Override
     public void onStart() {
         super.onStart();
-        facebookHelper.onActivityStart();
     }
 
 
     @Override
     public void onStop() {
         super.onStop();
-        facebookHelper.onActivityStop();
+    }
+    private void checkCurrentUser(FirebaseUser user){
+        Log.d(TAG, "checkCurrentUser: checking if user is logged in.");
+
+        if(user != null){
+            startMainActivity();
+        }
     }
 
-
     private void handleFacebookAccessToken(AccessToken token) {
-        Log.d(TAG, "handleFacebookAccessToken:" + token);
+        Log.d(TAG, "handleFacebookAccessToken:" + token.getToken());
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
@@ -88,12 +101,13 @@ public class User_login extends BaseActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-//                            boolean isNewUser=true;
+                            boolean isNewUser=true;
                             // Sign in success, update UI with the signed-in user's information
-                            boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
+//                            boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
                             Log.d(TAG, "signInWithCredential:success");
                             if (isNewUser) {
                                 FirebaseUser user = mAuth.getCurrentUser();
+                                getDynamicLink();
                                 getFacebookDetails(user.getUid(), token);
                                 ProgressDialogFragment.hide(getSupportFragmentManager());
                             }
@@ -105,10 +119,40 @@ public class User_login extends BaseActivity {
 
                         } else {
                             // If sign in fails, display a message to the user.
+                            Toast.makeText(User_login.this, "Unexpected Problem during Sign Up! Try Again later!", Toast.LENGTH_SHORT).show();
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                         }
 
                         // ...
+                    }
+                });
+    }
+    private void getDynamicLink(){
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(getIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+                        // Get deep link from result (may be null if no link is found)
+                        Uri deepLink = null;
+                        if (pendingDynamicLinkData != null) {
+                            deepLink = pendingDynamicLinkData.getLink();
+                            Log.d("lol",deepLink.toString());
+                        }
+                        //
+                        // If the user isn't signed in and the pending Dynamic Link is
+                        // an invitation, sign in the user anonymously, and record the
+                        // referrer's UID.
+                        //
+                        if (deepLink != null) {
+                            String referrerUid = deepLink.getQueryParameter("invitedby");
+                            Log.d("lol",referrerUid);
+                            if (dataHelper.isRewardPossible()){
+                                dataHelper.putReferrer(referrerUid);
+                                Log.d("lol",dataHelper.getReferrer());
+                                dataHelper.putIsRewardPossible(false);
+                            }
+                        }
                     }
                 });
     }
@@ -124,7 +168,6 @@ public class User_login extends BaseActivity {
                     try {
                         Log.i("Response",response.toString());
 
-                        String email = object.getString("email");
                         String name = object.getString("name");
 //                        String gender=object.getString("gender");
 
@@ -145,7 +188,7 @@ public class User_login extends BaseActivity {
                 }
             });
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,email,name");
+        parameters.putString("fields", "id,name");
         request.setParameters(parameters);
         request.executeAsync();
     }
@@ -158,7 +201,6 @@ public class User_login extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode==RC_SUCCESS_MASK){
             dataHelper.putMask(data.getIntExtra(getString(R.string.mask),R.drawable.dp_1));
@@ -173,11 +215,13 @@ public class User_login extends BaseActivity {
             // Pass the activity result back to the Facebook SDK
             facebookHelper.onActivityResult(requestCode, resultCode, data);
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 
     private void startMainActivity(){
-        Intent intent=new Intent(this,MainActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }

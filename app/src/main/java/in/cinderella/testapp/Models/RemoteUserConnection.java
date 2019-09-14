@@ -2,7 +2,7 @@ package in.cinderella.testapp.Models;
 
 public class RemoteUserConnection {
     private String remoteUserName;
-    private long remoteUserSkill;
+    private long remoteUserCharisma;
     private String remoteUserId;
     private String remoteUserDp;
     private String remoteUserQuote;
@@ -35,12 +35,12 @@ public class RemoteUserConnection {
         this.remoteUserName = remoteUserName;
     }
 
-    public long getRemoteUserSkill() {
-        return remoteUserSkill;
+    public long getRemoteUserCharisma() {
+        return remoteUserCharisma;
     }
 
-    public void setRemoteUserSkill(long remoteUserSkill) {
-        this.remoteUserSkill = remoteUserSkill;
+    public void setRemoteUserCharisma(long remoteUserCharisma) {
+        this.remoteUserCharisma = remoteUserCharisma;
     }
 
     public String getRemoteUserDp() {

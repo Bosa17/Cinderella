@@ -4,6 +4,7 @@
     package="in.cinderella.testapp">
 
     <application
+        android:name=".Cinderella"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -34,7 +35,16 @@
         <!-- ca-app-pub-6258093238303404~8159625694 -->
         <activity
             android:name=".Activities.User_login"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:host="getcinderella.com"
+                    android:scheme="https"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Activities.Select_mask"
             android:screenOrientation="portrait" />
@@ -57,16 +67,7 @@
         </activity>
         <activity
             android:name=".Activities.MainActivity"
-            android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data
-                    android:host="khxt6.app.goo.gl"
-                    android:scheme="https"/>
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.PartnerCallActivity"
             android:screenOrientation="portrait" />

@@ -18,14 +18,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import androidx.annotation.NonNull;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.appinvite.AppInviteInvitation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 
+import in.cinderella.testapp.Fragments.ProgressDialogFragment;
 import in.cinderella.testapp.Fragments.TwoButtonsDialogFragment;
 import in.cinderella.testapp.R;
 import in.cinderella.testapp.Utils.DataHelper;
@@ -204,29 +209,43 @@ public class Setting extends BaseActivity {
     }
 
     private void onInviteClicked() {
+        ProgressDialogFragment.show(getSupportFragmentManager());
         String uid=dataHelper.getUID();
-        String link = "https://play.google.com/store/apps/details?id=org.telegram.messenger&hl=en/?invitedby=" + uid;
-        FirebaseDynamicLinks.getInstance().createDynamicLink()
-                .setLink(Uri.parse(link))
-                .setDomainUriPrefix("https://khxt6.app.goo.gl")
-                .setAndroidParameters(
-                        new DynamicLink.AndroidParameters.Builder("com.example.android")
-                                .setMinimumVersion(125)
-                                .build())
+        String sharelinktext  = "https://cinderella1234.page.link/?"+
+                "link=https://www.getcinderella.com/?invitedby="+uid+
+                "&apn="+ "in.cinderella.testapp"+
+                "&st="+"Cinderella Invitation Link"+
+                "&sd="+"Get 5 Pixies Reward"+
+                "&si="+"https://cinderellaapp.000webhostapp.com/ic_launcher.png";
+
+        Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                //.setLongLink(dynamicLink.getUri())
+                .setLongLink(Uri.parse(sharelinktext))  // manually
                 .buildShortDynamicLink()
-                .addOnSuccessListener(new OnSuccessListener<ShortDynamicLink>() {
+                .addOnCompleteListener(this, new OnCompleteListener<ShortDynamicLink>() {
                     @Override
-                    public void onSuccess(ShortDynamicLink shortDynamicLink) {
-                        mInvitationUrl = shortDynamicLink.getShortLink();
+                    public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+                        if (task.isSuccessful()) {
+                            // Short link created
+                            Uri shortLink = task.getResult().getShortLink();
+                            Uri flowchartLink = task.getResult().getPreviewLink();
+                            // share app dialog
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_SEND);
+                            intent.putExtra(Intent.EXTRA_TEXT, "Step into the magical world of Cinderella where your persona is only restricted by your imagination. Put on a mask and join the world's first social role-playing game. \n\nBy Clicking this link you will be taken to download the app and on signing up, both of us will get a reward \n\n"+ shortLink.toString());
+                            intent.setType("text/plain");
+                            Intent chooser = Intent.createChooser(intent, "Share");
+                            ProgressDialogFragment.hide(getSupportFragmentManager());
+                            startActivity(chooser);
+                        } else {
+                            // Error
+                            // ...
+                            ProgressDialogFragment.hide(getSupportFragmentManager());
+                            Toast.makeText(Setting.this,"Unexpected error ",Toast.LENGTH_SHORT).show();
+                            Log.e("main", " error "+task.getException() );
+                        }
                     }
                 });
-
-        Intent intent = new AppInviteInvitation.IntentBuilder("Cinderella App invitation")
-                .setMessage("Come to Cinderella")
-                .setDeepLink(mInvitationUrl)
-                .setCallToActionText("Lets go!")
-                .build();
-        startActivityForResult(intent, REQUEST_INVITE);
 
     }
     /**

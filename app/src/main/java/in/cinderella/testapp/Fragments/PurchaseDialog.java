@@ -60,7 +60,7 @@ public class PurchaseDialog extends BlurPopupWindow {
         get_premium.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                paymentsHelper.startPremiumPayment("249");
+//                paymentsHelper.startPremiumPayment("249");
             }
         });
         closeDialog.setOnClickListener(new View.OnClickListener(){

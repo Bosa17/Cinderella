@@ -132,7 +132,7 @@ public class PaymentsHelper  implements PaytmPaymentTransactionCallback {
             if (isPremiumPurchase)
                 dataHelper.putIsPremium(true);
             else
-                dataHelper.boughtPixies(pixies_bought);
+                dataHelper.addPixies(pixies_bought);
         }
         else
             Toast.makeText(mContext, "Faced Unexpected Problem! Try Again!", Toast.LENGTH_SHORT).show();

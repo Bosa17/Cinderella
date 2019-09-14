@@ -3,19 +3,25 @@ package in.cinderella.testapp.Utils;
 import android.content.Context;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 import in.cinderella.testapp.Models.RemoteUserConnection;
+import in.cinderella.testapp.Models.SceneModel;
 import in.cinderella.testapp.Models.UserModel;
 import in.cinderella.testapp.R;
 
 public class DataHelper {
     private Context mContext;
     private FirebaseHelper firebaseHelper;
+
 
     public DataHelper(Context context){
         mContext=context;
@@ -25,6 +31,7 @@ public class DataHelper {
 
     public void addNewUser(String userID,UserModel curr_user){
         putUID(userID);
+        saveScene();
         putMask((int)curr_user.getMask());
         putGender("Male");
         putQuote("");
@@ -34,7 +41,7 @@ public class DataHelper {
         putIsPrivate(false);
         putIsPremium(false);
         putPartner(0L);
-        putSkill(0L);
+        putCharisma(0L);
         putPixies(30L);
         firebaseHelper.addNewUser(userID,get());
     }
@@ -100,38 +107,79 @@ public class DataHelper {
             RemoteUserConnection remoteTemp = Hawk.get(mContext.getString(R.string.remote) + i);
         }
     }
-    public ArrayList<Long> getRemoteUserSkills(){
-        ArrayList<Long> Skills=new ArrayList<>();
+    public ArrayList<Long> getRemoteUserCharismas(){
+        ArrayList<Long> Charismas=new ArrayList<>();
         try {
             for (long i = getPartners(); i >= 1; i--)  {
                 RemoteUserConnection remoteTemp = Hawk.get(mContext.getString(R.string.remote) + i);
-                Skills.add(remoteTemp.getRemoteUserSkill());
+                Charismas.add(remoteTemp.getRemoteUserCharisma());
             }
         }catch(Exception e){
             e.printStackTrace();
         }
-        return Skills;
+        return Charismas;
+    }
+    public void saveScene(){
+        try {
+            firebaseHelper.getRef().child("scene")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            saveScene(dataSnapshot);
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+        }catch (Exception ignore){
+            putDefaultScenes();
+        }
     }
 
+    private void saveScene(DataSnapshot dataSnapshot) {
+        for (DataSnapshot sceneSnapshot : dataSnapshot.getChildren()) {
+            SceneModel tmp=sceneSnapshot.getValue(SceneModel.class);
+            Hawk.put(mContext.getResources().getString(R.string.scene)+sceneSnapshot.getKey(),tmp);
+        }
+
+    }
+
+
+    public ArrayList<SceneModel> getScenes(){
+        ArrayList<SceneModel> sceneModels =new ArrayList<>();
+        for (int i=1;i<=3;i++){
+            sceneModels.add(Hawk.get(mContext.getResources().getString(R.string.scene)+i));
+        }
+        return sceneModels;
+    }
+
+    public void putDefaultScenes(){
+        SceneModel defaultScene=new SceneModel("Loading","Please Wait Fetching Scenes Data...","Impaitence","Impaitence");
+        for (int i=1;i<=3;i++){
+            Hawk.put(mContext.getResources().getString(R.string.scene)+i,defaultScene);
+        }
+    }
     public void syncWithFirebase(DataSnapshot dataSnapshot){
         UserModel user=dataSnapshot.getValue(UserModel.class);
         putUID(firebaseHelper.getUserID());
         try {
-            putSkill(user.getSkill());
-            putUsername(user.getUsername());
+            putCharisma(user.getCharisma());
             putPixies(user.getPixies());
         }catch(Exception e){
-            putSkill(0);
+            putCharisma(0);
             Toast.makeText(mContext,"Some Error Occured!",Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void updateSkillWithUid(String uid, long skill){
-        firebaseHelper.updateSkillWithUid(uid,skill);
+    public void updateCharismaWithUid(String uid, long skill){
+        firebaseHelper.updateCharismaWithUid(uid,skill);
     }
-
-    public void boughtPixies(int pixies_bought){
-        firebaseHelper.updatePixie(getPixies()+pixies_bought);
+    public void updatePixieWithUid(String uid, long pixie){
+        firebaseHelper.updatePixieWithUid(uid,pixie);
+    }
+    public void addPixies(int pixies){
+        firebaseHelper.updatePixie(getPixies()+pixies);
     }
     public int rewardPixies(){
         int pixies_won=new Random().nextInt(4);
@@ -146,15 +194,11 @@ public class DataHelper {
             firebaseHelper.updatePixie(getPixies()+3);
     }
 
-    public void usePixies(long pixie_cost){
-        firebaseHelper.updatePixie(getPixies()-pixie_cost);
-    }
-
     public UserModel get(){
         UserModel user=new UserModel();
         user.setFb_dp(getFb_dp());
         user.setQuote(getQuote());
-        user.setSkill(getSkill());
+        user.setCharisma(getCharisma());
         user.setUsername(getUsername());
         user.setMask(getMask());
         user.setPremium(getIsPremium());
@@ -177,12 +221,12 @@ public class DataHelper {
         return Hawk.get(mContext.getString(R.string.partner),0L);
     }
 
-    public void putSkill(long skill){
-        Hawk.put(mContext.getString(R.string.skill), skill);
+    public void putCharisma(long charisma){
+        Hawk.put(mContext.getString(R.string.charisma), charisma);
     }
 
-    public long getSkill(){
-        return Hawk.get(mContext.getString(R.string.skill),0L);
+    public long getCharisma(){
+        return Hawk.get(mContext.getString(R.string.charisma),0L);
     }
     public long getPixies(){
         return Hawk.get(mContext.getString(R.string.pixies),0L);
@@ -241,6 +285,7 @@ public class DataHelper {
         return Hawk.get(mContext.getString(R.string.isPremium),false);
     }
     public void putIsPremium(boolean IsPremium){
+        firebaseHelper.updateIsPremium(IsPremium);
         Hawk.put(mContext.getString(R.string.isPremium),IsPremium);
     }
     public void putLast_sign_at(long last_sign_at){
@@ -264,5 +309,25 @@ public class DataHelper {
     public void putTutorialShown(boolean isTutorialShown){
         Hawk.put("isTutorialShown",isTutorialShown);
     }
+    public void putScene_timestamp(long scene_timestamp){
+        Hawk.put("scene_timestamp", scene_timestamp);
+    }
+
+    public long getScene_timestamp(){
+        return Hawk.get("scene_timestamp",0L);
+    }
+    public boolean isRewardPossible(){
+        return Hawk.get("isRewardPossible",true);
+    }
+    public void putIsRewardPossible(boolean isRewardPossible){
+        Hawk.put("isRewardPossible",isRewardPossible);
+    }
+    public void putReferrer(String referrer){
+        Hawk.put("referrer", referrer);
+    }
+    public String getReferrer(){
+        return Hawk.get("referrer","");
+    }
+
 }
 

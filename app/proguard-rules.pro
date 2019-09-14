@@ -20,6 +20,9 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 ##---------------Begin: proguard configuration for RenderScript  ----------
+-keepclasseswithmembernames class * {
+native <methods>;
+}
 -keep class androidx.renderscript.** { *; }
 ##---------------End: proguard configuration for RenderScript  ----------
 ##---------------Begin: proguard configuration for Paytm  ----------

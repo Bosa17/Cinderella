@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="How would you rate this user's Skill?"
+            android:text="How would you rate this user's Charisma?"
             android:textSize="20sp"
             android:layout_gravity="center_horizontal"/>
         <RatingBar
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:stepSize="1"
             android:layout_gravity="center"
-            android:id="@+id/remoteUserAddSkill"
+            android:id="@+id/remoteUserAddCharisma"
             />
         <Button
             android:layout_width="wrap_content"

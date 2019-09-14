@@ -21,7 +21,7 @@
 
     <!--firebase-->
     <string name="user_db">User</string>
-    <string name="channel">Channel</string>
+    <string name="scene">scene</string>
 
     <!--sinch-->
     <string name="sinch_key">4d488c48-c86f-4c7b-9779-e99f64f9f169</string>
@@ -37,7 +37,7 @@
     <!--user fields-->
     <string name="uid">uid</string>
     <string name="username">username</string>
-    <string name="skill">skill</string>
+    <string name="charisma">charisma</string>
     <string name="pixies">pixies</string>
     <string name="fb_dp">fb_dp</string>
     <string name="last_sign_at">last_sign_at</string>

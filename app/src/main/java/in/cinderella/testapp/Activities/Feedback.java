@@ -13,6 +13,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import in.cinderella.testapp.R;
+import in.cinderella.testapp.Utils.DataHelper;
 
 
 public class Feedback extends BaseActivity {
@@ -23,6 +24,8 @@ public class Feedback extends BaseActivity {
     private  final String NEW_LINE = "\n";
     private  final String DIVIDER_STRING = "----------";
     private  final String TYPE_OF_EMAIL = "message/rfc822";
+    private  final String USER_ID = "User ID: ";
+    private DataHelper dataHelper;
 
     public  StringBuilder getDeviseInfoForFeedback() {
         StringBuilder infoStringBuilder = new StringBuilder();
@@ -36,6 +39,7 @@ public class Feedback extends BaseActivity {
         infoStringBuilder.append(NEW_LINE);
         infoStringBuilder.append(DIVIDER_STRING);
         infoStringBuilder.append(NEW_LINE);
+        infoStringBuilder.append(USER_ID).append(dataHelper.getUID());
         return infoStringBuilder;
     }
     private RadioGroup feedbackTypesRadioGroup;
@@ -45,6 +49,7 @@ public class Feedback extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feedback);
+        dataHelper=new DataHelper(this);
         feedbackTypesRadioGroup= findViewById(R.id.feedback_types_radiogroup);
         send=findViewById(R.id.tvNext);
         Context mContext=this;

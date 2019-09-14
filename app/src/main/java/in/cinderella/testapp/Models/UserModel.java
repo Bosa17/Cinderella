@@ -4,17 +4,17 @@ public class UserModel {
     private String username;
     private String fb_dp;
     private String quote;
-    private long skill;
+    private long charisma;
     private boolean isPremium;
     private long mask;
     private long pixies;
 
 
-    public UserModel(String username, String fb_dp, String quote, long skill, boolean isPremium, long mask, long pixies) {
+    public UserModel(String username, String fb_dp, String quote, long charisma, boolean isPremium, long mask, long pixies) {
         this.username = username;
         this.fb_dp = fb_dp;
         this.quote = quote;
-        this.skill = skill;
+        this.charisma = charisma;
         this.isPremium = isPremium;
         this.mask = mask;
         this.pixies = pixies;
@@ -47,12 +47,12 @@ public class UserModel {
         this.fb_dp = fb_dp;
     }
 
-    public long getSkill() {
-        return skill;
+    public long getCharisma() {
+        return charisma;
     }
 
-    public void setSkill(long skill) {
-        this.skill = skill;
+    public void setCharisma(long charisma) {
+        this.charisma = charisma;
     }
 
     public boolean isPremium() {
@@ -87,7 +87,7 @@ public class UserModel {
                 "username='" + username + '\'' +
                 ", fb_dp='" + fb_dp + '\'' +
                 ", quote='" + quote + '\'' +
-                ", skill=" + skill +
+                ", charisma=" + charisma +
                 ", isPremium=" + isPremium +
                 ", mask=" + mask +
                 ", pixies=" + pixies +

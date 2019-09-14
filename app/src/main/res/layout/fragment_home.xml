@@ -36,22 +36,21 @@
                     android:layout_gravity="center_horizontal"
                     android:maxLines="1"
                     app:autoSizeTextType="uniform"
-                    android:text="1.  Choose Situation"
+                    android:text="Choose Scene"
                     android:textSize="30sp"
                     />
 
                 <in.cinderella.testapp.Utils.HashtagView
-                    android:id="@+id/channel_tags"
+                    android:id="@+id/scene_tags"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="30dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="30dp"
                     app:rowMode="wrap"
                     app:tagBackground="@drawable/chapter_bg"
                     app:selectionMode="true"
                     app:tagPaddingLeft="10dp"
                     app:tagPaddingRight="10dp"
-                    app:tagPaddingBottom="10dp"
-                    app:tagPaddingTop="10dp"
                     app:tagTextSize="20sp"
                     app:composeMode="origin"
                     app:rowDistribution="random"
@@ -62,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:textAlignment="center"
-                    android:id="@+id/chapter_desc"
+                    android:id="@+id/scene_desc"
                     android:background="@drawable/home_bg"
                     android:layout_marginBottom="30dp"
                     android:layout_marginStart="30dp"
@@ -77,8 +76,17 @@
                     android:layout_gravity="center_horizontal"
                     android:maxLines="1"
                     app:autoSizeTextType="uniform"
-                    android:text="2.  Partner Preferences"
+                    android:text="Partner Preferences"
                     android:textSize="30sp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:maxLines="1"
+                    app:autoSizeTextType="uniform"
+                    android:text="(Coming Soon)"
+                    android:textSize="20sp"
                     />
 
                 <RadioGroup
@@ -93,12 +101,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/option0"
+                        android:clickable="false"
+                        android:enabled="false"
                         android:text="Man"
                         android:textSize="20sp"/>
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/option1"
+                        android:clickable="false"
+                        android:enabled="false"
                         android:text="Woman"
                         android:textSize="20sp"/>
                     <RadioButton
@@ -115,7 +127,7 @@
                     android:layout_gravity="center_horizontal"
                     android:maxLines="1"
                     app:autoSizeTextType="uniform"
-                    android:text="3.  Shake to Connect "
+                    android:text="Shake to Connect "
                     android:textSize="30sp" />
 
                 <ImageView

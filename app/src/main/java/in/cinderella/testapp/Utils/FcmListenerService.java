@@ -1,5 +1,6 @@
 package in.cinderella.testapp.Utils;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 
 import com.google.firebase.messaging.RemoteMessage;
@@ -14,17 +15,24 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import java.util.Map;
+
+import in.cinderella.testapp.Activities.MainActivity;
 
 
 public class FcmListenerService extends FirebaseMessagingService {
     private final String PREFERENCE_FILE = "in.Cinderella.testapp.push.shared_preferences";
     SharedPreferences sharedPreferences;
+    private ServiceDataHelper serviceDataHelper;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage){
         Map data = remoteMessage.getData();
+        Log.d("lol", remoteMessage.toString());
         NotificationHelper notificationHelper=new NotificationHelper(getApplicationContext());
         if (SinchHelpers.isSinchPushPayload(data)) {
             new ServiceConnection() {
@@ -39,7 +47,6 @@ public class FcmListenerService extends FirebaseMessagingService {
                         if (sinchService != null) {
                             NotificationResult result = sinchService.relayRemotePushNotificationPayload(payload);
                             // handle result, e.g. show a notification or similar
-                            // here is example for notifying user about missed/canceled call:
                             if (result.isValid() && result.isCall()) {
                                 CallNotificationResult callResult = result.getCallResult();
                                 Map<String, String> customHeaders = callResult.getHeaders();
@@ -70,5 +77,16 @@ public class FcmListenerService extends FirebaseMessagingService {
                 }
             }.relayMessageData(data);
         }
+        else{
+            serviceDataHelper=new ServiceDataHelper(getApplicationContext());
+            serviceDataHelper.saveSituationsFromFCM(data);
+            notificationHelper.createFCMNotification(data);
+        }
+    }
+
+    @Override
+    public void onNewToken(@NonNull String s) {
+        super.onNewToken(s);
+        FirebaseMessaging.getInstance().subscribeToTopic("all");
     }
 }

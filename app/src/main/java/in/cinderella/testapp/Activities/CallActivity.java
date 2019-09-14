@@ -40,15 +40,13 @@ import com.sinch.android.rtc.calling.CallClientListener;
 import com.sinch.android.rtc.calling.CallEndCause;
 import com.sinch.android.rtc.calling.CallListener;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import in.cinderella.testapp.Fragments.TwoButtonsDialogFragment;
-import in.cinderella.testapp.Models.SituationModel;
+import in.cinderella.testapp.Models.SceneModel;
 import in.cinderella.testapp.Models.UserModel;
 import in.cinderella.testapp.R;
 import in.cinderella.testapp.Utils.AudioHelper;
@@ -65,7 +63,7 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
     private SinchClient sinchClient;
     private Call call;
     private Boolean isPrivate;
-    private SituationModel situation;
+    private SceneModel scene;
     private String partnerPreference;
     private long pixieCost;
     private SensorManager mSensorManager;
@@ -73,7 +71,7 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
     private String mRemotuserQuote;
     private String userID;
     private String mRemoteUserFbDp;
-    private long mRemoteUserSkill;
+    private long mRemoteUserCharisma;
     private String mRemoteUserName;
     private String mCallId=null;
     private AudioHelper mAudioHelper;
@@ -87,7 +85,7 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
     private LinearLayout call_progressing;
     private LinearLayout call_init;
     private TextView mDuration;
-    private TextView situationOptionTextView;
+    private TextView sceneOptionTextView;
     private TextView mRemoteUser;
     private ToggleButton ring_control;
     private ToggleButton speaker_control;
@@ -145,7 +143,7 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
         mAudioHelper =new AudioHelper(this);
         call_progressing=findViewById(R.id.call_progressing);
         call_init=findViewById(R.id.call_init);
-        situationOptionTextView=findViewById(R.id.situationOptionTextView);
+        sceneOptionTextView =findViewById(R.id.sceneOptionTextView);
         mRemoteUser=findViewById(R.id.remoteUser);
         mRemoteUserDp=findViewById(R.id.remoteUserDp);
         ring_control=findViewById(R.id.ring_control);
@@ -196,7 +194,22 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
         call_warn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TwoButtonsDialogFragment.show(
+                        getSupportFragmentManager(),
+                        "Do you want to report inappropriate behaviour and end call?",
+                        new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                super.onPositive(dialog);
+                                endCall();
+                            }
 
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                super.onNegative(dialog);
+
+                            }
+                        });
             }
         });
         mDuration=findViewById(R.id.callDuration);
@@ -207,20 +220,21 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
         }catch (Exception e){
             isSensorPresent=false;
         }
-        situation=(SituationModel) getIntent().getSerializableExtra("situation");
+        scene =(SceneModel) getIntent().getSerializableExtra("scene");
         Bundle callSettings = getIntent().getExtras();
         isPrivate = callSettings.getBoolean("isPrivate");
-        partnerPreference = callSettings.getString("partnerPreference");
+//        partnerPreference = callSettings.getString("partnerPreference");
         pixieCost = callSettings.getLong("pixieCost");
-        switch(partnerPreference){
-            case "Man": partnerPreference="1";
-                break;
-            case "Woman":partnerPreference="2";
-                break;
-            case "Any":partnerPreference="3";
-        }
+//        switch(partnerPreference){
+//            case "Man": partnerPreference="1";
+//                break;
+//            case "Woman":partnerPreference="2";
+//                break;
+//            case "Any":partnerPreference="3";
+//        }
+        partnerPreference="1";
         if(isPrivate)
-            partnerPreference="1"+partnerPreference;
+            partnerPreference="1"+"1";
         isCallEstablished=false;
         isAudioPlaying=false;
         isIncomingCall=false;
@@ -235,9 +249,9 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
         }
         if (permissionsGranted) {
             sinchClient.start();
-            makeCall(situation.getName(), partnerPreference);
+            makeCall(scene.getName(), partnerPreference);
         }
-        firebaseHelper.addUserToChannel(situation.getName(),partnerPreference);
+        firebaseHelper.addUserToChannel(scene.getName(),partnerPreference);
     }
     private void sinchInit(){
         sinchClient = Sinch.getSinchClientBuilder()
@@ -254,8 +268,10 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
 
     @Override
     protected void onDestroy() {
-        firebaseHelper.removeUserFromChannel(situation.getName());
+        firebaseHelper.removeUserFromChannel(scene.getName());
         mAudioHelper.stopRingtone();
+        if(isCallEstablished)
+            firebaseHelper.updatePixie(getIntent().getLongExtra("pixies",0)-pixieCost);
         if (sinchClient != null) {
             sinchClient.terminate();
             sinchClient = null;
@@ -314,7 +330,7 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.i("resultcode",""+requestCode);
                 sinchClient.start();
-                makeCall(situation.getName(),partnerPreference);
+                makeCall(scene.getName(),partnerPreference);
             }
             else {
                 Toast.makeText(getParent(),  "Permission Denied", Toast.LENGTH_SHORT).show();
@@ -353,13 +369,13 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
         }
     }
 
-    public void makeCall(String situation, String partnerPreference){
+    public void makeCall(String scene, String partnerPreference){
         if (!isAudioPlaying){
             mAudioHelper.playMusic();
             isAudioPlaying=true;
         }
         try {
-            firebaseHelper.getRef().child(situation)
+            firebaseHelper.getRef().child(scene)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -391,24 +407,24 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
             call=sinchClient.getCallClient().callUser(rcvrID);
             call.addCallListener( new mCallListener());
         }catch(Exception e){
-            firebaseHelper.addUserToChannel(situation.getName(),partnerPreference);
-            makeCall(situation.getName(),partnerPreference);
+            firebaseHelper.addUserToChannel(scene.getName(),partnerPreference);
+            makeCall(scene.getName(),partnerPreference);
         }
     }
 
     public void endCall() {
-        firebaseHelper.removeUserFromChannel(situation.getName());
+        firebaseHelper.removeUserFromChannel(scene.getName());
         mAudioHelper.stopRingtone();
         if (call!=null)
             call.hangup();
         if(isCallEstablished) {
+            firebaseHelper.updatePixie(getIntent().getLongExtra("pixies",0)-pixieCost);
             Intent intent = new Intent();
             intent.putExtra(getResources().getString(R.string.fb_dp), mRemoteUserFbDp);
             intent.putExtra(getResources().getString(R.string.username),mRemoteUserName);
-            intent.putExtra(getResources().getString(R.string.skill), mRemoteUserSkill);
+            intent.putExtra(getResources().getString(R.string.charisma), mRemoteUserCharisma);
             intent.putExtra(getResources().getString(R.string.quote),mRemotuserQuote);
             intent.putExtra(getResources().getString(R.string.uid),call.getRemoteUserId());
-            intent.putExtra("pixie_cost",pixieCost);
             intent.putExtra("isPrivate",isPrivate);
             setResult(Activity.RESULT_OK, intent);
         }
@@ -427,7 +443,7 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             UserModel remoteUser = dataSnapshot.getValue(UserModel.class);
-                            mRemoteUserSkill =remoteUser.getSkill();
+                            mRemoteUserCharisma =remoteUser.getCharisma();
                             mRemoteUserFbDp=remoteUser.getFb_dp();
                             mRemotuserQuote=remoteUser.getQuote();
                             mRemoteUserName=StringUtils.extractFirstName(remoteUser.getUsername());
@@ -449,9 +465,9 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
         mDurationTask = new UpdateCallDurationTask();
         mTimer.schedule(mDurationTask, 0, 500);
         if (isIncomingCall)
-            situationOptionTextView.setText(situation.getOption0());
+            sceneOptionTextView.setText(scene.getOption0());
         else
-            situationOptionTextView.setText(situation.getOption1());
+            sceneOptionTextView.setText(scene.getOption1());
     }
 
 
@@ -488,7 +504,7 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
             d(TAG, "CallActivity established");
             vibe.vibrate(300);
             isCallEstablished=true;
-            firebaseHelper.removeUserFromChannel(situation.getName());
+            firebaseHelper.removeUserFromChannel(scene.getName());
             updateWidgets(call.getRemoteUserId());
             mAudioHelper.stopRingtone();
             setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
@@ -514,7 +530,7 @@ public class CallActivity extends BaseActivity implements SensorEventListener {
         public void onIncomingCall(CallClient callClient, Call incomingCall) {
             call = incomingCall;
             try {
-                firebaseHelper.getRef().child(situation.getName())
+                firebaseHelper.getRef().child(scene.getName())
                         .child(call.getRemoteUserId())
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override

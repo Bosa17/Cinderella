@@ -5,12 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:padding="20dp"
         android:layout_marginTop="400dp"
         android:layout_centerHorizontal="true"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:id="@+id/welcome"
         android:orientation="vertical"
         >
@@ -18,66 +19,118 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Welcome To Cinderella"
+            android:layout_gravity="center_horizontal"
             android:layout_marginBottom="30dp"
             android:textSize="30sp"
             />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/home_bg"
+            android:padding="20dp"
+            android:layout_gravity="center"
+            android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal"  >
-            <ImageView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/seperator"/>
-            <TextView
+                android:layout_gravity="start"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal"  >
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/seperator"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    app:autoSizeTextType="uniform"
+                    android:text="The World's first Social Role-Playing Game."/>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                app:autoSizeTextType="uniform"
-                android:text="You will get 3 pixies every hour."/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal"  >
-            <ImageView
+                android:layout_gravity="start"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal"  >
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/seperator"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    app:autoSizeTextType="uniform"
+                    android:text="Charismatic Players from all around the world"/>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/seperator"/>
-            <TextView
+                android:layout_gravity="start"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal"  >
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/seperator"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    app:autoSizeTextType="uniform"
+                    android:text="Act out interesting scenes with your partner"/>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:layout_gravity="center_vertical"
-                app:autoSizeTextType="uniform"
-                android:text="In the meantime you can "/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal"  >
-            <ImageView
+                android:layout_gravity="start"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal"  >
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/seperator"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    app:autoSizeTextType="uniform"
+                    android:text="Make your stories as creative as possible"/>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/seperator"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                app:autoSizeTextType="uniform"
-                android:text="watch an ad to get upto 3 pixies!"/>
+                android:layout_gravity="start"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal"  >
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/seperator"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    app:autoSizeTextType="uniform"
+                    android:text="New Scenes Every 4 Hours!"/>
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
@@ -85,7 +138,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="220dp"
+        android:layout_marginTop="210dp"
         android:layout_marginStart="20dp"
         android:orientation="vertical">
         <TextView
@@ -104,7 +157,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="220dp"
+        android:layout_marginTop="210dp"
         android:layout_marginEnd="20dp"
         android:layout_alignParentEnd="true"
         android:orientation="vertical">

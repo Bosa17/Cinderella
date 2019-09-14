@@ -47,7 +47,7 @@ public class RemoteCardDialog extends BlurPopupWindow {
     private static Context mContext;
     private InterstitialAd mInterstitialAd;
     private static boolean mRemoteUserIsPrivate=false;
-    private static long mRemoteUserSkill;
+    private static long mRemoteUserCharisma;
     private Bitmap bmp;
     private RemoteUserConnection remoteUser;
     private DataHelper dataHelper;
@@ -57,7 +57,7 @@ public class RemoteCardDialog extends BlurPopupWindow {
     private LinearLayout addKarmaDialog;
     private LinearLayout remoteScv;
     private LinearLayout remotePrivate;
-    private RatingBar mUserAddSkill;
+    private RatingBar mUserAddCharisma;
     private ImageView scratch;
     private Button addKarmaConfirm;
     private ScratchCardView scv;
@@ -73,7 +73,7 @@ public class RemoteCardDialog extends BlurPopupWindow {
         dataHelper=new DataHelper(getContext());
         mUserRemote=view.findViewById(R.id.remoteUserName_scv);
         scratch = view.findViewById(R.id.scratch);
-        mUserAddSkill =view.findViewById(R.id.remoteUserAddSkill);
+        mUserAddCharisma =view.findViewById(R.id.remoteUserAddCharisma);
         addKarmaConfirm=view.findViewById(R.id.addKarmaConfirm);
         remoteScv=view.findViewById(R.id.remoteScv);
         remotePrivate=view.findViewById(R.id.remotePrivate);
@@ -158,7 +158,7 @@ public class RemoteCardDialog extends BlurPopupWindow {
         addKarmaConfirm.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                dataHelper.updateSkillWithUid(mRemoteUserId, mRemoteUserSkill +(long) mUserAddSkill.getRating());
+                dataHelper.updateCharismaWithUid(mRemoteUserId, mRemoteUserCharisma +(long) mUserAddCharisma.getRating());
                 updateWidgets();
             }
         });
@@ -170,7 +170,7 @@ public class RemoteCardDialog extends BlurPopupWindow {
                 remoteUser.setRemoteUserId(mRemoteUserId);
                 remoteUser.setRemoteUserQuote(mRemoteUserQuote);
                 remoteUser.setRemoteUserName(mRemoteUserName);
-                remoteUser.setRemoteUserSkill(mRemoteUserSkill);
+                remoteUser.setRemoteUserCharisma(mRemoteUserCharisma);
                 if (Permissions.hasStoragePermissions(getContext())) {
                     remoteUser.setRemoteUserDp(FileUtils.storeImage(bmp));
                 }
@@ -243,12 +243,12 @@ public class RemoteCardDialog extends BlurPopupWindow {
     }
 
     public static class Builder extends BlurPopupWindow.Builder<RemoteCardDialog> {
-        public Builder(Context context,String ruid,long skill,String url,String name,String quote,boolean isPrivate) {
+        public Builder(Context context,String ruid,long charisma,String url,String name,String quote,boolean isPrivate) {
             super(context);
             mContext=context;
             mRemoteUserFb_dp=url;
             mRemoteUserId=ruid;
-            mRemoteUserSkill =skill;
+            mRemoteUserCharisma =charisma;
             mRemoteUserName=name;
             mRemoteUserQuote=quote;
             mRemoteUserIsPrivate=isPrivate;

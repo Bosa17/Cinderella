@@ -7,9 +7,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,6 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
@@ -37,8 +42,6 @@ import me.majiajie.pagerbottomtabstrip.PageNavigationView;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
 
     static NavigationController navigationController;
     private final int[] PAGE_IDS = {
@@ -52,52 +55,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FirebaseApp.initializeApp(this);
-        mAuth = FirebaseAuth.getInstance();
-        checkCurrentUser(mAuth.getCurrentUser());
-        FirebaseDynamicLinks.getInstance()
-                .getDynamicLink(getIntent())
-                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
-                    @Override
-                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
-                        // Get deep link from result (may be null if no link is found)
-                        Uri deepLink = null;
-                        if (pendingDynamicLinkData != null) {
-                            deepLink = pendingDynamicLinkData.getLink();
-                        }
-                        //
-                        // If the user isn't signed in and the pending Dynamic Link is
-                        // an invitation, sign in the user anonymously, and record the
-                        // referrer's UID.
-                        //
-                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                        if (user == null
-                                && deepLink != null
-                                && deepLink.getBooleanQueryParameter("invitedby", false)) {
-                            String referrerUid = deepLink.getQueryParameter("invitedby");
-//                            createAnonymousAccountWithReferrerInfo(referrerUid);
-                        }
-                    }
-                });
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                //check if the user is logged in
-                checkCurrentUser(user);
-
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-                // ...
-            }
-        };
         setContentView(R.layout.activity_main);
         PageNavigationView mNavigation = findViewById(R.id.navigation);
 
@@ -108,33 +65,7 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    private void checkCurrentUser(FirebaseUser user){
-        Log.d(TAG, "checkCurrentUser: checking if user is logged in.");
 
-        if(user == null){
-            Intent intent = new Intent(this, User_login.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        }
-    }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-    }
-
-    //checking to see if user is already logged in else goes to user login activity
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-        checkCurrentUser(mAuth.getCurrentUser());
-    }
     //Initializing Bottom Navigation Components
     private void initBottomNavigation(PageNavigationView pageNavigationView) {
         TypedValue typedValue=new TypedValue();
@@ -158,6 +89,18 @@ public class MainActivity extends BaseActivity {
                 .build();
         mNavController.navigate(PAGE_IDS[2],null,options);
     }
+
+    public  void refreshHome(){
+        NavOptions options = new NavOptions.Builder()
+                .setLaunchSingleTop(true)
+                .setEnterAnim(R.anim.nav_default_enter_anim)
+                .setExitAnim(R.anim.nav_default_exit_anim)
+                .setPopEnterAnim(R.anim.nav_default_pop_enter_anim)
+                .setPopExitAnim(R.anim.nav_default_pop_exit_anim)
+                .build();
+        mNavController.navigate(PAGE_IDS[0],null,options);
+    }
+
 
 
     private void checkPermission() {
@@ -186,7 +129,6 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
-
 
 }
 

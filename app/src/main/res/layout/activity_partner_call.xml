@@ -11,10 +11,9 @@
         android:id="@+id/incoming"
         android:weightSum="6">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:orientation="vertical"
             android:background="@color/colorPrimary"
             android:layout_weight="2"
             >
@@ -23,7 +22,7 @@
                 android:id="@+id/remoteUser_incoming"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
                 android:layout_margin="30dp"
                 android:textColor="@color/white"
                 android:textSize="30sp"/>
@@ -32,14 +31,29 @@
                 android:id="@+id/callState_incoming"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/remoteUser_incoming"
                 android:text="Incoming call"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textAllCaps="true"
                 />
+            <ImageView
+                android:id="@+id/block"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/block_bg"
+                android:src="@drawable/ic_block"
+                />
 
-        </LinearLayout>
+        </RelativeLayout>
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="0dp"
@@ -255,10 +269,10 @@
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="30dp"
+                android:id="@+id/call_warn"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_back"/>
-
+                android:src="@drawable/ic_warning"/>
         </LinearLayout>
 
     </LinearLayout>

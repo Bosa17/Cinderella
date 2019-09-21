@@ -1,17 +1,20 @@
 <resources>
     <string name="app_name">Cinderella</string>
     <string name="tag">Cinderella</string>
-
+    <!--misc-->
     <string name="next">Next</string>
     <string name="selected_image">selected_image</string>
-    <string name="feedback">Feedback</string>
-    <string name="image_post">Image Post</string>
-    <string name="settings">Settings</string>
-    <string name="select_mask">Select Mask</string>
-    <string name="user_account">User Account</string>
     <string name="save">Save</string>
     <string name="search">Search…</string>
+    <string name="insufficient_pixies">You do not have sufficient Pixies. Get Pixies from the store!</string>
+    <string name="continue_string">Continue</string>
+
+    <!--Activity/Fragment Titles-->
+    <string name="user_account">User Account</string>
     <string name="partners">Partners</string>
+    <string name="contact_support">Contact Support</string>
+    <string name="settings">Settings</string>
+    <string name="select_mask">Select Mask</string>
 
     <!--facebook-->
     <string name="facebook_app_id">858470831208589</string>
@@ -40,15 +43,18 @@
     <string name="charisma">charisma</string>
     <string name="pixies">pixies</string>
     <string name="fb_dp">fb_dp</string>
-    <string name="last_sign_at">last_sign_at</string>
     <string name="isPremium">isPremium</string>
     <string name="gender">gender</string>
     <string name="mask">mask</string>
     <string name="quote">quote</string>
-    <string name="remote">remoteUser</string>
 
     <!--offline user fields-->
     <string name="partner">partner</string>
+    <string name="remote">remoteUser</string>
+    <string name="last_sign_at">last_sign_at</string>
+    <string name="blockUser">blockUser</string>
+    <string name="blocked">blocked</string>
+
     <!--Themes-->
     <string name="royalty">royalty</string>
     <string name="temptation">temptation</string>
@@ -57,20 +63,20 @@
     <string name="passion">passion</string>
     <string name="boss">boss</string>
     <string name="babe">babe</string>
-    <!-- Feedback -->
-    <string name="feedback_title">Feedback Description</string>
-    <string name="feedback_label">
+
+    <!-- ContactSupport -->
+    <string name="contact_support_title">Description</string>
+    <string name="contact_support_header">
         In your email please provide the steps of bug/error reproduction. Let us know how often it occurs and if it gives any error code.
         This information will help us to find the source of the issue. Kindly give us as many details as possible. Thank you.
     </string>
     <string name="feedback_bug_type">Bug</string>
-    <string name="feedback_improvement_type">Service Support</string>
-    <string name="feedback_suggestion_type">Request Feature/Situation</string>
-    <string name="feedback_support_email">ababhirupbose21@gmail.com</string>
-    <string name="feedback_choose_email_provider">Choose an email provider:</string>
-    <string name="feedback_write_email">Write an Email</string>
-    <string name="insufficient_pixies">You do not have sufficient Pixies. Get Pixies from the store!</string>
-    <string name="continue_string">Continue</string>
+    <string name="customer_support">Service Support</string>
+    <string name="request_scene">Request Scene</string>
+    <string name="support_email">ababhirupbose21@gmail.com</string>
+    <string name="choose_email_provider">Choose an email provider:</string>
+    <string name="write_email">Write an Email</string>
+
 
 
 </resources>

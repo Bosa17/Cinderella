@@ -55,7 +55,7 @@
             <FrameLayout
                 android:layout_width="70dp"
                 android:layout_height="50dp"
-                android:background="@drawable/karma_switcher">
+                android:background="@drawable/charisma_switcher">
 
                 <TextSwitcher
                     android:id="@+id/skill_switcher"
@@ -76,7 +76,7 @@
             android:clipChildren="false"
             android:overScrollMode="never"
             app:layoutManager="com.ramotion.cardslider.CardSliderLayoutManager"
-            app:viewUpdater="in.cinderella.testapp.Utils.CardsUpdater"/>
+            app:viewUpdater="com.getcinderella.app.Utils.CardsUpdater"/>
 
         <FrameLayout
             android:layout_width="match_parent"

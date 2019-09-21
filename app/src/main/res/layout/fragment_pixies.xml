@@ -53,6 +53,7 @@
                         android:layout_gravity="center_vertical"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
+                        android:singleLine="true"
                         app:autoSizeTextType="uniform"
                         android:text="You will get 3 pixies every hour."/>
                 </LinearLayout>
@@ -70,9 +71,10 @@
                         android:layout_height="wrap_content"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
+                        android:singleLine="true"
                         android:layout_gravity="center_vertical"
                         app:autoSizeTextType="uniform"
-                        android:text="In the meantime you can "/>
+                        android:text="Invite friends to get 5 pixies each "/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -89,22 +91,39 @@
                         android:layout_gravity="center_vertical"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
+                        android:singleLine="true"
                         app:autoSizeTextType="uniform"
                         android:text="watch an ad to get upto 3 pixies!"/>
                 </LinearLayout>
 
             </LinearLayout>
 
-            <Button
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:id="@+id/getpixie"
-                android:background="@drawable/button_bg"
-                android:layout_marginBottom="20dp"
                 android:layout_alignParentBottom="true"
-                android:text="Watch Ad "/>
+                android:layout_marginBottom="20dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:weightSum="2">
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/getpixie"
+                    android:layout_marginEnd="7dp"
+                    android:background="@drawable/button_bg"
+                    android:layout_weight="1"
+                    android:text="Watch Ad "/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/inviteNEarn"
+                    android:layout_marginStart="7dp"
+                    android:background="@drawable/button_bg"
+                    android:layout_weight="1"
+                    android:text="Invite Friends "/>
+            </LinearLayout>
+
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>

@@ -48,6 +48,7 @@
                     android:layout_gravity="center_vertical"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
+                    android:textColor="@color/white"
                     app:autoSizeTextType="uniform"
                     android:text="The World's first Social Role-Playing Game."/>
             </LinearLayout>
@@ -67,6 +68,7 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
+                    android:textColor="@color/white"
                     android:layout_gravity="center_vertical"
                     app:autoSizeTextType="uniform"
                     android:text="Charismatic Players from all around the world"/>
@@ -87,6 +89,7 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
+                    android:textColor="@color/white"
                     android:layout_gravity="center_vertical"
                     app:autoSizeTextType="uniform"
                     android:text="Act out interesting scenes with your partner"/>
@@ -107,6 +110,7 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
+                    android:textColor="@color/white"
                     android:layout_gravity="center_vertical"
                     app:autoSizeTextType="uniform"
                     android:text="Make your stories as creative as possible"/>
@@ -128,6 +132,7 @@
                     android:layout_gravity="center_vertical"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
+                    android:textColor="@color/white"
                     app:autoSizeTextType="uniform"
                     android:text="New Scenes Every 4 Hours!"/>
             </LinearLayout>

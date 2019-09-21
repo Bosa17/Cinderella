@@ -4,14 +4,14 @@
     app:startDestination="@id/Home_fragment">
     <fragment
         android:id="@+id/Home_fragment"
-        android:name="in.cinderella.testapp.Fragments.Home"
+        android:name="com.getcinderella.app.Fragments.Home"
         android:label="Home_Fragment" />
     <fragment
         android:id="@+id/Pixies_fragment"
-        android:name="in.cinderella.testapp.Fragments.Pixies"
+        android:name="com.getcinderella.app.Fragments.Pixies"
         android:label="Pixies_fragment" />
     <fragment
         android:id="@+id/Partner_fragment"
-        android:name="in.cinderella.testapp.Fragments.Partner"
+        android:name="com.getcinderella.app.Fragments.Partner"
         android:label="Partner_fragment" />
 </navigation>

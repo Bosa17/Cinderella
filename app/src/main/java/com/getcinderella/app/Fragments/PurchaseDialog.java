@@ -103,6 +103,7 @@ public class PurchaseDialog extends BlurPopupWindow {
         public Builder(Context context) {
             super(context);
             this.setScaleRatio(0.25f).setBlurRadius(0).setTintColor(context.getColor(R.color.colorPrimaryLight))
+                    .setDismissOnClickBack(true)
                     .setDismissOnTouchBackground(false);
         }
 

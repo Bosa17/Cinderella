@@ -20,10 +20,10 @@ import androidx.annotation.NonNull;
 
 import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
-import com.getcinderella.app.Activities.PartnerCallActivity;
+import com.getcinderella.app.Activities.PartnerChatActivity;
 import com.getcinderella.app.R;
 import com.getcinderella.app.Utils.DataHelper;
-import com.getcinderella.app.Utils.SinchService;
+import com.getcinderella.app.Utils.ChatService;
 
 public class PartnerDialog extends BlurPopupWindow {
 //    vars
@@ -52,12 +52,12 @@ public class PartnerDialog extends BlurPopupWindow {
                     Toast.makeText(getContext(), R.string.insufficient_pixies, Toast.LENGTH_LONG).show();
                 }
                 else {
-                    Intent intent = new Intent(getContext(), PartnerCallActivity.class);
+                    Intent intent = new Intent(getContext(), PartnerChatActivity.class);
                     intent.putExtra("remoteUser", remoteUserId);
                     intent.putExtra("userName", dataHelper.getUsername());
                     intent.putExtra("isPremium",dataHelper.getIsPremium());
                     intent.putExtra("pixies",dataHelper.getPixies());
-                    intent.putExtra(SinchService.CALL_TYPE, "1");
+                    intent.putExtra(ChatService.CHAT_TYPE, "1");
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().startActivity(intent);
                 }
@@ -167,7 +167,7 @@ public class PartnerDialog extends BlurPopupWindow {
             super(context);
             dp_file=filePath;
             remoteUserId=uid;
-            this.setScaleRatio(0.75f).setBlurRadius(0).setTintColor(context.getColor(R.color.colorPrimary))
+            this.setScaleRatio(0.75f).setBlurRadius(0).setTintColor(context.getColor(R.color.colorPrimary)).setDismissOnClickBack(true)
                     .setDismissOnTouchBackground(false);
         }
 

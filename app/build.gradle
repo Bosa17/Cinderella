@@ -1,12 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
+    packagingOptions {
+        exclude 'AndroidManifest.xml' //This fixes a bug in FAN 5.0.1
+    }
     signingConfigs {
         debug {
-            storeFile file('/home/bosa/Documents/cinderella/cinderella.jks')
-            storePassword 'lotus1998'
-            keyAlias = 'key0'
-            keyPassword 'lotus1998'
+            storeFile file('/home/bosa/Documents/cinderella/getcinderellakey.jks')
+            storePassword 'getcinderellakey'
+            keyAlias = 'release'
+            keyPassword 'getcinderellakey'
         }
     }
     compileOptions {
@@ -18,7 +21,7 @@ android {
         applicationId "com.getcinderella.app"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 1
+        versionCode 2
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         renderscriptTargetApi 23
@@ -34,15 +37,16 @@ android {
 repositories {
     jcenter()
     maven { url "https://jitpack.io" }
+    flatDir {
+        dirs '../../libs'
+    }
 }
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'me.majiajie:pager-bottom-tab-strip:2.3.0'
     implementation 'com.google.android.material:material:1.1.0-alpha04'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.firebase:firebase-invites:17.0.0'
-    implementation 'com.google.firebase:firebase-messaging:20.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.2-alpha01'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.2-alpha01'
@@ -58,23 +62,23 @@ dependencies {
     implementation "android.arch.navigation:navigation-ui:$nav_version"
 
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.firebase:firebase-core:17.1.0'
-    implementation 'com.google.firebase:firebase-auth:19.0.0'
-    implementation 'com.google.firebase:firebase-database:19.0.0'
-    implementation 'com.google.firebase:firebase-ads:18.1.1'
+    implementation 'com.google.firebase:firebase-core:17.2.0'
+    implementation 'com.google.firebase:firebase-auth:19.1.0'
+    implementation 'com.google.firebase:firebase-database:19.1.0'
+    implementation 'com.google.firebase:firebase-invites:17.0.0'
+    implementation 'com.google.firebase:firebase-messaging:20.0.0'
+    implementation 'com.google.firebase:firebase-ads:18.2.0'
     implementation 'com.google.firebase:firebase-firestore:21.1.1'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     implementation 'com.facebook.android:facebook-login:4.42.0'
-    implementation project(':sinch-android-rtc-3.13.0')
     implementation "com.afollestad.material-dialogs:core:0.9.0.1"
     implementation 'com.github.ybq:Android-SpinKit:1.2.0'
     implementation "com.orhanobut:hawk:2.0.1"
     implementation 'com.github.cooltechworks:ScratchView:v1.1'
     implementation 'com.kyleduo.blurpopupwindow:blurpopupwindow:1.0.9'
     implementation 'com.ramotion.cardslider:card-slider:0.3.1'
-    implementation('com.paytm:pgplussdk:1.3.3') {
-        transitive = true;
-    }
 
 }
 apply plugin: 'com.google.gms.google-services'
+//com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
+

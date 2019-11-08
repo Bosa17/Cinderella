@@ -12,19 +12,4 @@ public class ConnectivityUtils {
         return connectivityManager != null && connectivityManager.getActiveNetworkInfo() != null && connectivityManager
                 .getActiveNetworkInfo().isConnectedOrConnecting();
     }
-
-    public static boolean isNetworkSlow(Context context){
-        boolean isSlow=false;
-        ConnectivityManager connectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo network = connectivityManager.getActiveNetworkInfo();
-        int netSubType = network.getSubtype();
-        if(netSubType == TelephonyManager.NETWORK_TYPE_GPRS ||
-                netSubType == TelephonyManager.NETWORK_TYPE_EDGE ||
-                netSubType == TelephonyManager.NETWORK_TYPE_1xRTT) {
-            //user is com slow network
-            isSlow=true;
-        }
-        return isSlow;
-    }
 }

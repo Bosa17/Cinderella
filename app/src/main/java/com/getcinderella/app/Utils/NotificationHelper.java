@@ -14,7 +14,11 @@ import androidx.core.app.NotificationCompat;
 import java.util.Map;
 
 import com.getcinderella.app.Activities.Splash;
+import com.getcinderella.app.Models.UserModel;
 import com.getcinderella.app.R;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class NotificationHelper {
     private Context mContext;
@@ -22,8 +26,21 @@ public class NotificationHelper {
     private static final String CHANNEL_ONE_NAME = "Cinderella Notifications";
     private static final String CHANNEL_TWO_NAME = "Cinderella Missed Calls";
 
-    public void createMissedCallNotification(String userId) {
-        buildNotification("A Partner tried contacting you","You have missed a call from your partner "+userId,CHANNEL_TWO_NAME,(int)System.currentTimeMillis());
+    public void createMissedCallNotification(String name) {
+        if (StringUtils.isName(name))
+            buildNotification("A Partner tried contacting you","You have missed a chat from your partner "+StringUtils.removeFirstChar(name),CHANNEL_TWO_NAME,(int)System.currentTimeMillis());
+        else{
+            FirebaseFirestore.getInstance().collection(mContext.getString(R.string.user_db))
+                    .document(StringUtils.removeFirstChar(name))
+                    .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            UserModel remote = documentSnapshot.toObject(UserModel.class);
+                            String n=StringUtils.extractFirstName(remote.getUsername());
+                            buildNotification("A Partner tried contacting you","You have missed a chat from your partner "+n,CHANNEL_TWO_NAME,(int)System.currentTimeMillis());
+                        }
+                    });
+        }
     }
 
     public void createFCMNotification(Map data) {

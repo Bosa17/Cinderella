@@ -36,7 +36,7 @@
                     android:layout_gravity="center_horizontal"
                     android:maxLines="1"
                     app:autoSizeTextType="uniform"
-                    android:text="Choose Scene"
+                    android:text="Available Scenes"
                     android:textSize="30sp"
                     />
 
@@ -47,14 +47,14 @@
                     android:layout_marginTop="30dp"
                     android:layout_marginBottom="30dp"
                     app:rowMode="wrap"
-                    app:tagBackground="@drawable/chapter_bg"
+                    app:tagBackground="@drawable/scene_tag_bg"
                     app:selectionMode="true"
                     app:tagPaddingLeft="10dp"
                     app:tagPaddingRight="10dp"
                     app:tagTextSize="20sp"
                     app:composeMode="origin"
                     app:rowDistribution="random"
-                    app:tagTextColor="@color/white" />
+                    app:tagTextColor="@color/colorPrimary" />
 
                 <TextSwitcher
                     android:layout_width="wrap_content"

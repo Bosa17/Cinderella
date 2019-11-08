@@ -2,6 +2,7 @@ package com.getcinderella.app.Utils;
 
 import android.content.Context;
 
+import com.getcinderella.app.Models.PreferenceModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -11,7 +12,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.getcinderella.app.Models.UserModel;
 import com.getcinderella.app.R;
-
 
 public class FirebaseHelper {
     private static String TAG="FirebaseHelper.class";
@@ -68,19 +68,28 @@ public class FirebaseHelper {
 
     }
     public void addUserToChannel(String scene,String partnerPreference){
+        PreferenceModel pm=new PreferenceModel(partnerPreference,System.currentTimeMillis());
         myRef.child(scene)
-                .child(userID).setValue(partnerPreference);
+                .child(userID)
+                .setValue(pm);
     }
 
     public void removeUserFromChannel(String scene){
         myRef.child(scene)
                 .child(userID).removeValue();
-        myRef.child("m")
-                .child(userID).removeValue();
+        removeUserFromMatched();
     }
     public void removeUserFromMatched(){
         myRef.child("m")
+                .child(userID). removeValue();
+    }
+    public void removeinitChat(){
+        myRef.child("n")
                 .child(userID).removeValue();
+    }
+    public void removeRoom(String roomId){
+        myRef.child("h")
+                .child(roomId).removeValue();
     }
 
     public void updateSettings(long mask, String quote){
@@ -97,11 +106,33 @@ public class FirebaseHelper {
 
     }
 
+    public void updateT(String T){
+        db.collection(mContext.getString(R.string.user_db))
+                .document(getUserID()).update("t",T);
+
+    }
+
     public void updateQuote(String quote){
         db.collection(mContext.getString(R.string.user_db))
                 .document(getUserID()).update(mContext.getString(R.string.quote),quote);
 
     }
 
+
+    public void setPrivate(String roomId, String participId,boolean isPrivate){
+        String pvt=isPrivate?"t":"f";
+        myRef.child("h")
+                .child(roomId)
+                .child("p"+participId)
+                .setValue(pvt);
+    }
+
+    public void setTyping(String roomId, String participId, boolean isTyping){
+        String t=isTyping?"t":"f";
+        myRef.child("h")
+                .child(roomId)
+                .child("t"+participId)
+                .setValue(t);
+    }
 
 }

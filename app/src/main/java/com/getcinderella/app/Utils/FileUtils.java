@@ -59,16 +59,6 @@ public class FileUtils {
         return mediaFile;
     }
 
-    public static void deleteImg(String filePath){
-        File fdelete = new File(filePath);
-        if (fdelete.exists()) {
-            if (fdelete.delete()) {
 
-            } else {
-
-            }
-        }
-
-    }
 
 }

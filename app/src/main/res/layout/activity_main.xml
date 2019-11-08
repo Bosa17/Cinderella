@@ -16,7 +16,7 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_main" />
 
-    <me.majiajie.pagerbottomtabstrip.PageNavigationView
+    <com.getcinderella.app.Utils.PageNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="56dp"

@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.getcinderella.app.Activities.MatchActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -47,7 +48,6 @@ import androidx.fragment.app.Fragment;
 
 import java.util.List;
 
-import com.getcinderella.app.Activities.CallActivity;
 import com.getcinderella.app.Activities.MainActivity;
 import com.getcinderella.app.Activities.Setting;
 import com.getcinderella.app.Models.SceneModel;
@@ -131,7 +131,7 @@ public class Home extends Fragment {
                             bundle.putLong("pixieCost", getPixieCost());
                             bundle.putLong("pixies", dataHelper.getPixies());
 //                            bundle.putString("partnerPreference", getSelectedPartnerPreference());
-                            startActivityForResult(new Intent(getActivity(), CallActivity.class).putExtras(bundle).putExtra("scene", selectedScene), 2);
+                            startActivityForResult(new Intent(getActivity(), MatchActivity.class).putExtras(bundle).putExtra("scene", selectedScene), 2);
                             vibe.vibrate(300);
                         } else {
                             ((MainActivity) getActivity()).navigateToPixie();
@@ -225,6 +225,53 @@ public class Home extends Fragment {
                     }
             }, 5000);
         }
+        try {
+            sceneRef.child("c")
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            long timestamp=dataSnapshot.getValue(Long.class);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Log.d(TAG, "run: "+dataHelper.getScene_timestamp());
+                                        if (dataHelper.getScene_timestamp()!=timestamp && ConnectivityUtils.isNetworkAvailable(getContext())){
+                                            dataHelper.putScene_timestamp(timestamp);
+                                            dataHelper.saveScene();
+                                            ((MainActivity)getActivity()).refreshHome();
+                                        }
+                                    }catch(Exception ignore){
+
+                                    }
+                                }
+                            }, 3000);
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+            myRef.collection(getString(R.string.user_db))
+                    .document(dataHelper.getUID())
+                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                            @Nullable FirebaseFirestoreException e) {
+                            if (snapshot != null && snapshot.exists()) {
+                                dataHelper.syncWithFirebase(snapshot);
+                                updateWidgets(dataHelper.get());
+                            }
+                        }
+                    });
+            dataHelper.declareToken();
+
+        }catch (Exception ignore){
+            Toast.makeText(getContext(),"Unexpected problem contacting server. Check Network Connection",Toast.LENGTH_SHORT).show();
+        }
 
         return view;
     }
@@ -239,8 +286,8 @@ public class Home extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==2 && resultCode==-1){
-            new RemoteCardDialog.Builder(getContext(),data.getStringExtra(getResources().getString(R.string.uid)),data.getLongExtra(getResources().getString(R.string.charisma),0),data.getStringExtra(getResources().getString(R.string.fb_dp)),data.getStringExtra(getResources().getString(R.string.username)),data.getStringExtra(getResources().getString(R.string.quote)),data.getBooleanExtra("isPrivate",false)).setOnDismissListener(new remoteCardDismissListener()).build().show();
-            isCardVisible=true;
+//            new RemoteCardDialog.Builder(getContext(),data.getStringExtra(getResources().getString(R.string.uid)),data.getLongExtra(getResources().getString(R.string.charisma),0),data.getStringExtra(getResources().getString(R.string.fb_dp)),data.getStringExtra(getResources().getString(R.string.username)),data.getStringExtra(getResources().getString(R.string.quote)),data.getBooleanExtra("isPrivate",false)).setOnDismissListener(new remoteCardDismissListener()).build().show();
+//            isCardVisible=true;
         }
         else if(requestCode==2 && resultCode==2){
             Toast.makeText(getContext(), "Thank you for your report. Inappropriate Complaint has been registered!", Toast.LENGTH_LONG).show();
@@ -268,7 +315,6 @@ public class Home extends Fragment {
     }
 
     private void sync(){
-
         double millis=System.currentTimeMillis()-dataHelper.getLast_sign_at();
         double hours = millis/(1000 * 60 * 60);
         if (hours>1.0){
@@ -291,54 +337,6 @@ public class Home extends Fragment {
             AlarmManager am = (AlarmManager)getContext().getSystemService(getContext().ALARM_SERVICE);
             am.set(AlarmManager.RTC_WAKEUP, dataHelper.getLast_sign_at()+1000 * 60 * 60, pendingIntent);
         }
-        try {
-            sceneRef.child("c")
-                    .addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    long timestamp=dataSnapshot.getValue(Long.class);
-                    Log.d("lol",timestamp+" "+dataHelper.getScene_timestamp());
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Log.d(TAG, "run: "+dataHelper.getScene_timestamp());
-                                if (dataHelper.getScene_timestamp()!=timestamp && ConnectivityUtils.isNetworkAvailable(getContext())){
-                                    dataHelper.putScene_timestamp(timestamp);
-                                    dataHelper.saveScene();
-                                    ((MainActivity)getActivity()).refreshHome();
-                                }
-                            }catch(Exception ignore){
-
-                            }
-                        }
-                    }, 7000);
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
-            myRef.collection(getString(R.string.user_db))
-                    .document(dataHelper.getUID())
-                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                            @Nullable FirebaseFirestoreException e) {
-                            if (snapshot != null && snapshot.exists()) {
-                                dataHelper.syncWithFirebase(snapshot);
-                                updateWidgets(dataHelper.get());
-                            }
-                        }
-                    });
-
-        }catch (Exception ignore){
-            Toast.makeText(getContext(),"Unexpected problem contacting server. Check Network Connection",Toast.LENGTH_SHORT).show();
-        }
-
 
     }
     private long getPixieCost(){
@@ -367,6 +365,9 @@ public class Home extends Fragment {
                 scene_desc.setOutAnimation(getContext(), R.anim.fade_out);
                 scene_desc.setText(ch.getDesc());
                 selectedScene =ch;
+                if(!(dataHelper.getSceneNames()).contains(selectedScene.getName())){
+                    ((MainActivity)getActivity()).refreshHome();
+                }
             }
         });
         hashTagView.setData(scenes, new HashtagView.DataStateTransform<SceneModel>() {
@@ -374,14 +375,14 @@ public class Home extends Fragment {
             @Override
             public CharSequence prepare(SceneModel item) {
                 SpannableString spannableString = new SpannableString("#" + item.getName());
-                spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimaryDark)), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.white)), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 return spannableString;
             }
 
             @Override
             public CharSequence prepareSelected(SceneModel item) {
                 SpannableString spannableString = new SpannableString("#" + item.getName());
-                spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimaryDark)), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.white)), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 return spannableString;
             }
         });
@@ -431,13 +432,13 @@ public class Home extends Fragment {
         }
     }
 
-    private class remoteCardDismissListener implements BlurPopupWindow.OnDismissListener {
-        @Override
-        public void onDismiss(BlurPopupWindow popupWindow) {
-            isCardVisible=false;
-            onResume();
-        }
-    }
+//    private class remoteCardDismissListener implements BlurPopupWindow.OnDismissListener {
+//        @Override
+//        public void onDismiss(BlurPopupWindow popupWindow) {
+//            isCardVisible=false;
+//            onResume();
+//        }
+//    }
     private class TextViewFactory implements  ViewSwitcher.ViewFactory {
 
         @StyleRes

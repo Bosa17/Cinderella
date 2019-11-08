@@ -35,7 +35,7 @@
     <string name="dlg_ok">OK</string>
     <string name="dlg_cancel">Cancel</string>
     <string name="dlg_save_confirm">Do you want to save your settings before leaving?</string>
-    <string name="dlg_call_back_confirm">Are you sure you want to exit this call?</string>
+    <string name="dlg_chat_back_confirm">Are you sure you want to exit this call?</string>
 
     <!--user fields-->
     <string name="uid">uid</string>
@@ -67,16 +67,15 @@
     <!-- ContactSupport -->
     <string name="contact_support_title">Description</string>
     <string name="contact_support_header">
-        In your email please provide the steps of bug/error reproduction. Let us know how often it occurs and if it gives any error code.
-        This information will help us to find the source of the issue. Kindly give us as many details as possible. Thank you.
+        We are delighted to assist you. Let us know if an error occurred,how often it occurs and if it gives any error code.
+        We would love to hear from you about any "Scene" suggestions or feature you might want. Kindly give us as many details as possible. Thank you.
     </string>
-    <string name="feedback_bug_type">Bug</string>
+    <string name="feedback_bug_type"> App Error/Crash</string>
     <string name="customer_support">Service Support</string>
-    <string name="request_scene">Request Scene</string>
-    <string name="support_email">ababhirupbose21@gmail.com</string>
+    <string name="request_scene">Request Scene/Feature</string>
+    <string name="support_email">getcinderella@gmail.com</string>
     <string name="choose_email_provider">Choose an email provider:</string>
     <string name="write_email">Write an Email</string>
-
 
 
 </resources>

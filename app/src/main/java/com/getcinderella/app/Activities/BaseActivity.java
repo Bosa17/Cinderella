@@ -12,11 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.getcinderella.app.R;
 import com.getcinderella.app.Utils.DataHelper;
-import com.getcinderella.app.Utils.SinchService;
+import com.getcinderella.app.Utils.ChatService;
 
 public class BaseActivity extends AppCompatActivity implements ServiceConnection {
     private DataHelper dataHelper;
-    private SinchService.SinchServiceInterface mSinchServiceInterface;
+    private ChatService.ChatServiceInterface mChatServiceInterface;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,16 +46,16 @@ public class BaseActivity extends AppCompatActivity implements ServiceConnection
     }
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-        if (SinchService.class.getName().equals(componentName.getClassName())) {
-            mSinchServiceInterface = (SinchService.SinchServiceInterface) iBinder;
+        if (ChatService.class.getName().equals(componentName.getClassName())) {
+            mChatServiceInterface = (ChatService.ChatServiceInterface) iBinder;
             onServiceConnected();
         }
     }
 
     @Override
     public void onServiceDisconnected(ComponentName componentName) {
-        if (SinchService.class.getName().equals(componentName.getClassName())) {
-            mSinchServiceInterface = null;
+        if (ChatService.class.getName().equals(componentName.getClassName())) {
+            mChatServiceInterface = null;
             onServiceDisconnected();
         }
     }
@@ -68,14 +68,14 @@ public class BaseActivity extends AppCompatActivity implements ServiceConnection
         // for subclasses
     }
 
-    protected SinchService.SinchServiceInterface getSinchServiceInterface() {
-        return mSinchServiceInterface;
+    protected ChatService.ChatServiceInterface getSinchServiceInterface() {
+        return mChatServiceInterface;
     }
 
 
 
     private void bindService() {
-        Intent serviceIntent = new Intent(this, SinchService.class);
+        Intent serviceIntent = new Intent(this, ChatService.class);
         getApplicationContext().bindService(serviceIntent, this, BIND_AUTO_CREATE);
     }
 

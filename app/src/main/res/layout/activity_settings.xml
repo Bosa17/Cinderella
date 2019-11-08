@@ -75,6 +75,24 @@
                     android:background="@drawable/setting_border"
                     >
                     <Button
+                        android:background="@drawable/vibrant_bg"
+                        android:id="@+id/vibrant_switch"
+                        android:layout_width="match_parent"
+                        android:padding="20dp"
+                        style="@style/SettingsComponent"
+                        android:layout_height="wrap_content"
+                        android:text="Vibrant" />
+
+                    <Button
+                        android:background="@drawable/babe_bg"
+                        android:id="@+id/babe_switch"
+                        android:layout_width="match_parent"
+                        android:padding="20dp"
+                        style="@style/SettingsComponent"
+                        android:layout_height="wrap_content"
+                        android:text="Babe" />
+
+                    <Button
                         android:background="@drawable/boss_bg"
                         android:id="@+id/boss_switch"
                         android:layout_width="match_parent"
@@ -101,14 +119,6 @@
                         android:layout_height="wrap_content"
                         android:text="Sexy" />
 
-                    <Button
-                        android:background="@drawable/vibrant_bg"
-                        android:id="@+id/vibrant_switch"
-                        android:layout_width="match_parent"
-                        android:padding="20dp"
-                        style="@style/SettingsComponent"
-                        android:layout_height="wrap_content"
-                        android:text="Vibrant" />
 
                     <Button
                         android:background="@drawable/royalty_bg"
@@ -119,14 +129,6 @@
                         android:layout_height="wrap_content"
                         android:text="Royalty" />
 
-                    <Button
-                        android:background="@drawable/babe_bg"
-                        android:id="@+id/babe_switch"
-                        android:layout_width="match_parent"
-                        android:padding="20dp"
-                        style="@style/SettingsComponent"
-                        android:layout_height="wrap_content"
-                        android:text="Babe" />
 
                     <Button
                         android:background="@drawable/temptation_bg"
@@ -184,7 +186,7 @@
                         android:text="F.A.Q."
                         android:textColor="@color/white"
                         android:clickable="true"
-                        android:drawableStart="@drawable/ic_logout"
+                        android:drawableStart="@drawable/ic_faq"
                         android:focusable="true"
                         android:layout_marginTop="30dp"
                         android:background="@color/colorPrimary"

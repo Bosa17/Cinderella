@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import com.getcinderella.app.R;
 
-public class FAQ extends AppCompatActivity {
+public class FAQ extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

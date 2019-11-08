@@ -15,8 +15,8 @@ import com.getcinderella.app.R;
 import com.getcinderella.app.Utils.BottomNavigationUtils;
 import com.getcinderella.app.Utils.Permissions;
 
-import me.majiajie.pagerbottomtabstrip.NavigationController;
-import me.majiajie.pagerbottomtabstrip.PageNavigationView;
+import com.getcinderella.app.Utils.NavigationController;
+import com.getcinderella.app.Utils.PageNavigationView;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
@@ -50,9 +50,9 @@ public class MainActivity extends BaseActivity {
         getTheme().resolveAttribute(R.attr.colorAccent, typedValue, true);
         @ColorInt int color = typedValue.data;
         navigationController = pageNavigationView.material()
-                .addItem(R.drawable.ic_home, "",color)
-                .addItem(R.drawable.ic_partners,"",color)
-                .addItem(R.drawable.ic_pixie_buy, "",color).setDefaultColor(getResources().getColor(R.color.white,getTheme()))
+                .addItem(R.drawable.ic_home, "Home",color)
+                .addItem(R.drawable.ic_partners,"Partners",color)
+                .addItem(R.drawable.ic_pixie_buy, "Pixie",color).setDefaultColor(getResources().getColor(R.color.white,getTheme()))
                 .build();
         BottomNavigationUtils.setupWithNavController(PAGE_IDS, navigationController, mNavController);
     }

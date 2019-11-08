@@ -3,14 +3,14 @@
     <color name="colorPrimary">#101010</color>
     <color name="colorPrimaryLight">#202020</color>
     <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#FFD700</color>
-    <color name="the_vibrant">#CDDC39</color>
-    <color name="the_sexy">#00C853</color>
-    <color name="the_passion">#00BCD4</color>
+    <color name="colorAccent">#FBC02D</color>
+    <color name="the_vibrant">#9C27B0</color>
+    <color name="the_sexy">#388E3C</color>
+    <color name="the_passion">#009688</color>
     <color name="the_boss">#536DFE</color>
-    <color name="the_royalty">#FFD700</color>
+    <color name="the_royalty">#FFA000</color>
     <color name="the_temptation">#FF5722</color>
-    <color name="the_babe">#FF69B4</color>
+    <color name="the_babe">#EC407A</color>
     <color name="dark_gray">#424242</color>
-    <color name="white">#FFFFFF</color>
+    <color name="white">#F5F5F5</color>
 </resources>

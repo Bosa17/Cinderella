@@ -4,8 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.NavOptions;
-import me.majiajie.pagerbottomtabstrip.NavigationController;
-import me.majiajie.pagerbottomtabstrip.listener.OnTabItemSelectedListener;
+import com.getcinderella.app.Utils.NavigationController;
+import com.getcinderella.app.Utils.listener.OnTabItemSelectedListener;
 import com.getcinderella.app.R;
 
 public class BottomNavigationUtils {

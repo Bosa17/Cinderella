@@ -197,7 +197,7 @@ public class Setting extends BaseActivity {
         startActivityForResult(new Intent(this,Select_mask.class),RC_SUCCESS);
     }
     /**
-     * gets the image url from the activity_partner_call bundle and displays the chosen image
+     * gets the image url from the activity_partner_chat bundle and displays the chosen image
      */
     private void setMask(int maskID){
         image.setImageResource(maskID);

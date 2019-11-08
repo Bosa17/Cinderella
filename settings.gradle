@@ -1,1 +1,1 @@
-include ':app', ':pager-bottom-tab-strip', ':sinch-android-rtc-3.13.0'
+include ':app'

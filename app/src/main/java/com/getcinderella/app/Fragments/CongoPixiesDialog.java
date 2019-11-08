@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -38,6 +39,13 @@ public class CongoPixiesDialog extends BlurPopupWindow {
             congo_pixies.setText("7");
         else
             congo_pixies.setText("3");
+        ImageView closeDialog= view.findViewById(R.id.closeDialog);
+        closeDialog.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp.gravity = Gravity.CENTER;
         view.setLayoutParams(lp);

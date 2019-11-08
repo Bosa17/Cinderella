@@ -137,7 +137,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/snap/android-studio/78/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/content/ic_block_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/snap/android-studio/80/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/navigation/ic_check_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -149,8 +149,8 @@
                           <map>
                             <entry key="autoMirrored" value="true" />
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_block" />
-                            <entry key="sourceFile" value="$PROJECT_DIR$/../swipe.svg" />
+                            <entry key="outputName" value="ic_accept" />
+                            <entry key="sourceFile" value="$PROJECT_DIR$/../right-arrow.svg" />
                           </map>
                         </option>
                       </PersistentState>

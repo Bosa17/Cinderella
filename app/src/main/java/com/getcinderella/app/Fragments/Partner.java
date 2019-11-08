@@ -110,7 +110,7 @@ public class Partner extends Fragment {
 
         nameSwitcher.setFactory(new TextViewFactory(R.style.NameTextView, true));
         nameSwitcher.setCurrentText(names.get(0));
-        charismaSwitcher.setFactory(new TextViewFactory(R.style.SkillTextView, true));
+        charismaSwitcher.setFactory(new TextViewFactory(R.style.CharismalTextView, true));
         charismaSwitcher.setCurrentText(""+ charismas.get(0));
     }
 

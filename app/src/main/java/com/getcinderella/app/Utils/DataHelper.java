@@ -5,11 +5,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
@@ -44,7 +48,7 @@ public class DataHelper {
         putIsPremium(false);
         putPartner(0L);
         putCharisma(0L);
-        putPixies(30L);
+        putPixies(50L);
         firebaseHelper.addNewUser(userID,get());
     }
     public void addPrevUser(String userID){
@@ -152,41 +156,41 @@ public class DataHelper {
         }
         return Charismas;
     }
-
-    public void blockUser(BlockUserModel user){
-        Hawk.put(mContext.getString(R.string.blockUser)+(getBlocked()+1),user);
-        putBlocked(getBlocked()+1);
-    }
-
-    public void unBlockUser(){
-
-    }
-
-    public ArrayList<String> getBlockUserNames(){
-        ArrayList<String> Names=new ArrayList<>();
-        try {
-            for (long i = getBlocked(); i >= 1; i--)  {
-                BlockUserModel blocked = Hawk.get(mContext.getString(R.string.blockUser) + i);
-                Names.add(blocked.getName());
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return Names;
-    }
-
-    public ArrayList<String> getBlockUserCallerId(){
-        ArrayList<String> call_ids=new ArrayList<>();
-        try {
-            for (long i = getBlocked(); i >= 1; i--)  {
-                BlockUserModel blocked = Hawk.get(mContext.getString(R.string.blockUser) + i);
-                call_ids.add(blocked.getCaller_id());
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return call_ids;
-    }
+//
+//    public void blockUser(BlockUserModel user){
+//        Hawk.put(mContext.getString(R.string.blockUser)+(getBlocked()+1),user);
+//        putBlocked(getBlocked()+1);
+//    }
+//
+//    public void unBlockUser(){
+//
+//    }
+//
+//    public ArrayList<String> getBlockUserNames(){
+//        ArrayList<String> Names=new ArrayList<>();
+//        try {
+//            for (long i = getBlocked(); i >= 1; i--)  {
+//                BlockUserModel blocked = Hawk.get(mContext.getString(R.string.blockUser) + i);
+//                Names.add(blocked.getName());
+//            }
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
+//        return Names;
+//    }
+//
+//    public ArrayList<String> getBlockUserCallerId(){
+//        ArrayList<String> call_ids=new ArrayList<>();
+//        try {
+//            for (long i = getBlocked(); i >= 1; i--)  {
+//                BlockUserModel blocked = Hawk.get(mContext.getString(R.string.blockUser) + i);
+//                call_ids.add(blocked.getCaller_id());
+//            }
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
+//        return call_ids;
+//    }
 
     public void saveScene(){
         try {
@@ -234,6 +238,14 @@ public class DataHelper {
             sceneModels.add(Hawk.get(mContext.getResources().getString(R.string.scene)+i));
         }
         return sceneModels;
+    }
+
+    public ArrayList<String> getSceneNames(){
+        ArrayList<String> sceneNames =new ArrayList<>();
+        for (int i=1;i<=3;i++){
+            sceneNames.add(((SceneModel)Hawk.get(mContext.getResources().getString(R.string.scene)+i)).getName());
+        }
+        return sceneNames;
     }
 
     public void putDefaultScenes(){
@@ -425,6 +437,36 @@ public class DataHelper {
     }
     private long getBlocked(){
         return Hawk.get(mContext.getString(R.string.blocked),0L);
+    }
+    public void putT(String t){
+        Hawk.put("t", t);
+    }
+    public String getT(){
+        return Hawk.get("t","" );
+    }
+    public void putHasChosenScene(boolean t){
+        Hawk.put("hasChosenScene",t);
+    }
+    public Boolean getHasChosenScene(){
+        return Hawk.get("hasChosenScene",false);
+    }
+    public void declareToken(){
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        if (!token.equals(getT())) {
+                            putT(token);
+                            firebaseHelper.updateT(token);
+                        }
+                    }
+                });
     }
 }
 

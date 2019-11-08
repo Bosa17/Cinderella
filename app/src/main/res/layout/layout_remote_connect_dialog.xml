@@ -20,7 +20,7 @@
         android:id="@+id/call_partner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Call Partner"
+        android:text="Chat Now"
         android:layout_below="@id/remoteUserConnectDp"
         android:layout_marginTop="30dp"
         android:textColor="@color/white"

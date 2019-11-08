@@ -91,7 +91,7 @@ public class IsPrivateDialog extends BlurPopupWindow {
         public Builder(Context context,boolean pm) {
             super(context);
             isPrivateMode=pm;
-            this.setScaleRatio(0.25f).setBlurRadius(0).setTintColor(context.getColor(R.color.colorPrimary))
+            this.setScaleRatio(0.25f).setBlurRadius(0).setTintColor(context.getColor(R.color.colorPrimary)).setDismissOnClickBack(true)
                     .setDismissOnTouchBackground(false);
         }
 

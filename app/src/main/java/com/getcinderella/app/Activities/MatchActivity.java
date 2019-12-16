@@ -3,11 +3,11 @@ package com.getcinderella.app.Activities;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -28,10 +28,19 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.getcinderella.app.Fragments.RemoteCardDialog;
+import com.getcinderella.app.Models.RemoteUserConnection;
+import com.getcinderella.app.Utils.ChatService;
+import com.getcinderella.app.Utils.FileUtils;
 import com.getcinderella.app.Utils.KeyboardUtils;
 import com.getcinderella.app.Utils.MessageAdapter;
+import com.getcinderella.app.Utils.Permissions;
 import com.getcinderella.app.Utils.listener.ChatListener;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -43,7 +52,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.getcinderella.app.Fragments.TwoButtonsDialogFragment;
-import com.getcinderella.app.Models.BlockUserModel;
 import com.getcinderella.app.Models.SceneModel;
 import com.getcinderella.app.Models.UserModel;
 import com.getcinderella.app.R;
@@ -53,24 +61,19 @@ import com.getcinderella.app.Utils.FirebaseHelper;
 import com.getcinderella.app.Utils.ServiceDataHelper;
 import com.getcinderella.app.Utils.StringUtils;
 import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
-import com.sinch.android.rtc.PushPair;
-import com.sinch.android.rtc.messaging.Message;
-import com.sinch.android.rtc.messaging.MessageClient;
-import com.sinch.android.rtc.messaging.MessageClientListener;
-import com.sinch.android.rtc.messaging.MessageDeliveryInfo;
-import com.sinch.android.rtc.messaging.MessageFailureInfo;
 
 
-public class MatchActivity extends BaseActivity implements ChatListener, MessageClientListener {
+public class MatchActivity extends BaseActivity implements ChatListener{
 //    vars
     private String TAG= MatchActivity.class.getSimpleName();
+    private String mChatType;
     private MessageAdapter mMessageAdapter;
     private SceneModel scene;
     private String partnerPreference;
     private long pixieCost;
     private long curr_pixie;
     private int remoteMask;
-    private String mRemotuserID;
+    private String mRemoteUserID;
     private String mRemotuserQuote;
     private String userID;
     private String mRemoteUserFbDp;
@@ -83,22 +86,32 @@ public class MatchActivity extends BaseActivity implements ChatListener, Message
     private FirebaseHelper firebaseHelper;
     private Vibrator vibe;
     private long sec;
+    private InterstitialAd mInterstitialAd;
     private boolean isChatEstablished;
-    private boolean isAudioPlaying;
     private boolean isPixieUpdated;
     private boolean isInappropriate;
     private boolean isPrivate;
+    private boolean isDeclined;
+    private boolean isMatched;
+    private boolean isInitiated;
+    private boolean isChatEnded;
+    public static boolean isMatchActivityActive;
 //    widgets
     private CoordinatorLayout chat_progressing;
     private LinearLayout chat_init;
     private LinearLayout chat_init_area;
+    private LinearLayout incoming;
     private LinearLayout chat_matched;
     private TextView mDuration;
     private TextView sceneOptionTextView;
     private TextView sceneDescTextView;
+    private TextView sceneDescTextView_incoming;
     private TextView mRemoteUser;
     private TextView chat_init_txt;
+    private TextView state_outgoing;
     private EditText chatTxt;
+    private TextView remoteUser_incoming;
+    private ImageView remoteMask_incoming;
     private ToggleButton ring_control;
     private ImageView close_call;
     private ImageView mRemoteUserDp;
@@ -154,14 +167,19 @@ public class MatchActivity extends BaseActivity implements ChatListener, Message
         vibe = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         mAudioHelper =new AudioHelper(this);
         chat_progressing =findViewById(R.id.chat_progressing);
+        incoming=findViewById(R.id.incoming);
         chat_init =findViewById(R.id.chat_init);
         chat_init_area =findViewById(R.id.chat_init_area);
         chat_matched=findViewById(R.id.chat_matched);
         chatTxt=findViewById(R.id.chatTxt);
+        state_outgoing=findViewById(R.id.state_outgoing);
         sceneOptionTextView =findViewById(R.id.sceneOptionTextView);
         sceneDescTextView =findViewById(R.id.sceneDescTextView);
+        sceneDescTextView_incoming=findViewById(R.id.sceneDescTextView_incoming);
         mRemoteUser=findViewById(R.id.remoteUser);
         mRemoteUserDp=findViewById(R.id.remoteUserDp);
+        remoteMask_incoming=findViewById(R.id.remoteMask_incoming);
+        remoteUser_incoming=findViewById(R.id.remoteUser_incoming);
         chat_init_mask = findViewById(R.id.chat_init_mask);
         chat_init_txt=findViewById(R.id.chat_init_txt);
         ring_control=findViewById(R.id.ring_control);
@@ -206,7 +224,7 @@ public class MatchActivity extends BaseActivity implements ChatListener, Message
                             public void onPositive(MaterialDialog dialog) {
                                 super.onPositive(dialog);
                                 isInappropriate=true;
-                                blockUser(mRemotuserID);
+                                blockUser(mRemoteUserID);
                                 endChat();
                             }
 
@@ -228,47 +246,80 @@ public class MatchActivity extends BaseActivity implements ChatListener, Message
                 sendMessage();
             }
         });
+        ImageView answer = (ImageView) findViewById(R.id.answer);
+        answer.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                answerClicked();
+            }
+        });
+        ImageView decline = (ImageView) findViewById(R.id.decline);
+        decline.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                declineClicked();
+            }
+        });
         mDuration=findViewById(R.id.chatDuration);
-        scene =(SceneModel) getIntent().getSerializableExtra("scene");
-        Bundle callSettings = getIntent().getExtras();
-        isPrivate = callSettings.getBoolean("isPrivate");
-//        partnerPreference = callSettings.getString("partnerPreference");
-        pixieCost = callSettings.getLong("pixieCost");
-        curr_pixie=callSettings.getLong("pixies");
-//        switch(partnerPreference){
-//            case "Man": partnerPreference="1";
-//                break;
-//            case "Woman":partnerPreference="2";
-//                break;
-//            case "Any":partnerPreference="3";
-//        }
-        partnerPreference="1";
+        mChatType =getIntent().getStringExtra(ChatService.CHAT_TYPE);
+        if (mChatType.equals("0")){
+            chat_init.setVisibility(View.GONE);
+        }
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
         sec=0;
-        mRemotuserID=null;
+        mRemoteUserID =null;
         roomId=null;
         participId=null;
+        isMatchActivityActive=true;
+        isDeclined=false;
+        isMatched=false;
+        isInitiated=false;
         isChatEstablished =false;
-        isAudioPlaying=false;
         isPixieUpdated=false;
         isInappropriate=false;
-        firebaseHelper.addUserToChannel(scene.getScene_no(),partnerPreference);
+        isChatEnded=false;
+        firebaseHelper.setUnavailable();
     }
 
 
     @Override
-    protected void onDestroy() {
-        getSinchServiceInterface().removeMessageClientListener(this);
-        firebaseHelper.removeUserFromChannel(scene.getScene_no());
-        if(roomId!=null)
-            firebaseHelper.removeRoom(roomId);
-        mAudioHelper.stopRingtone();
-        try {
-            mDurationTask.cancel();
-            mTimer.cancel();
-        }catch (Exception e){ Log.d(TAG, "No Timer ");}
-        if(isChatEstablished && !isPixieUpdated)
-            firebaseHelper.updatePixie(curr_pixie-pixieCost);
-        super.onDestroy();
+    protected void onStop() {
+        if (!isChatEnded) {
+            isMatchActivityActive=false;
+            if (isChatEstablished) {
+                mAudioHelper.stopRingtone();
+                if (scene != null)
+                    firebaseHelper.removeUserFromChannel(scene.getScene_no());
+                if (roomId != null)
+                    firebaseHelper.removeRoom(roomId);
+                try {
+                    mDurationTask.cancel();
+                    mTimer.cancel();
+                } catch (Exception e) {
+                    Log.d(TAG, "No Timer ");
+                }
+                if (!isPixieUpdated)
+                    firebaseHelper.updatePixie(curr_pixie - pixieCost);
+                if (!isPrivate && !isPixieUpdated && mRemoteUserID != null) {
+                    RemoteUserConnection remoteUser = new RemoteUserConnection();
+                    remoteUser.setRemoteUserId(mRemoteUserID);
+                    remoteUser.setRemoteUserQuote(mRemotuserQuote);
+                    remoteUser.setRemoteUserName(mRemoteUserName);
+                    remoteUser.setRemoteUserCharisma(mRemoteUserCharisma);
+                    remoteUser.setRemoteUserDp(mRemoteUserFbDp);
+                    ServiceDataHelper dataHelper = new ServiceDataHelper(this);
+                    dataHelper.saveRemoteTmp(remoteUser);
+                }
+                finish();
+            } else if (mChatType.equals("1") && scene != null) {
+                firebaseHelper.removeUserFromChannel(scene.getScene_no());
+                if (roomId != null)
+                    firebaseHelper.removeRoom(roomId);
+            }
+        }
+        super.onStop();
     }
 
     @Override
@@ -289,10 +340,7 @@ public class MatchActivity extends BaseActivity implements ChatListener, Message
     protected void onPause() {
         super.onPause();
         mAudioHelper.stopRingtone();
-        try {
-            mDurationTask.cancel();
-            mTimer.cancel();
-        }catch (Exception e){ Log.d(TAG, "No Timer ");}
+
     }
 
 
@@ -319,39 +367,84 @@ public class MatchActivity extends BaseActivity implements ChatListener, Message
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         super.onServiceConnected(componentName, iBinder);
-        if (!getSinchServiceInterface().isStarted()) {
-            getSinchServiceInterface().startClient();
+        if(mChatType.equals("1")) {
+            mAudioHelper.playMusic();
+            scene = (SceneModel) getIntent().getSerializableExtra("scene");
+            Bundle callSettings = getIntent().getExtras();
+            isPrivate = callSettings.getBoolean("isPrivate");
+            partnerPreference = callSettings.getString("partnerPreference");
+            switch(partnerPreference){
+                case "Man": partnerPreference="1";
+                    break;
+                case "Woman":partnerPreference="2";
+                    break;
+                case "Any":partnerPreference="1";
+            }
+            pixieCost = callSettings.getLong("pixieCost");
+            curr_pixie = callSettings.getLong("pixies");
+            firebaseHelper.addUserToChannel(scene.getScene_no(),partnerPreference);
+            initChat();
         }
-        initChat();
+        else{
+            String [] combo=StringUtils.extractRoomIdandParticipID(getIntent().getStringExtra("comboID"));
+            roomId=combo[0];
+            participId=combo[1];
+            oppParticipId=participId.equals("1")?"2":"1";
+            mAudioHelper.playRingtone();
+            scene=new ServiceDataHelper(this).getScene(getIntent().getStringExtra("scene"));
+            pixieCost=3;
+            isMatched=true;
+            curr_pixie=getIntent().getLongExtra("pixies",0);
+            firebaseHelper.getRef().child("h").child(roomId).child(participId+"p")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snap) {
+                            String isC=snap.getValue(String.class);
+                            if(isC==null ){
+                                isChatEnded=true;
+                                endChat();
+                            }
+                            else{
+                                initChatRoom(getIntent().getStringExtra("comboID"));
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+        }
 
     }
 
+    private void answerClicked() {
+        mAudioHelper.stopRingtone();
+        try {
+            if(!isChatEnded)
+            firebaseHelper.getRef().child("h").child(roomId).child("c")
+                    .setValue("t");
+        }catch(Exception ignore){}
+        chatEstablished();
+    }
+
+    private void declineClicked() {
+        isDeclined=true;
+        mAudioHelper.stopRingtone();
+        if (roomId!=null && !isChatEnded)
+            firebaseHelper.getRef().child("h").child(roomId).child("c")
+                    .setValue("f");
+        endChat();
+    }
+
     private void initChat(){
-        if (!isAudioPlaying){
-            mAudioHelper.playMusic();
-            isAudioPlaying=true;
-        }
         try {
             firebaseHelper.getRef().child("m").child(userID)
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snap) {
                             String comboId=snap.getValue(String.class);
-                            if (comboId!=null) {
+                            if (comboId!=null && !isMatched) {
                                 initChatRoom(comboId);
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            if (!isChatEstablished) {
-                                                firebaseHelper.removeUserFromChannel(scene.getScene_no());
-                                                firebaseHelper.addUserToChannel(scene.getScene_no(),partnerPreference);
-                                            }
-                                        } catch (Exception ignore) {
-
-                                        }
-                                    }
-                                }, 7000);
                             }
                         }
                         @Override
@@ -360,7 +453,6 @@ public class MatchActivity extends BaseActivity implements ChatListener, Message
                         }
                     });
         }catch(Exception ignore){}
-        getSinchServiceInterface().addMessageClientListener(this);
     }
 
     private void initChatRoom(String comboId){
@@ -372,6 +464,7 @@ public class MatchActivity extends BaseActivity implements ChatListener, Message
         setPrivate();
         setTyping(false);
         initOpponent();
+        getMessages();
     }
     public void initOpponent(){
         getOpponentId();
@@ -379,10 +472,12 @@ public class MatchActivity extends BaseActivity implements ChatListener, Message
 
     }
     private void setPrivate(){
-        firebaseHelper.setPrivate(roomId,participId,isPrivate);
+        if (! isChatEnded)
+            firebaseHelper.setPrivate(roomId,participId,isPrivate);
     }
     private void setTyping(boolean isTyping){
-        firebaseHelper.setTyping(roomId,participId,isTyping);
+        if (!isChatEnded)
+            firebaseHelper.setTyping(roomId,participId,isTyping);
     }
     private void setRemoteTyping(boolean isRemoteTyping){
         if (isRemoteTyping) {
@@ -418,8 +513,18 @@ public class MatchActivity extends BaseActivity implements ChatListener, Message
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snap) {
-                            mRemotuserID=snap.getValue(String.class);
-                            updateWidgets();
+                            String tmpid =snap.getValue(String.class);
+                            if (tmpid!=null) {
+                                mRemoteUserID=tmpid;
+                                isMatched = true;
+                                updateWidgets();
+                            }
+                            else{
+                                if (mChatType.equals("0")) {
+                                    isChatEnded = true;
+                                    endChat();
+                                }
+                            }
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -474,20 +579,35 @@ public class MatchActivity extends BaseActivity implements ChatListener, Message
         });
     }
 
-    private void sendMessage() {
+    private void getMessages(){
+        firebaseHelper.getRef().child("h").child(roomId).child(participId)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snap) {
+                        String msg=snap.getValue(String.class);
+                        if (msg!=null)
+                            onIncomingMessage(msg);
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                    }
+                });
+    }
+
+    private void sendMessage() {
         String textBody = chatTxt.getText().toString().trim();
         if (textBody.length()>0) {
-            getSinchServiceInterface().sendMessage(mRemotuserID, textBody);
-            chatTxt.setText("");
-            KeyboardUtils.hideKeyboard(this);
+            firebaseHelper.getRef().child("h").child(roomId).child(oppParticipId).setValue(textBody);
+            onMessageSent(textBody);
         }
     }
 
 
     public void endChat() {
+        isChatEnded=true;
         if(roomId!=null)
-            firebaseHelper.removeRoom(roomId);
+            firebaseHelper.endChat(roomId);
         firebaseHelper.removeUserFromChannel(scene.getScene_no());
         mAudioHelper.stopRingtone();
         try {
@@ -497,72 +617,200 @@ public class MatchActivity extends BaseActivity implements ChatListener, Message
         if(isChatEstablished && !isInappropriate && mRemoteUserFbDp!=null) {
             firebaseHelper.updatePixie(curr_pixie-pixieCost);
             isPixieUpdated=true;
-            new RemoteCardDialog.Builder(this,mRemotuserID,mRemoteUserCharisma,mRemoteUserFbDp,mRemoteUserName,mRemotuserQuote,isPrivate).setOnDismissListener(new remoteCardDismissListener()).build().show();
-            setResult(Activity.RESULT_OK);
+            new RemoteCardDialog.Builder(this, mRemoteUserID,mRemoteUserCharisma,mRemoteUserFbDp,mRemoteUserName,mRemotuserQuote,isPrivate).setOnDismissListener(new remoteCardDismissListener()).build().show();
         }
         else if(isInappropriate) {
             setResult(2);
-            getSinchServiceInterface().removeMessageClientListener(this);
+            isMatchActivityActive=false;
             finish();
         }
         else {
             setResult(Activity.RESULT_CANCELED);
-            getSinchServiceInterface().removeMessageClientListener(this);
+            isMatchActivityActive=false;
             finish();
         }
+        roomId=null;
     }
     private class remoteCardDismissListener implements BlurPopupWindow.OnDismissListener {
         @Override
         public void onDismiss(BlurPopupWindow popupWindow) {
-            getSinchServiceInterface().removeMessageClientListener(MatchActivity.this);
-            finish();
+            if (mInterstitialAd.isLoaded())
+                mInterstitialAd.show();
+            isMatchActivityActive=false;
+            setResult(Activity.RESULT_OK);
+            MatchActivity.this.finish();
         }
     }
     private void  updateWidgets(){
-        chat_init.setVisibility(View.GONE);
-        chat_matched.setVisibility(View.VISIBLE);
-        if (participId.equals("1")) {
-            sceneOptionTextView.setText(scene.getOption0());
-            mMessageAdapter.addUser("You("+scene.getOption1()+")");
-        }
+        if (mChatType.equals("0"))
+            updateWidgetsIncoming();
         else {
-            sceneOptionTextView.setText(scene.getOption1());
-            mMessageAdapter.addUser("You("+scene.getOption0()+")");
+            chat_init.setVisibility(View.GONE);
+
+            if (participId.equals("1")) {
+                sceneOptionTextView.setText(scene.getOption0());
+                mMessageAdapter.addUser("You(" + scene.getOption1() + ")");
+            } else {
+                sceneOptionTextView.setText(scene.getOption1());
+                mMessageAdapter.addUser("You(" + scene.getOption0() + ")");
+            }
+            try {
+                firebaseHelper.getUserRef()
+                        .document(mRemoteUserID)
+                        .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        UserModel remoteUser = documentSnapshot.toObject(UserModel.class);
+                        mRemoteUserCharisma = remoteUser.getCharisma();
+                        mRemoteUserFbDp = remoteUser.getFb_dp();
+                        mRemotuserQuote = remoteUser.getQuote();
+                        mRemoteUserName = StringUtils.extractFirstName(remoteUser.getUsername());
+                        remoteMask = (int) remoteUser.getMask();
+                        mRemoteUser.setText(mRemoteUserName);
+                        mRemoteUserDp.setImageResource(remoteMask);
+                        chat_matched.setVisibility(View.VISIBLE);
+                    }
+                });
+                firebaseHelper.getRef().child("h").child(roomId).child("c")
+                        .addValueEventListener(new ValueEventListener() {
+                            private final Handler handler=new Handler();
+                            private final long DELAY = 30000; // milliseconds
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snap) {
+                                String c=snap.getValue(String.class);
+                                if(c!=null && c.equals("t")){
+                                    state_outgoing.setText("Answered");
+                                    chatEstablished();
+                                }
+                                else if(c!=null && c.equals("f")){
+                                    isDeclined=true;
+                                    state_outgoing.setText("Declined");
+                                    this.handler.removeCallbacksAndMessages(null);
+                                    if(roomId!=null)
+                                        firebaseHelper.getRef().child("h").child(roomId).child("c").removeEventListener(this);
+                                    reset();
+                                }
+
+                                else if(c!=null && c.equals("o")){
+                                    isInitiated=true;
+                                    state_outgoing.setText("Waiting for Response...");
+                                    this.handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!isChatEstablished && !isDeclined) {
+                                                reset();
+                                                handler.removeCallbacksAndMessages(null);
+                                            }
+                                        }
+                                    }, DELAY);
+                                }
+                                else if(c!=null && c.equals("i")){
+                                    isDeclined=false;
+                                    state_outgoing.setText("Connecting...");
+                                    this.handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!isChatEstablished && !isInitiated) {
+                                                firebaseHelper.getRef().child("a").child(mRemoteUserID).child("m").setValue("f");
+                                                reset();
+                                                handler.removeCallbacksAndMessages(null);
+                                            }
+                                        }
+                                    }, 15000);
+                                }
+                                else if (c==null){
+                                    this.handler.removeCallbacksAndMessages(null);
+                                }
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+            } catch (Exception e) {
+                Toast.makeText(this, "Could not Connect to User", Toast.LENGTH_SHORT).show();
+                endChat();
+            }
+
+        }
+    }
+
+    private void reset(){
+        state_outgoing.setText("Resetting...");
+        if (roomId!=null)
+            firebaseHelper.removeRoom(roomId);
+        mRemoteUser.setText("");
+        isMatched=false;
+        isInitiated=false;
+        roomId=null;
+        mRemoteUserID =null;
+        participId=null;
+        oppParticipId=null;
+        isDeclined=true;
+        chat_init.setVisibility(View.VISIBLE);
+        chat_matched.setVisibility(View.GONE);
+        firebaseHelper.removeUserFromChannel(scene.getScene_no());
+        firebaseHelper.setUnavailable();
+        firebaseHelper.addUserToChannel(scene.getScene_no(),"1");
+    }
+
+    private void  updateWidgetsIncoming(){
+        state_outgoing.setText("Matched...");
+        String scene_option;
+        if (participId.equals("1")) {
+            scene_option=scene.getOption0();
+            mMessageAdapter.addUser("You(" +scene.getOption1() + ")");
+        } else {
+            scene_option=scene.getOption1();
+            mMessageAdapter.addUser("You(" + scene.getOption0() + ")");
         }
         try {
             firebaseHelper.getUserRef()
-                    .document(mRemotuserID)
+                    .document(mRemoteUserID)
                     .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     UserModel remoteUser = documentSnapshot.toObject(UserModel.class);
-                    mRemoteUserCharisma =remoteUser.getCharisma();
-                    mRemoteUserFbDp=remoteUser.getFb_dp();
-                    mRemotuserQuote=remoteUser.getQuote();
-                    mRemoteUserName=StringUtils.extractFirstName(remoteUser.getUsername());
-                    remoteMask=(int) remoteUser.getMask();
-                    mRemoteUser.setText(mRemoteUserName);
-                    mRemoteUserDp.setImageResource( remoteMask);
-                    mMessageAdapter.addOppUser(mRemoteUserName+" ("+sceneOptionTextView.getText()+")",remoteMask);
+                    mRemoteUserCharisma = remoteUser.getCharisma();
+                    mRemoteUserFbDp = remoteUser.getFb_dp();
+                    mRemotuserQuote = remoteUser.getQuote();
+                    mRemoteUserName = StringUtils.extractFirstName(remoteUser.getUsername());
+                    remoteMask = (int) remoteUser.getMask();
+                    remoteUser_incoming.setText(mRemoteUserName+"("+scene_option+")");
+                    remoteMask_incoming.setImageResource(remoteMask);
+                    sceneDescTextView_incoming.setText(scene.getDesc());
+                    incoming.setVisibility(View.VISIBLE );
                 }
             });
-        }catch(Exception e){
-            Toast.makeText(this,"Could not Connect to User",Toast.LENGTH_SHORT).show();
+            firebaseHelper.getRef().child("h").child(roomId).child("c")
+                    .setValue("o");
+            firebaseHelper.getRef().child("h").child(roomId).child(participId+'p')
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snap) {
+                            String c=snap.getValue(String.class);
+                            if(c==null){
+                                isDeclined=true;
+                                endChat();
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+        } catch (Exception e) {
+            Toast.makeText(this, "Could not Connect to User", Toast.LENGTH_SHORT).show();
             endChat();
         }
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                try {
-                    chatEstablished();
-                } catch (Exception ignore) {
-                    endChat();
-                }
+                if (!isChatEstablished && !isDeclined)
+                    declineClicked();
             }
-        }, 3000);
+        }, 30000);
     }
-
     private String formatTimespan(long totalSeconds) {
         long minutes = totalSeconds / 60;
         long seconds = totalSeconds % 60;
@@ -572,7 +820,7 @@ public class MatchActivity extends BaseActivity implements ChatListener, Message
 
 
     private void initChatWidgets(){
-
+        incoming.setVisibility(View.GONE);
         chat_matched.setVisibility(View.GONE);
         chat_progressing.setVisibility(View.VISIBLE);
         chat_init_mask.setImageResource(remoteMask);
@@ -583,6 +831,7 @@ public class MatchActivity extends BaseActivity implements ChatListener, Message
         else
             sceneOption=scene.getOption1();
         chat_init_txt.setText("You are now chatting with "+mRemoteUserName+"  who is playing as the "+sceneOption);
+        mMessageAdapter.addOppUser(mRemoteUserName + " (" + sceneOption + ")", remoteMask);
         mDuration.setVisibility(View.VISIBLE);
         mTimer = new Timer();
         mDurationTask = new UpdateChatDurationTask();
@@ -594,7 +843,8 @@ public class MatchActivity extends BaseActivity implements ChatListener, Message
                         public void onDataChange(@NonNull DataSnapshot snap) {
                             String isT=snap.getValue(String.class);
                             if (isT==null){
-                                chatEnded();
+                                if (!isChatEnded)
+                                    chatEnded();
                                 return;
                             }
                             if (isT.equals("t"))
@@ -614,20 +864,19 @@ public class MatchActivity extends BaseActivity implements ChatListener, Message
         }
     }
     private void blockUser(String caller_id){
-        BlockUserModel usr=new BlockUserModel();
-        usr.setCaller_id(caller_id);
-        usr.setName(mRemoteUser.getText().toString());
         ServiceDataHelper serviceDataHelper=new ServiceDataHelper(this);
-        serviceDataHelper.blockUser(usr);
+        serviceDataHelper.blockUser(caller_id);
     }
 
     @Override
     public void chatEstablished() {
-        vibe.vibrate(300);
-        isChatEstablished =true;
-        firebaseHelper.removeUserFromChannel(scene.getScene_no());
-        initChatWidgets();
-        mAudioHelper.stopRingtone();
+        if (!isChatEstablished) {
+            vibe.vibrate(300);
+            isChatEstablished = true;
+            firebaseHelper.removeUserFromChannel(scene.getScene_no());
+            initChatWidgets();
+            mAudioHelper.stopRingtone();
+        }
 
     }
 
@@ -641,37 +890,18 @@ public class MatchActivity extends BaseActivity implements ChatListener, Message
         endChat();
     }
 
-    @Override
-    public void onIncomingMessage(MessageClient client, Message message) {
+
+    public void onIncomingMessage( String message) {
         mMessageAdapter.addMessage(message, MessageAdapter.DIRECTION_INCOMING);
         chat_init_area.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onMessageSent(MessageClient client, Message message, String recipientId) {
+
+    public void onMessageSent( String message) {
         mMessageAdapter.addMessage(message, MessageAdapter.DIRECTION_OUTGOING);
         chat_init_area.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onShouldSendPushData(MessageClient client, Message message, List<PushPair> pushPairs) {
-        // Left blank intentionally
-    }
-
-    @Override
-    public void onMessageFailed(MessageClient client, Message message,
-                                MessageFailureInfo failureInfo) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Sending failed: ")
-                .append(failureInfo.getSinchError().getMessage());
-
-        Toast.makeText(this, sb.toString(), Toast.LENGTH_LONG).show();
-        Log.d(TAG, sb.toString());
-    }
-
-    @Override
-    public void onMessageDelivered(MessageClient client, MessageDeliveryInfo deliveryInfo) {
-        Log.d(TAG, "onDelivered");
+        chatTxt.setText("");
+        KeyboardUtils.hideKeyboard(this);
     }
 
 }

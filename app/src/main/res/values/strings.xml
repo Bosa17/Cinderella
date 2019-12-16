@@ -19,7 +19,9 @@
     <!--facebook-->
     <string name="facebook_app_id">858470831208589</string>
     <string name="fb_login_protocol_scheme">fb858470831208589</string>
-    <string name="sign_up_with_facebook">Sign Up With Facebook</string>
+    <!--    <string name="facebook_app_id">2635111906573735</string>-->
+    <!--    <string name="fb_login_protocol_scheme">fb2635111906573735</string>-->
+    <string name="continue_with_fb">Continue with Facebook</string>
     <string name="connect_on_facebook">Connect Directly On Facebook</string>
 
     <!--firebase-->

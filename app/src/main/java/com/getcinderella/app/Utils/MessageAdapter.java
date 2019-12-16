@@ -12,7 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.DrawableRes;
 
 import com.getcinderella.app.R;
-import com.sinch.android.rtc.messaging.Message;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,7 @@ public class MessageAdapter extends BaseAdapter {
 
     private boolean isRecurring=false;
     private int last_direction=0;
-    private List<Pair<Message, Integer>> mMessages;
+    private List<Pair<String, Integer>> mMessages;
 
     private String incoming_name;
     private String outgoing_name;
@@ -35,10 +34,10 @@ public class MessageAdapter extends BaseAdapter {
 
     public MessageAdapter(Activity activity) {
         mInflater = activity.getLayoutInflater();
-        mMessages = new ArrayList<Pair<Message, Integer>>();
+        mMessages = new ArrayList<Pair<String, Integer>>();
     }
 
-    public void addMessage(Message message, int direction) {
+    public void addMessage(String message, int direction) {
         if (last_direction==0) {
             last_direction=direction;
         }
@@ -111,15 +110,15 @@ public class MessageAdapter extends BaseAdapter {
 
         if (direction == DIRECTION_INCOMING*10) {
             TextView message_body=convertView.findViewById(R.id.message_body);
-            Message message = mMessages.get(i).first;
-            message_body.setText(message.getTextBody());
+            String message = mMessages.get(i).first;
+            message_body.setText(message);
             ((TextView)convertView.findViewById(R.id.name)).setText(incoming_name);
             convertView.findViewById(R.id.avatar).setBackgroundResource(incoming_mask);
 
         } else if (direction == DIRECTION_OUTGOING*10) {
             TextView message_body=convertView.findViewById(R.id.message_body);
-            Message message = mMessages.get(i).first;
-            message_body.setText(message.getTextBody());
+            String message = mMessages.get(i).first;
+            message_body.setText(message);
             if (outgoing_name.equals(""))
                 ((TextView)convertView.findViewById(R.id.name)).setVisibility(View.GONE);
             else
@@ -127,8 +126,8 @@ public class MessageAdapter extends BaseAdapter {
         }
         else {
             TextView message_body=convertView.findViewById(R.id.message_body);
-            Message message = mMessages.get(i).first;
-            message_body.setText(message.getTextBody());
+            String message = mMessages.get(i).first;
+            message_body.setText(message);
 
         }
 

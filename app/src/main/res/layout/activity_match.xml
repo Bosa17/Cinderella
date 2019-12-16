@@ -73,21 +73,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
+                android:id="@+id/state_outgoing"
                 android:layout_margin="30dp"
                 android:textSize="30sp"
                 android:text="Matched..."/>
         </RelativeLayout>
 
-
-        <ImageView
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:id="@+id/remoteUserDp"
-            android:padding="20dp"
-            android:layout_weight="3"
-            android:layout_gravity="center">
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="3">
+            <com.github.ybq.android.spinkit.SpinKitView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                app:SpinKit_Color="?attr/colorAccent"
+                app:SpinKit_Style="WanderingCubes"/>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="70dp"
+                android:paddingEnd="70dp"
+                android:id="@+id/remoteUserDp"
+                android:layout_centerInParent="true"
+                android:padding="0dip">
 
-        </ImageView>
+            </ImageView>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -308,6 +321,103 @@
         </RelativeLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:id="@+id/incoming"
+        android:weightSum="6">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/colorPrimary"
+            android:layout_weight="2"
+            >
+
+            <TextView
+                android:id="@+id/remoteUser_incoming"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="20dp"
+                app:autoSizeTextType="uniform"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/sceneDescTextView_incoming"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/home_bg"
+                android:textAlignment="center"
+                android:layout_below="@id/remoteUser_incoming"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:textSize="20sp"
+                />
+
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="3">
+            <com.github.ybq.android.spinkit.SpinKitView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                app:SpinKit_Color="?attr/colorAccent"
+                app:SpinKit_Style="WanderingCubes"/>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="70dp"
+                android:paddingEnd="70dp"
+                android:id="@+id/remoteMask_incoming"
+                android:layout_centerInParent="true"
+                android:padding="0dip">
+
+            </ImageView>
+        </RelativeLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:weightSum="2"
+            android:background="@color/colorPrimary"
+            android:orientation="horizontal"
+            >
+
+            <ImageView
+                android:id="@+id/answer"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:background="@drawable/call_bg"
+                android:layout_weight="1"
+                android:layout_marginEnd="7dp"
+                android:layout_marginStart="7dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_accept"
+                />
+            <ImageView
+                android:id="@+id/decline"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:background="@drawable/call_end_bg"
+                android:layout_weight="1"
+                android:layout_marginEnd="7dp"
+                android:layout_marginStart="7dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_close"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -36,7 +36,7 @@
                     android:layout_gravity="center_horizontal"
                     android:maxLines="1"
                     app:autoSizeTextType="uniform"
-                    android:text="Available Scenes"
+                    android:text="Choose Scenes"
                     android:textSize="30sp"
                     />
 
@@ -79,15 +79,6 @@
                     android:text="Partner Preferences"
                     android:textSize="30sp"
                     />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:maxLines="1"
-                    app:autoSizeTextType="uniform"
-                    android:text="(Coming Soon)"
-                    android:textSize="20sp"
-                    />
 
                 <RadioGroup
                     android:layout_width="wrap_content"
@@ -101,16 +92,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/option0"
-                        android:clickable="false"
-                        android:enabled="false"
                         android:text="Man"
                         android:textSize="20sp"/>
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/option1"
-                        android:clickable="false"
-                        android:enabled="false"
                         android:text="Woman"
                         android:textSize="20sp"/>
                     <RadioButton
@@ -154,6 +141,7 @@
         android:layout_marginTop="30dp"
         android:orientation="horizontal"
         android:background="@drawable/pixie_cost_switcher"
+        android:id="@+id/goto_pixies"
         app:layout_anchor="@id/scroll"
         app:layout_anchorGravity="top|end">
         <ImageView

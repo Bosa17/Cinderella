@@ -42,11 +42,11 @@ public class QuoteActivity extends BaseActivity {
                     Toast.makeText(QuoteActivity.this, "You did not enter a quote", Toast.LENGTH_SHORT).show();
                 }
                 else
-                    returnWithSelectedImage();
+                    returnWithQuote();
             }
         });
     }
-    private void returnWithSelectedImage(){
+    private void returnWithQuote(){
         Intent intent =new Intent().putExtra(getString(R.string.quote),String.valueOf(quote.getText()));
         setResult(Activity.RESULT_OK,intent);
         finish();

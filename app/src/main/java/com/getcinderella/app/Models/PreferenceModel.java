@@ -1,23 +1,24 @@
 package com.getcinderella.app.Models;
 
 public class PreferenceModel {
-    public String p;
+    public String m;
     public long t;
 
-    public PreferenceModel(String p, long t) {
-        this.p = p;
+    public PreferenceModel( String m, long t) {
+        this.m = m;
         this.t = t;
     }
 
     public PreferenceModel() {
     }
 
-    public String getP() {
-        return p;
+
+    public String getM() {
+        return m;
     }
 
-    public void setP(String p) {
-        this.p = p;
+    public void setM(String m) {
+        this.m = m;
     }
 
     public long getT() {
@@ -31,7 +32,7 @@ public class PreferenceModel {
     @Override
     public String toString() {
         return "PreferenceModel{" +
-                "p='" + p + '\'' +
+                ", m='" + m + '\'' +
                 ", t=" + t +
                 '}';
     }

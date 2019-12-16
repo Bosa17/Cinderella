@@ -5,7 +5,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +17,15 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
@@ -45,7 +50,6 @@ public class RemoteCardDialog extends BlurPopupWindow {
     private static String mRemoteUserName;
     private static String mRemoteUserQuote;
     private static Context context;
-    private InterstitialAd mInterstitialAd;
     private static boolean mRemoteUserIsPrivate=false;
     private static long mRemoteUserCharisma;
     private Bitmap bmp;
@@ -57,6 +61,7 @@ public class RemoteCardDialog extends BlurPopupWindow {
     private LinearLayout addKarmaDialog;
     private LinearLayout remoteScv;
     private LinearLayout remotePrivate;
+    private ProgressBar roundandround;
     private RatingBar mUserAddCharisma;
     private ImageView scratch;
     private Button addKarmaConfirm;
@@ -77,6 +82,7 @@ public class RemoteCardDialog extends BlurPopupWindow {
         addKarmaConfirm=view.findViewById(R.id.addKarmaConfirm);
         remoteScv=view.findViewById(R.id.remoteScv);
         remotePrivate=view.findViewById(R.id.remotePrivate);
+        roundandround=view.findViewById(R.id.roundandround);
         cont=view.findViewById(R.id.cont);
         cont2=view.findViewById(R.id.cont2);
         addKarmaDialog=view.findViewById(R.id.addKarmaDialog);
@@ -113,7 +119,6 @@ public class RemoteCardDialog extends BlurPopupWindow {
                     options.inSampleSize = inSampleSize;
                     options.inJustDecodeBounds = false;
                     options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-
                     bmp = BitmapFactory.decodeStream(input,null,options);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -121,13 +126,13 @@ public class RemoteCardDialog extends BlurPopupWindow {
                 }
                 return bmp;
             }
-
-            protected void onPostExecute(Bitmap result) {
+            @Override
+            protected void onPostExecute(@NonNull Bitmap result) {
 
                 //Add image to ImageView
                 if (result!=null) {
                     scv.setImageBitmap(result);
-                    addKarmaDialog.setVisibility(VISIBLE);
+                    init();
                 }
                 else
                     return;
@@ -141,7 +146,6 @@ public class RemoteCardDialog extends BlurPopupWindow {
             public void onRevealed(ScratchCardView tv) {
                 mUserRemote.setVisibility(VISIBLE);
                 cont.setVisibility(VISIBLE);
-
             }
 
             @Override
@@ -165,8 +169,6 @@ public class RemoteCardDialog extends BlurPopupWindow {
         cont.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                long conn_no=dataHelper.getPartners()+1;
-                dataHelper.putPartner(conn_no);
                 remoteUser.setRemoteUserId(mRemoteUserId);
                 remoteUser.setRemoteUserQuote(mRemoteUserQuote);
                 remoteUser.setRemoteUserName(mRemoteUserName);
@@ -177,29 +179,31 @@ public class RemoteCardDialog extends BlurPopupWindow {
                 else{
                     Toast.makeText(context,"Cannot make connections because permissions not granted", Toast.LENGTH_LONG).show();
                 }
-                dataHelper.addNewRemoteUser(remoteUser,conn_no);
-                if (mInterstitialAd.isLoaded())
-                    mInterstitialAd.show();
+                if (!dataHelper.getRemoteUserIds().contains(mRemoteUserId)) {
+                    long conn_no=dataHelper.getPartners()+1;
+                    dataHelper.putPartner(conn_no);
+                    dataHelper.addNewRemoteUser(remoteUser, conn_no);
+                }
                 dismiss();
             }
         });
         cont2.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if (mInterstitialAd.isLoaded() && !dataHelper.getIsPremium())
-                    mInterstitialAd.show();
                 dismiss();
             }
         });
         mUserRemote.setText(mRemoteUserName);
-        mInterstitialAd = new InterstitialAd(context);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
         LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp.gravity = Gravity.CENTER;
         view.setLayoutParams(lp);
         view.setVisibility(INVISIBLE);
         return view;
+    }
+
+    private void init(){
+        roundandround.setVisibility(GONE);
+        addKarmaDialog.setVisibility(VISIBLE);
     }
 
     private void updateWidgets(){

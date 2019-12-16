@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.webrtc.ContextUtils.getApplicationContext;
 
 public class FileUtils {
     private static String TAG="FileUtils";
@@ -38,9 +37,7 @@ public class FileUtils {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
-                + "/Android/data/"
-                + getApplicationContext().getPackageName()
-                + "/Files");
+                + "/Android/data/com.getcinderella.app/Files");
 
         // This location works best if you want the created images to be shared
         // between applications and persist after your app has been uninstalled.

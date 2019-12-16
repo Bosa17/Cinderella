@@ -23,15 +23,17 @@ import androidx.annotation.NonNull;
 import com.getcinderella.app.Fragments.ProgressDialogFragment;
 import com.getcinderella.app.R;
 import com.getcinderella.app.Utils.DataHelper;
+import com.getcinderella.app.Utils.FacebookHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 
 public class Setting extends BaseActivity {
 
     //widgets
-    private TextView faq;
+    private TextView logout;
     private ImageView image;
     private EditText quote;
     private TextView invite;
@@ -62,7 +64,7 @@ public class Setting extends BaseActivity {
         vibrant=findViewById(R.id.vibrant_switch);
         sexy=findViewById(R.id.sexy_switch);
         quote=(EditText) findViewById(R.id.quoteText);
-        faq =(TextView) findViewById(R.id.faq);
+        logout =(TextView) findViewById(R.id.logout);
         invite =(TextView) findViewById(R.id.invite);
         feedback=(TextView) findViewById(R.id.feedback);
         image = (ImageView) findViewById(R.id.imageShare);
@@ -81,10 +83,13 @@ public class Setting extends BaseActivity {
                 startSelect_mask();
             }
         });
-        faq.setOnClickListener(new View.OnClickListener() {
+        logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                new FacebookHelper(Setting.this).logout();
+                FirebaseAuth.getInstance().signOut();
+                startSigninActivity();
+                finish();
             }
         });
         invite.setOnClickListener(new View.OnClickListener() {
@@ -204,9 +209,15 @@ public class Setting extends BaseActivity {
         image.setTag(maskID);
     }
 
+    private void startSigninActivity(){
+        Intent intent =new Intent(this, User_login.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        super.onActivityResult(requestCode,resultCode,data);
         if (requestCode == RC_SUCCESS) {
             if(resultCode == Activity.RESULT_OK){
                 isChanged=true;

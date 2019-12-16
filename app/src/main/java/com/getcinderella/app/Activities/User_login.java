@@ -50,6 +50,7 @@ public class User_login extends BaseActivity {
     private UserModel userModel;
     private static int RC_SUCCESS_MASK=2;
     private static int RC_SUCCESS_QUOTE=3;
+    private static int RC_SUCCESS_GENDER=4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,9 +102,8 @@ public class User_login extends BaseActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             dataHelper.saveScene();
-                            boolean isNewUser=true;
-//                             Sign com success, update UI with the signed-com user's information
-//                            boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
+//                            boolean isNewUser=false;
+                            boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
                             Log.d(TAG, "signInWithCredential:success");
                             if (isNewUser) {
                                 FirebaseUser user = mAuth.getCurrentUser();
@@ -121,12 +121,11 @@ public class User_login extends BaseActivity {
                             ProgressDialogFragment.hide(getSupportFragmentManager());
 
                         } else {
-                            // If sign com fails, display a message to the user.
+                            // If sign in fails, display a message to the user.
                             Toast.makeText(User_login.this, "Unexpected Problem during Sign Up! Try Again later!", Toast.LENGTH_SHORT).show();
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                         }
 
-                        // ...
                     }
                 });
     }
@@ -140,7 +139,6 @@ public class User_login extends BaseActivity {
                         Uri deepLink = null;
                         if (pendingDynamicLinkData != null) {
                             deepLink = pendingDynamicLinkData.getLink();
-                            Log.d("lol",deepLink.toString());
                         }
                         //
                         // If the user isn't signed com and the pending Dynamic Link is
@@ -149,10 +147,8 @@ public class User_login extends BaseActivity {
                         //
                         if (deepLink != null) {
                             String referrerUid = deepLink.getQueryParameter("invitedby");
-                            Log.d("lol",referrerUid);
                             if (dataHelper.isRewardPossible()){
                                 dataHelper.putReferrer(referrerUid);
-                                Log.d("lol",dataHelper.getReferrer());
                                 dataHelper.putIsRewardPossible(false);
                             }
                         }
@@ -172,10 +168,8 @@ public class User_login extends BaseActivity {
                         Log.i("Response",response.toString());
 
                         String name = object.getString("name");
-//                        String gender=object.getString("gender");
 
                         userModel.setUsername(name);
-//                        userModel.setGender(gender);
 
                         if (Profile.getCurrentProfile()!=null)
                         {
@@ -183,7 +177,7 @@ public class User_login extends BaseActivity {
                             Log.i("Login", "ProfilePic" + Profile.getCurrentProfile().getProfilePictureUri(200, 200));
                         }
                         dataHelper.addNewUser(uid,userModel);
-                        startSelect_mask();
+                        startGenderActivity();
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -202,17 +196,24 @@ public class User_login extends BaseActivity {
     private void startQuoteActivity(){
         startActivityForResult(new Intent(this,QuoteActivity.class),RC_SUCCESS_QUOTE);
     }
+    private void startGenderActivity(){
+        startActivityForResult(new Intent(this,GenderActivity.class),RC_SUCCESS_GENDER);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode==RC_SUCCESS_MASK){
             dataHelper.putMask2Firebase(data.getIntExtra(getString(R.string.mask),R.drawable.dp_1));
-            startQuoteActivity();
+            startMainActivity();
         }
         else if (requestCode==RC_SUCCESS_QUOTE){
             dataHelper.putQuote2Firebase(data.getStringExtra(getString(R.string.quote)));
-            startMainActivity();
+            startSelect_mask();
+        }
+        else if (requestCode==RC_SUCCESS_GENDER){
+            dataHelper.putGender2Firebase(data.getStringExtra(getString(R.string.gender)));
+            startQuoteActivity();
         }
         facebookHelper.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);

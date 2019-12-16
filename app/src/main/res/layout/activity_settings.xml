@@ -180,13 +180,13 @@
                         android:layout_marginEnd="25dp"
                         android:layout_marginStart="25dp"/>
                     <TextView
-                        android:id="@+id/faq"
+                        android:id="@+id/logout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="F.A.Q."
+                        android:text="Logout"
                         android:textColor="@color/white"
                         android:clickable="true"
-                        android:drawableStart="@drawable/ic_faq"
+                        android:drawableStart="@drawable/ic_logout"
                         android:focusable="true"
                         android:layout_marginTop="30dp"
                         android:background="@color/colorPrimary"

@@ -14,11 +14,11 @@
         android:src="@drawable/ic_cinderella"/>
 
     <Button
-        android:id="@+id/sign-in"
+        android:id="@+id/sign_in"
         android:layout_width="match_parent"
         android:layout_below="@+id/logo"
         android:layout_height="wrap_content"
-        android:text="@string/sign_up_with_facebook"
+        android:text="@string/continue_with_fb"
         android:layout_marginTop="70dp"
         android:textColor="@color/white"
         android:background="@drawable/fb_button"

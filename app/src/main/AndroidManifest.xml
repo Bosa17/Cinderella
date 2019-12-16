@@ -9,10 +9,9 @@
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -26,6 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/ThemeRoyalty"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".Activities.GenderActivity"></activity>
         <activity android:name=".Activities.FAQ" />
         <activity android:name=".Activities.QuoteActivity" />
         <activity
@@ -95,8 +95,12 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <receiver android:name=".Utils.AlarmReceiver" />
-
+        <receiver android:name=".Utils.ClaimPixiesNotification" />
+        <receiver android:name="Utils.PhoneStateBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE"/>
+            </intent-filter>
+        </receiver>
         <service android:name=".Utils.ChatService" />
         <service android:name=".Utils.FcmListenerService">
             <intent-filter>

@@ -19,7 +19,6 @@ import com.orhanobut.hawk.Hawk;
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.getcinderella.app.Models.BlockUserModel;
 import com.getcinderella.app.Models.RemoteUserConnection;
 import com.getcinderella.app.Models.SceneModel;
 import com.getcinderella.app.Models.UserModel;
@@ -39,7 +38,7 @@ public class DataHelper {
     public void addNewUser(String userID,UserModel curr_user){
         putUID(userID);
         putMask((int)curr_user.getMask());
-        putGender("Male");
+        putGender(curr_user.getGender());
         putQuote("");
         putLast_sign_at(System.currentTimeMillis());
         putUsername(curr_user.getUsername());
@@ -70,7 +69,7 @@ public class DataHelper {
     public void saveUser(String userID,UserModel curr_user){
         putUID(userID);
         putMask((int)curr_user.getMask());
-        putGender("Male");
+        putGender(curr_user.getGender());
         putQuote(curr_user.getQuote());
         putLast_sign_at(System.currentTimeMillis());
         putUsername(curr_user.getUsername());
@@ -137,6 +136,10 @@ public class DataHelper {
         return Ids;
     }
 
+    public boolean isUserAlreadyMatched(String remoteId){
+        return getRemoteUserIds().contains(remoteId);
+    }
+
     public void deleteRemoteUser(int index){
 //        blockUser();
         for (long i = getPartners(); i >= index; i--)  {
@@ -156,41 +159,6 @@ public class DataHelper {
         }
         return Charismas;
     }
-//
-//    public void blockUser(BlockUserModel user){
-//        Hawk.put(mContext.getString(R.string.blockUser)+(getBlocked()+1),user);
-//        putBlocked(getBlocked()+1);
-//    }
-//
-//    public void unBlockUser(){
-//
-//    }
-//
-//    public ArrayList<String> getBlockUserNames(){
-//        ArrayList<String> Names=new ArrayList<>();
-//        try {
-//            for (long i = getBlocked(); i >= 1; i--)  {
-//                BlockUserModel blocked = Hawk.get(mContext.getString(R.string.blockUser) + i);
-//                Names.add(blocked.getName());
-//            }
-//        }catch(Exception e){
-//            e.printStackTrace();
-//        }
-//        return Names;
-//    }
-//
-//    public ArrayList<String> getBlockUserCallerId(){
-//        ArrayList<String> call_ids=new ArrayList<>();
-//        try {
-//            for (long i = getBlocked(); i >= 1; i--)  {
-//                BlockUserModel blocked = Hawk.get(mContext.getString(R.string.blockUser) + i);
-//                call_ids.add(blocked.getCaller_id());
-//            }
-//        }catch(Exception e){
-//            e.printStackTrace();
-//        }
-//        return call_ids;
-//    }
 
     public void saveScene(){
         try {
@@ -307,6 +275,10 @@ public class DataHelper {
         Hawk.put(mContext.getString(R.string.mask), maskID);
         firebaseHelper.updateMask(maskID);
     }
+    public void putGender2Firebase(String gender){
+        Hawk.put(mContext.getString(R.string.gender), gender);
+        firebaseHelper.updateGender(gender);
+    }
     public void putSetting2Firebase(int maskID,String quote){
         Hawk.put(mContext.getString(R.string.mask), maskID);
         Hawk.put(mContext.getString(R.string.quote), quote);
@@ -315,15 +287,11 @@ public class DataHelper {
     public int getMask(){
         return Hawk.get(mContext.getString(R.string.mask),R.drawable.dp_1);
     }
-    public void putPartner(long partners){
-        Hawk.put(mContext.getString(R.string.partner), partners);
-    }
+    public void putPartner(long partners){Hawk.put(mContext.getString(R.string.partner), partners); }
     public long getPartners(){
         return Hawk.get(mContext.getString(R.string.partner),0L);
     }
-    public void putCharisma(long charisma){
-        Hawk.put(mContext.getString(R.string.charisma), charisma);
-    }
+    public void putCharisma(long charisma){ Hawk.put(mContext.getString(R.string.charisma), charisma); }
     public long getCharisma(){
         return Hawk.get(mContext.getString(R.string.charisma),0L);
     }
@@ -337,11 +305,9 @@ public class DataHelper {
         Hawk.put(mContext.getString(R.string.gender), gender);
     }
     public String getGender(){
-        return Hawk.get(mContext.getString(R.string.gender));
+        return Hawk.get(mContext.getString(R.string.gender),"");
     }
-    public void putUsername(String username){
-        Hawk.put(mContext.getString(R.string.username), username);
-    }
+    public void putUsername(String username){ Hawk.put(mContext.getString(R.string.username), username); }
     public String getUsername(){
         return Hawk.get(mContext.getString(R.string.username));
     }
@@ -361,7 +327,6 @@ public class DataHelper {
     public String getQuote(){
         return Hawk.get(mContext.getString(R.string.quote),"");
     }
-
     public void putUID(String uid){
         Hawk.put(mContext.getString(R.string.uid), uid);
     }
@@ -386,16 +351,12 @@ public class DataHelper {
     public boolean getIsPremium(){
         return Hawk.get(mContext.getString(R.string.isPremium),false);
     }
-    public void putIsPremium(boolean IsPremium){
-        Hawk.put(mContext.getString(R.string.isPremium),IsPremium);
-    }
+    public void putIsPremium(boolean IsPremium){ Hawk.put(mContext.getString(R.string.isPremium),IsPremium);}
     public void putIsPremium2Firebase(boolean IsPremium){
         firebaseHelper.updateIsPremium(IsPremium);
         Hawk.put(mContext.getString(R.string.isPremium),IsPremium);
     }
-    public void putLast_sign_at(long last_sign_at){
-        Hawk.put(mContext.getString(R.string.last_sign_at), last_sign_at);
-    }
+    public void putLast_sign_at(long last_sign_at){ Hawk.put(mContext.getString(R.string.last_sign_at), last_sign_at); }
     public long getLast_sign_at(){
         return Hawk.get(mContext.getString(R.string.last_sign_at),0L);
     }
@@ -411,45 +372,15 @@ public class DataHelper {
     public boolean isTutorialShown(){
         return Hawk.get("isTutorialShown",false);
     }
-    public void putTutorialShown(boolean isTutorialShown){
-        Hawk.put("isTutorialShown",isTutorialShown);
-    }
-    public void putScene_timestamp(long scene_timestamp){
-        Hawk.put("scene_timestamp", scene_timestamp);
-    }
-    public long getScene_timestamp(){
-        return Hawk.get("scene_timestamp",0L);
-    }
-    public boolean isRewardPossible(){
-        return Hawk.get("isRewardPossible",true);
-    }
-    public void putIsRewardPossible(boolean isRewardPossible){
-        Hawk.put("isRewardPossible",isRewardPossible);
-    }
-    public void putReferrer(String referrer){
-        Hawk.put("referrer", referrer);
-    }
-    public String getReferrer(){
-        return Hawk.get("referrer","");
-    }
-    private void putBlocked(long partners){
-        Hawk.put(mContext.getString(R.string.blocked), partners);
-    }
-    private long getBlocked(){
-        return Hawk.get(mContext.getString(R.string.blocked),0L);
-    }
-    public void putT(String t){
-        Hawk.put("t", t);
-    }
-    public String getT(){
-        return Hawk.get("t","" );
-    }
-    public void putHasChosenScene(boolean t){
-        Hawk.put("hasChosenScene",t);
-    }
-    public Boolean getHasChosenScene(){
-        return Hawk.get("hasChosenScene",false);
-    }
+    public void putTutorialShown(boolean isTutorialShown){ Hawk.put("isTutorialShown",isTutorialShown);}
+    public void putScene_timestamp(long scene_timestamp){Hawk.put("scene_timestamp", scene_timestamp);}
+    public long getScene_timestamp(){return Hawk.get("scene_timestamp",0L);}
+    public boolean isRewardPossible(){return Hawk.get("isRewardPossible",true);}
+    public void putIsRewardPossible(boolean isRewardPossible){ Hawk.put("isRewardPossible",isRewardPossible);}
+    public void putReferrer(String referrer){Hawk.put("referrer", referrer); }
+    public String getReferrer(){return Hawk.get("referrer","");}
+    public void putT(String t){Hawk.put("t", t);}
+    public String getT(){return Hawk.get("t","" ); }
     public void declareToken(){
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -467,6 +398,31 @@ public class DataHelper {
                         }
                     }
                 });
+    }
+
+    public ArrayList<String> getBlockUserCallerId(){
+        return Hawk.get(mContext.getString(R.string.blocked),new ArrayList<>());
+    }
+
+    public void blockUser(String userID){
+        ArrayList<String> ids=getBlockUserCallerId();
+        ids.add(userID);
+        Hawk.put(mContext.getString(R.string.blocked),ids);
+    }
+    public void unblockUser(String userID){
+        ArrayList<String> ids=getBlockUserCallerId();
+        ids.remove(userID);
+        Hawk.put(mContext.getString(R.string.blocked),ids);
+    }
+
+    public void setAvailable(){
+        firebaseHelper.setAvailable(getUID());
+    }
+    public void saveRemoteTmp(RemoteUserConnection remoteTmp){
+        Hawk.put("remoteTmp",remoteTmp);
+    }
+    public RemoteUserConnection getRemoteTmp(){
+        return Hawk.get("remoteTmp",null);
     }
 }
 

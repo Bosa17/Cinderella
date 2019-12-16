@@ -19,6 +19,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextSwitcher;
@@ -26,7 +28,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.getcinderella.app.Activities.GenderActivity;
 import com.getcinderella.app.Activities.MatchActivity;
+import com.getcinderella.app.Activities.QuoteActivity;
+import com.getcinderella.app.Activities.Select_mask;
+import com.getcinderella.app.Models.RemoteUserConnection;
+import com.getcinderella.app.Utils.ChatService;
+import com.getcinderella.app.Utils.CustomPhoneStateListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -39,7 +47,6 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,12 +60,13 @@ import com.getcinderella.app.Activities.Setting;
 import com.getcinderella.app.Models.SceneModel;
 import com.getcinderella.app.Models.UserModel;
 import com.getcinderella.app.R;
-import com.getcinderella.app.Utils.AlarmReceiver;
+import com.getcinderella.app.Utils.ClaimPixiesNotification;
 import com.getcinderella.app.Utils.ConnectivityUtils;
 import com.getcinderella.app.Utils.DataHelper;
 import com.getcinderella.app.Utils.HashtagView;
 import com.getcinderella.app.Utils.ServiceDataHelper;
 import com.getcinderella.app.Utils.ShakeListener;
+import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
 public class Home extends Fragment {
     //vars
@@ -68,13 +76,15 @@ public class Home extends Fragment {
     private DataHelper dataHelper;
     private SceneModel selectedScene;
     private boolean isCardVisible;
-
+    private static int RC_SUCCESS_QUOTE=3;
+    private static int RC_SUCCESS_GENDER=4;
+    private static int  RC_SUCCESS_MASK=5;
     //widgets
     private ImageView privateMode;
-    private RadioGroup PartnerPreferenceRadioGroup;
     private ImageView phone_shake;
     private ScrollView scrollView;
     private HashtagView hashTagView;
+    private RadioGroup PartnerPreferenceRadioGroup;
     private ShakeListener mShaker;
     private TextView pixies;
     private TextView isPremiumTextView;
@@ -102,10 +112,12 @@ public class Home extends Fragment {
             }
         });
         dataHelper=new DataHelper(getActivity());
+        if (dataHelper.getGender().equals("")||dataHelper.getQuote().equals("")||dataHelper.getGender().equals("Male")){
+            startGenderActivity();
+        }
         scene_desc =view.findViewById(R.id.scene_desc);
         mask=(ImageView) view.findViewById(R.id.user_dp);
         scrollView=view.findViewById(R.id.scroll);
-        PartnerPreferenceRadioGroup=view.findViewById(R.id.parter_preference);
         privateMode=view.findViewById(R.id.private_btn);
         partner =(TextView) view.findViewById(R.id.user_partners);
         isPremiumTextView =(TextView) view.findViewById(R.id.isPremiumTextView);
@@ -123,15 +135,16 @@ public class Home extends Fragment {
             public void onShake()
             {   Rect scrollBounds = new Rect();
                 scrollView.getHitRect(scrollBounds);
-                if (phone_shake.getLocalVisibleRect(scrollBounds)) {
+                if (phone_shake.getLocalVisibleRect(scrollBounds) && !CustomPhoneStateListener.isOnCall) {
                     if (selectedScene !=null) {
                         if (getPixieCost() <= dataHelper.getPixies()) {
                             Bundle bundle = new Bundle();
                             bundle.putBoolean("isPrivate", dataHelper.getIsPrivate());
                             bundle.putLong("pixieCost", getPixieCost());
                             bundle.putLong("pixies", dataHelper.getPixies());
-//                            bundle.putString("partnerPreference", getSelectedPartnerPreference());
-                            startActivityForResult(new Intent(getActivity(), MatchActivity.class).putExtras(bundle).putExtra("scene", selectedScene), 2);
+                            bundle.putString("mygender",dataHelper.getGender());
+                            bundle.putString("partnerPreference", getSelectedPartnerPreference());
+                            startActivityForResult(new Intent(getActivity(), MatchActivity.class).putExtras(bundle).putExtra("scene", selectedScene).putExtra(ChatService.CHAT_TYPE,"1"), 2);
                             vibe.vibrate(300);
                         } else {
                             ((MainActivity) getActivity()).navigateToPixie();
@@ -171,12 +184,22 @@ public class Home extends Fragment {
                 initPrivateMode();
             }
         });
-//        PartnerPreferenceRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            public void onCheckedChanged(RadioGroup group, int checkedId)
-//            {
-//                setPixieCost();
-//            }
-//        });
+        LinearLayout goto_pixies=view.findViewById(R.id.goto_pixies);
+        goto_pixies.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                ((MainActivity) getActivity()).navigateToPixie();
+                isCardVisible = true;
+                onPause();
+            }
+        });
+        PartnerPreferenceRadioGroup=view.findViewById(R.id.parter_preference);
+        PartnerPreferenceRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            public void onCheckedChanged(RadioGroup group, int checkedId)
+            {
+                setPixieCost();
+            }
+        });
         if (dataHelper.getIsPremium())
             isPremiumTextView.setVisibility(View.VISIBLE);
         hashTagView =(HashtagView) view.findViewById(R.id.scene_tags);
@@ -225,6 +248,7 @@ public class Home extends Fragment {
                     }
             }, 5000);
         }
+        dataHelper.declareToken();
         try {
             sceneRef.child("c")
                     .addValueEventListener(new ValueEventListener() {
@@ -267,7 +291,6 @@ public class Home extends Fragment {
                             }
                         }
                     });
-            dataHelper.declareToken();
 
         }catch (Exception ignore){
             Toast.makeText(getContext(),"Unexpected problem contacting server. Check Network Connection",Toast.LENGTH_SHORT).show();
@@ -285,12 +308,20 @@ public class Home extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==2 && resultCode==-1){
-//            new RemoteCardDialog.Builder(getContext(),data.getStringExtra(getResources().getString(R.string.uid)),data.getLongExtra(getResources().getString(R.string.charisma),0),data.getStringExtra(getResources().getString(R.string.fb_dp)),data.getStringExtra(getResources().getString(R.string.username)),data.getStringExtra(getResources().getString(R.string.quote)),data.getBooleanExtra("isPrivate",false)).setOnDismissListener(new remoteCardDismissListener()).build().show();
-//            isCardVisible=true;
-        }
-        else if(requestCode==2 && resultCode==2){
+        if(requestCode==2 && resultCode==2){
             Toast.makeText(getContext(), "Thank you for your report. Inappropriate Complaint has been registered!", Toast.LENGTH_LONG).show();
+        }
+        else if (requestCode==RC_SUCCESS_MASK){
+            dataHelper.putMask2Firebase(data.getIntExtra(getString(R.string.mask),R.drawable.dp_1));
+        }
+        else if (requestCode==RC_SUCCESS_QUOTE){
+            dataHelper.putQuote2Firebase(data.getStringExtra(getString(R.string.quote)));
+            startSelect_mask();
+        }
+        else if (requestCode==RC_SUCCESS_GENDER){
+            dataHelper.putGender2Firebase(data.getStringExtra(getString(R.string.gender)));
+            if (dataHelper.getQuote().equals(""))
+                startQuoteActivity();
         }
     }
 
@@ -309,7 +340,15 @@ public class Home extends Fragment {
         mShaker.pause();
         super.onPause();
     }
-
+    private void startSelect_mask(){
+        startActivityForResult(new Intent(getContext(), Select_mask.class),RC_SUCCESS_MASK);
+    }
+    private void startQuoteActivity(){
+        startActivityForResult(new Intent(getContext(), QuoteActivity.class),RC_SUCCESS_QUOTE);
+    }
+    private void startGenderActivity(){
+        startActivityForResult(new Intent(getContext(), GenderActivity.class),RC_SUCCESS_GENDER);
+    }
     private void showInvitation(String name){
         new InvitationDialog.Builder(getContext(),name).build().show();
     }
@@ -332,10 +371,27 @@ public class Home extends Fragment {
                         }
                 }
             }, 2000);
-            Intent intent1 = new Intent(getContext(), AlarmReceiver.class);
+            Intent intent1 = new Intent(getContext(), ClaimPixiesNotification.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0,intent1, PendingIntent.FLAG_UPDATE_CURRENT);
             AlarmManager am = (AlarmManager)getContext().getSystemService(getContext().ALARM_SERVICE);
             am.set(AlarmManager.RTC_WAKEUP, dataHelper.getLast_sign_at()+1000 * 60 * 60, pendingIntent);
+        }
+        dataHelper.setAvailable();
+        if (dataHelper.getRemoteTmp()!=null){
+            RemoteUserConnection tmp=dataHelper.getRemoteTmp();
+            Log.d("Homelol",tmp.getRemoteUserDp()+" "+tmp.getRemoteUserId());
+            Toast.makeText(getContext(), "App closed unexpectedly! Showing last matched user..", Toast.LENGTH_SHORT).show();
+            try {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                            new RemoteCardDialog.Builder(getContext(),tmp.getRemoteUserId(),tmp.getRemoteUserCharisma(),tmp.getRemoteUserDp(),tmp.getRemoteUserName(),tmp.getRemoteUserQuote(),false).build().show();
+                    }
+                }, 2000);
+            }catch (Exception e){
+                Log.d("Homelol",e.getMessage());
+            }
+            dataHelper.saveRemoteTmp(null);
         }
 
     }
@@ -353,6 +409,7 @@ public class Home extends Fragment {
         else
             privateMode.setImageResource(R.drawable.ic_private);
     }
+
     private void initElements(){
         List<SceneModel> scenes = dataHelper.getScenes();
         scene_desc.setFactory(new TextViewFactory(R.style.SceneTextStyle, false));
@@ -397,25 +454,25 @@ public class Home extends Fragment {
     private void setPixieCost(){
         long s1=dataHelper.getIsPrivate()?2:0;
         long s2=0;
-//        switch (getSelectedPartnerPreference()){
-//            case "Man":s2=4;
-//            break;
-//            case"Woman":s2=4;
-//            break;
-//            case"Any":s2=0;
-//            break;
-//        }
+        switch (getSelectedPartnerPreference()){
+            case "Man":s2=2;
+            break;
+            case"Woman":s2=2;
+            break;
+            case"Any":s2=0;
+            break;
+        }
         int[] animV = new int[]{R.anim.slide_in_top, R.anim.slide_out_bottom};
         pixies_cost_switcher.setInAnimation(getContext(), animV[0]);
         pixies_cost_switcher.setOutAnimation(getContext(), animV[1]);
         pixies_cost_switcher.setText(String.valueOf(String.valueOf(s1+s2+3)));
     }
 
-//    private String getSelectedPartnerPreference() {
-//        int radioButtonID = PartnerPreferenceRadioGroup.getCheckedRadioButtonId();
-//        RadioButton radioButton = (RadioButton) PartnerPreferenceRadioGroup.findViewById(radioButtonID);
-//        return radioButton.getText().toString();
-//    }
+    private String getSelectedPartnerPreference() {
+        int radioButtonID = PartnerPreferenceRadioGroup.getCheckedRadioButtonId();
+        RadioButton radioButton = (RadioButton) PartnerPreferenceRadioGroup.findViewById(radioButtonID);
+        return radioButton.getText().toString();
+    }
 
     private void updateWidgets(UserModel user){
 
@@ -432,13 +489,6 @@ public class Home extends Fragment {
         }
     }
 
-//    private class remoteCardDismissListener implements BlurPopupWindow.OnDismissListener {
-//        @Override
-//        public void onDismiss(BlurPopupWindow popupWindow) {
-//            isCardVisible=false;
-//            onResume();
-//        }
-//    }
     private class TextViewFactory implements  ViewSwitcher.ViewFactory {
 
         @StyleRes
@@ -463,6 +513,5 @@ public class Home extends Fragment {
         }
 
     }
-
 
 }

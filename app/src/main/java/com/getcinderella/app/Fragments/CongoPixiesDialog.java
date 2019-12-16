@@ -3,6 +3,7 @@ package com.getcinderella.app.Fragments;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +67,12 @@ public class CongoPixiesDialog extends BlurPopupWindow {
             }
         });
     }
-
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode==KeyEvent.KEYCODE_BACK)
+            dismiss();
+        return super.onKeyDown(keyCode, event);
+    }
 
     @Override
     protected ObjectAnimator createShowAnimator() {

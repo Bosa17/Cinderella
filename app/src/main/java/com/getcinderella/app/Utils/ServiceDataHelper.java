@@ -2,12 +2,14 @@ package com.getcinderella.app.Utils;
 
 import android.content.Context;
 
+import com.getcinderella.app.Models.PreferenceModel;
+import com.getcinderella.app.Models.RemoteUserConnection;
+import com.google.firebase.database.FirebaseDatabase;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-import com.getcinderella.app.Models.BlockUserModel;
 import com.getcinderella.app.Models.SceneModel;
 import com.getcinderella.app.R;
 
@@ -55,32 +57,56 @@ public class ServiceDataHelper {
         }catch (Exception ignore){
 
         }
+        putAvailable();
     }
 
     public ArrayList<String> getBlockUserCallerId(){
-        ArrayList<String> call_ids=new ArrayList<>();
-        try {
-            for (long i = getBlocked(); i >= 1; i--)  {
-                BlockUserModel blocked = Hawk.get(mContext.getString(R.string.blockUser) + i);
-                call_ids.add(blocked.getCaller_id());
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return call_ids;
+        return Hawk.get(mContext.getString(R.string.blocked),new ArrayList<>());
     }
-    private void putBlocked(long partners){
-        Hawk.put(mContext.getString(R.string.blocked), partners);
+
+    private void putBlocked(String uid){
+        ArrayList<String> ids=getBlockUserCallerId();
+        ids.add(uid);
+        Hawk.put(mContext.getString(R.string.blocked),ids);
     }
-    private long getBlocked(){
-        return Hawk.get(mContext.getString(R.string.blocked),0L);
-    }
-    public void blockUser(BlockUserModel user){
-        Hawk.put(mContext.getString(R.string.blockUser)+(getBlocked()+1),user);
-        putBlocked(getBlocked()+1);
+
+    public void blockUser(String userID){
+        putBlocked(userID);
     }
 
     public long getPixies(){
         return Hawk.get(mContext.getString(R.string.pixies),0L);
+    }
+
+    public void putAvailable() {
+        PreferenceModel pm = new PreferenceModel("f",System.currentTimeMillis());
+        FirebaseDatabase.getInstance().getReference().child("a")
+                .child(Hawk.get(mContext.getString(R.string.gender)))
+                .child(getUID()).setValue(pm);
+    }
+    public void putUnAvailable() {
+        PreferenceModel pm = new PreferenceModel("t",System.currentTimeMillis());
+        FirebaseDatabase.getInstance().getReference().child("a")
+                .child(Hawk.get(mContext.getString(R.string.gender)))
+                .child(getUID()).setValue(pm);
+    }
+
+    public SceneModel getScene(String scene_no){
+        for (int i=1;i<=3;i++){
+            SceneModel scene=(SceneModel)Hawk.get(mContext.getResources().getString(R.string.scene)+i);
+            if(scene.getScene_no().equals(scene_no))
+            {
+                return scene;
+            }
+        }
+        return null;
+    }
+
+    public boolean getIsPrivate(){
+        return Hawk.get("isPrivate");
+    }
+
+    public void saveRemoteTmp(RemoteUserConnection remoteTmp){
+        Hawk.put("remoteTmp",remoteTmp);
     }
 }

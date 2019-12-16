@@ -5,17 +5,18 @@ public class UserModel {
     private String fb_dp;
     private String quote;
     private String t;
+    private String gender;
     private long charisma;
     private boolean isPremium;
     private long mask;
     private long pixies;
 
-
-    public UserModel(String username, String fb_dp, String quote, String t, long charisma, boolean isPremium, long mask, long pixies) {
+    public UserModel(String username, String fb_dp, String quote, String t, String gender, long charisma, boolean isPremium, long mask, long pixies) {
         this.username = username;
         this.fb_dp = fb_dp;
         this.quote = quote;
         this.t = t;
+        this.gender = gender;
         this.charisma = charisma;
         this.isPremium = isPremium;
         this.mask = mask;
@@ -89,6 +90,14 @@ public class UserModel {
 
     public void setT(String t) {
         this.t = t;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     @Override

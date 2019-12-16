@@ -12,6 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.getcinderella.app.Models.UserModel;
 import com.getcinderella.app.R;
+import com.orhanobut.hawk.Hawk;
 
 public class FirebaseHelper {
     private static String TAG="FirebaseHelper.class";
@@ -38,9 +39,11 @@ public class FirebaseHelper {
     public String getUserID(){
         return mAuth.getCurrentUser().getUid();
     }
-
+    public String getGender(){
+        Hawk.init(mContext).build();
+        return Hawk.get(mContext.getString(R.string.gender), "");
+    }
     public void addNewUser(String userID,UserModel user){
-
         db.collection(mContext.getString(R.string.user_db))
                 .document(userID)
                 .set(user);
@@ -68,16 +71,37 @@ public class FirebaseHelper {
 
     }
     public void addUserToChannel(String scene,String partnerPreference){
-        PreferenceModel pm=new PreferenceModel(partnerPreference,System.currentTimeMillis());
         myRef.child(scene)
                 .child(userID)
-                .setValue(pm);
+                .setValue(partnerPreference);
     }
 
+    public void endChat(String roomId){
+        removeRoom(roomId);
+        setAvailable(userID);
+    }
+    public void setAvailable(String Id){
+        PreferenceModel pm = new PreferenceModel("f",System.currentTimeMillis());
+        myRef.child("a")
+                .child(getGender())
+                .child(Id).setValue(pm);
+    }
+
+    public void setUnavailable(){
+        PreferenceModel pm = new PreferenceModel("t",System.currentTimeMillis());
+        myRef.child("a")
+                .child(getGender())
+                .child(getUserID()).setValue(pm);
+    }
     public void removeUserFromChannel(String scene){
         myRef.child(scene)
                 .child(userID).removeValue();
         removeUserFromMatched();
+        removeUserFromMatchedInit();
+    }
+    public void removeUserFromMatchedInit(){
+        myRef.child("o")
+                .child(userID). removeValue();
     }
     public void removeUserFromMatched(){
         myRef.child("m")
@@ -106,6 +130,12 @@ public class FirebaseHelper {
 
     }
 
+    public void updateGender(String gender){
+        db.collection(mContext.getString(R.string.user_db))
+                .document(getUserID()).update(mContext.getString(R.string.gender),gender);
+
+    }
+
     public void updateT(String T){
         db.collection(mContext.getString(R.string.user_db))
                 .document(getUserID()).update("t",T);
@@ -117,7 +147,6 @@ public class FirebaseHelper {
                 .document(getUserID()).update(mContext.getString(R.string.quote),quote);
 
     }
-
 
     public void setPrivate(String roomId, String participId,boolean isPrivate){
         String pvt=isPrivate?"t":"f";

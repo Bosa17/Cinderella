@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
 import com.getcinderella.app.Activities.PartnerChatActivity;
@@ -32,6 +34,8 @@ public class PartnerDialog extends BlurPopupWindow {
     private DataHelper dataHelper;
     //    widgets
     private ImageView mRemoteUserDp;
+    private ImageView block;
+    private ImageView unblock;
     private Button connectButton;
     public PartnerDialog(@NonNull Context context) {
         super(context);
@@ -70,6 +74,26 @@ public class PartnerDialog extends BlurPopupWindow {
                 dismiss();
             }
         });
+        block=(ImageView) view.findViewById(R.id.block);
+        block.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dataHelper.blockUser(remoteUserId);
+                checkBlock();
+                Toast.makeText(getContext(), "User Blocked", Toast.LENGTH_SHORT).show();
+            }
+        });
+        unblock=(ImageView) view.findViewById(R.id.unblock);
+        unblock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dataHelper.unblockUser(remoteUserId);
+                checkBlock();
+                Toast.makeText(getContext(), "User Unblocked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        checkBlock();
         loadBitmap(dp_file);
         if(dataHelper.getIsPremium())
             call_cost.setVisibility(GONE);
@@ -78,6 +102,16 @@ public class PartnerDialog extends BlurPopupWindow {
         view.setLayoutParams(lp);
         view.setVisibility(VISIBLE);
         return view;
+    }
+    private void checkBlock(){
+        if (dataHelper.getBlockUserCallerId().contains(remoteUserId)){
+            unblock.setVisibility(VISIBLE);
+            block.setVisibility(GONE);
+        }
+        else{
+            unblock.setVisibility(GONE);
+            block.setVisibility(VISIBLE);
+        }
     }
     private void loadBitmap(String filePath) {
         new AsyncTask<Void, Void, Bitmap>(){
@@ -150,7 +184,12 @@ public class PartnerDialog extends BlurPopupWindow {
         });
     }
 
-
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode==KeyEvent.KEYCODE_BACK)
+            dismiss();
+        return super.onKeyDown(keyCode, event);
+    }
     @Override
     protected ObjectAnimator createShowAnimator() {
         return null;

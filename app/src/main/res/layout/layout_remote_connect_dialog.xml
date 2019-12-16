@@ -10,6 +10,35 @@
         android:layout_above="@id/remoteUserConnectDp"
         android:id="@+id/closeDialog"/>
     <ImageView
+        android:id="@+id/block"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="30dp"
+        android:layout_above="@id/remoteUserConnectDp"
+        android:background="@drawable/block_bg"
+        android:src="@drawable/ic_block"
+        />
+    <ImageView
+        android:id="@+id/unblock"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="30dp"
+        android:layout_above="@id/remoteUserConnectDp"
+        android:background="@drawable/unblock_bg"
+        android:src="@drawable/ic_accept"
+        />
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_margin="20dp"

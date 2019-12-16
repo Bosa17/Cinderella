@@ -26,18 +26,7 @@ public class Permissions {
         return hasAllPermissions;
 
     }
-    public static boolean hasSinchPermissions(Context context) {
 
-        boolean hasAllPermissions = true;
-
-        for(String permission : SINCH_PERMISSIONS) {
-            //you can return false instead of assigning, but by assigning you can log all permission values
-            if (! hasPermission(context, permission)) {hasAllPermissions = false; }
-        }
-
-        return hasAllPermissions;
-
-    }
 
     public static boolean hasStoragePermissions(Context context) {
 
@@ -55,17 +44,9 @@ public class Permissions {
     public static final String[] PERMISSIONS = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.MODIFY_AUDIO_SETTINGS,
             Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.SET_ALARM
     };
 
-    public static final String[] SINCH_PERMISSIONS={
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.MODIFY_AUDIO_SETTINGS,
-            Manifest.permission.READ_PHONE_STATE,
-    };
 
     public static final String[] STORAGE_PERMISSION = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,

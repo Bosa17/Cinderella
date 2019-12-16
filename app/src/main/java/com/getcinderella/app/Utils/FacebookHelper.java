@@ -16,7 +16,7 @@ public class FacebookHelper {
 
     private static final String PERMISSION_EMAIL = "email";
     private static final String PERMISSION_PUBLIC_PROFILE = "public_profile";
-    private static final String PERMISSION_USER_GENDER = "user_gender";
+//    private static final String PERMISSION_USER_GENDER = "user_gender";
 
     private Activity activity;
     private CallbackManager fbCallbackManager;

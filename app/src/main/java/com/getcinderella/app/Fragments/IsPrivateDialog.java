@@ -3,6 +3,7 @@ package com.getcinderella.app.Fragments;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +74,12 @@ public class IsPrivateDialog extends BlurPopupWindow {
                 ObjectAnimator.ofFloat(getContentView(), "translationY", height, 0).setDuration(getAnimationDuration()).start();
             }
         });
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode==KeyEvent.KEYCODE_BACK)
+            IsPrivateDialog.this.dismiss();
+        return super.onKeyDown(keyCode, event);
     }
 
 

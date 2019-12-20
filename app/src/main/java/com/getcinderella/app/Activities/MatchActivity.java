@@ -391,8 +391,9 @@ public class MatchActivity extends BaseActivity implements ChatListener{
             participId=combo[1];
             oppParticipId=participId.equals("1")?"2":"1";
             mAudioHelper.playRingtone();
+            isPrivate=getIntent().getBooleanExtra("isPrivate",false);
             scene=new ServiceDataHelper(this).getScene(getIntent().getStringExtra("scene"));
-            pixieCost=3;
+            pixieCost=isPrivate?5:3;
             isMatched=true;
             curr_pixie=getIntent().getLongExtra("pixies",0);
             firebaseHelper.getRef().child("h").child(roomId).child(participId+"p")
@@ -490,12 +491,12 @@ public class MatchActivity extends BaseActivity implements ChatListener{
     private void findIsPrivate(){
         try {
             firebaseHelper.getRef().child("h").child(roomId).child("p"+oppParticipId)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                    .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snap) {
                             String p=snap.getValue(String.class);
                             if (p!=null)
-                                isPrivate= p.equals("t");
+                                isPrivate=(boolean)p.equals("t");
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -711,7 +712,7 @@ public class MatchActivity extends BaseActivity implements ChatListener{
                                         @Override
                                         public void run() {
                                             if (!isChatEstablished && !isInitiated) {
-                                                firebaseHelper.getRef().child("a").child(mRemoteUserID).child("m").setValue("f");
+                                                firebaseHelper.getRef().child("a").child(partnerPreference).child(mRemoteUserID).child("m").setValue("f");
                                                 reset();
                                                 handler.removeCallbacksAndMessages(null);
                                             }

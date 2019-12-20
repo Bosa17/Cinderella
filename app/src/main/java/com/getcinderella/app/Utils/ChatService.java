@@ -35,7 +35,7 @@ public class ChatService extends Service {
         public void initChatWithPayload(final Map payload){
             if(!dataHelper.getBlockUserCallerId().contains( payload.get("uID").toString())){
                 final Intent intent;
-                if (MatchActivity.isMatchActivityActive||PartnerChatActivity.isPartnerChatActivityActive||CustomPhoneStateListener.isOnCall)
+                if (MatchActivity.isMatchActivityActive||PartnerChatActivity.isPartnerChatActivityActive||dataHelper.getIsOnCall())
                 {
                     switch (payload.get("type").toString()){
                         case "1":FirebaseDatabase.getInstance().getReference().child("h").child( payload.get("rID").toString()).child("1p")

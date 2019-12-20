@@ -6,11 +6,9 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -50,6 +48,12 @@ public class FcmListenerService extends FirebaseMessagingService {
                 }
             }.relayMessageData(data);
         }
+        else if (isNotification(data)){
+            switch(data.get("type").toString()){
+                case "0":notificationHelper.createInvitationNotification(data);
+                        break;
+            }
+        }
         else{
             serviceDataHelper.saveSituationsFromFCM(data);
             notificationHelper.createFCMNotification(data);
@@ -64,5 +68,9 @@ public class FcmListenerService extends FirebaseMessagingService {
 
     public boolean isChatRequest(Map data){
         return data.get("title") != null && data.get("title").toString().equals("chatService");
+    }
+
+    public boolean isNotification(Map data){
+        return data.get("title") != null && data.get("title").toString().equals("notifs");
     }
 }

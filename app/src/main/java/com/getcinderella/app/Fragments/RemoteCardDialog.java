@@ -154,7 +154,7 @@ public class RemoteCardDialog extends BlurPopupWindow {
                     scratch.clearAnimation();
                     scratch.setVisibility(GONE);
                 }
-                if (percent>0.7){
+                if (percent>0.5){
                     siv.reveal();
                 }
             }

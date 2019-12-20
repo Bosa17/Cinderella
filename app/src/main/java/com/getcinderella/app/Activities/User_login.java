@@ -102,7 +102,7 @@ public class User_login extends BaseActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             dataHelper.saveScene();
-//                            boolean isNewUser=false;
+//                            boolean isNewUser=true;
                             boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
                             Log.d(TAG, "signInWithCredential:success");
                             if (isNewUser) {

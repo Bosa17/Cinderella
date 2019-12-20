@@ -106,6 +106,14 @@ public class ServiceDataHelper {
         return Hawk.get("isPrivate");
     }
 
+    public boolean getIsOnCall(){
+        return Hawk.get("isOnCall",false);
+    }
+
+    public void putIsOnCall(boolean isOnCall){
+        Hawk.put("isOnCall",isOnCall);
+    }
+
     public void saveRemoteTmp(RemoteUserConnection remoteTmp){
         Hawk.put("remoteTmp",remoteTmp);
     }

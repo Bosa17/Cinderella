@@ -34,7 +34,6 @@ import com.getcinderella.app.Activities.QuoteActivity;
 import com.getcinderella.app.Activities.Select_mask;
 import com.getcinderella.app.Models.RemoteUserConnection;
 import com.getcinderella.app.Utils.ChatService;
-import com.getcinderella.app.Utils.CustomPhoneStateListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -66,7 +65,6 @@ import com.getcinderella.app.Utils.DataHelper;
 import com.getcinderella.app.Utils.HashtagView;
 import com.getcinderella.app.Utils.ServiceDataHelper;
 import com.getcinderella.app.Utils.ShakeListener;
-import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
 public class Home extends Fragment {
     //vars
@@ -135,7 +133,7 @@ public class Home extends Fragment {
             public void onShake()
             {   Rect scrollBounds = new Rect();
                 scrollView.getHitRect(scrollBounds);
-                if (phone_shake.getLocalVisibleRect(scrollBounds) && !CustomPhoneStateListener.isOnCall) {
+                if (phone_shake.getLocalVisibleRect(scrollBounds)) {
                     if (selectedScene !=null) {
                         if (getPixieCost() <= dataHelper.getPixies()) {
                             Bundle bundle = new Bundle();
@@ -239,6 +237,7 @@ public class Home extends Fragment {
                                     UserModel referrer = documentSnapshot.toObject(UserModel.class);
                                     dataHelper.updatePixieWithUid(dataHelper.getReferrer(),referrer.getPixies()+5);
                                     showInvitation(referrer.getUsername());
+                                    FirebaseDatabase.getInstance().getReference().child("i").child(dataHelper.getReferrer()).setValue(dataHelper.getUsername());
                                 }
                             });
                             dataHelper.putIsRewardPossible(true);

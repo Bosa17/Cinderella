@@ -47,6 +47,10 @@ public class NotificationHelper {
         buildNotification(data.get("title").toString(),data.get("msg").toString(),CHANNEL_ONE_NAME,1);
     }
 
+    public void createInvitationNotification(Map data) {
+        buildNotification("Invitation Reward",data.get("msg").toString(),CHANNEL_ONE_NAME,1);
+    }
+
     public void createClaimPixieNotification() {
         buildNotification("Claim Free Pixies","You can now claim Pixies for free! Hoo-ray!",CHANNEL_ONE_NAME,2);
     }

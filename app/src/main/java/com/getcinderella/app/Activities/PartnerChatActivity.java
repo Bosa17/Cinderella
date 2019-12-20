@@ -261,6 +261,8 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
         if(mChatType.equals("0")) {
             participId="1";
             oppParticipId="2";
+            firebaseHelper.getRef().child("h").child(roomId).child("1p")
+                    .setValue("o");
             firebaseHelper.setUnavailable();
             mAudioHelper.playRingtone();
             mRemoteUserId = getIntent().getStringExtra("remoteUser");
@@ -379,6 +381,7 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
             firebaseHelper.removeinitChat();
             firebaseHelper.getRef().child("h").child(roomId).child("1p")
                     .addValueEventListener(new ValueEventListener() {
+                        private boolean isInitiated=false;
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snap) {
                             String isC=snap.getValue(String.class);
@@ -392,7 +395,21 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
                                 Toast.makeText(PartnerChatActivity.this, "This Partner has BLOCKED you!!", Toast.LENGTH_SHORT).show();
                                 endChat();
                             }
-                            //TODO endchat after waiting
+                            else if(isC!=null && isC.equals("o")){
+                                isInitiated=true;
+                                Toast.makeText(PartnerChatActivity.this, "Waiting for response...", Toast.LENGTH_SHORT).show();
+                            }
+                            else if(isC!=null && isC.equals("i")){
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (!isChatEstablished && !isInitiated) {
+                                            Toast.makeText(PartnerChatActivity.this, "Could Not Establish Connection to Partner", Toast.LENGTH_SHORT).show();
+                                            endChat();
+                                        }
+                                    }
+                                }, 7000);
+                            }
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {

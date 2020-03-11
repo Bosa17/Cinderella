@@ -261,12 +261,12 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
         if(mChatType.equals("0")) {
             participId="1";
             oppParticipId="2";
+            mRemoteUserId = getIntent().getStringExtra("remoteUser");
+            roomId= getIntent().getStringExtra("roomId");
             firebaseHelper.getRef().child("h").child(roomId).child("1p")
                     .setValue("o");
             firebaseHelper.setUnavailable();
             mAudioHelper.playRingtone();
-            mRemoteUserId = getIntent().getStringExtra("remoteUser");
-            roomId= getIntent().getStringExtra("roomId");
             updateWidgetsIncoming(mRemoteUserId);
         }
         else if(mChatType.equals("1")){
@@ -368,9 +368,6 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
 
     private void declineClicked() {
         mAudioHelper.stopRingtone();
-        if (roomId!=null)
-            firebaseHelper.getRef().child("h").child(roomId).child("1p")
-                .setValue("f");
         isDeclined=true;
         endChat();
     }
@@ -387,9 +384,6 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
                             String isC=snap.getValue(String.class);
                             if (isC!=null && isC.equals("t")) {
                                 initChatRoom();
-                            }
-                            else if(isC!=null && isC.equals("f")){
-                                endChat();
                             }
                             else if(isC!=null && isC.equals("b")){
                                 Toast.makeText(PartnerChatActivity.this, "This Partner has BLOCKED you!!", Toast.LENGTH_SHORT).show();
@@ -409,6 +403,9 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
                                         }
                                     }
                                 }, 7000);
+                            }
+                            else {
+                                endChat();
                             }
                         }
                         @Override

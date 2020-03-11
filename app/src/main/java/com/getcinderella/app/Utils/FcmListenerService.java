@@ -9,6 +9,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -24,39 +25,37 @@ public class FcmListenerService extends FirebaseMessagingService {
         Map data = remoteMessage.getData();
         serviceDataHelper=new ServiceDataHelper(getApplicationContext());
         NotificationHelper notificationHelper=new NotificationHelper(getApplicationContext());
-        if (isChatRequest(data)) {
-            new ServiceConnection() {
-                private Map payload;
+        if (!isOld(data)) {
+            if (isChatRequest(data)) {
+                new ServiceConnection() {
+                    private Map payload;
 
-                @Override
-                public void onServiceConnected(ComponentName name, IBinder service) {
-                    if (payload != null) {
-                        ChatService.ChatServiceInterface chatService = (ChatService.ChatServiceInterface) service;
-                        if (chatService != null) {
-                            chatService.initChatWithPayload(payload);
+                    @Override
+                    public void onServiceConnected(ComponentName name, IBinder service) {
+                        if (payload != null) {
+                            ChatService.ChatServiceInterface chatService = (ChatService.ChatServiceInterface) service;
+                            if (chatService != null) {
+                                chatService.initChatWithPayload(payload);
+                            }
                         }
+                        payload = null;
                     }
-                    payload = null;
-                }
 
-                @Override
-                public void onServiceDisconnected(ComponentName name) {}
+                    @Override
+                    public void onServiceDisconnected(ComponentName name) {
+                    }
 
-                public void relayMessageData(Map<String, String> data) {
-                    payload = data;
-                    getApplicationContext().bindService(new Intent(getApplicationContext(), ChatService.class), this, BIND_AUTO_CREATE);
-                }
-            }.relayMessageData(data);
-        }
-        else if (isNotification(data)){
-            switch(data.get("type").toString()){
-                case "0":notificationHelper.createInvitationNotification(data);
-                        break;
+                    public void relayMessageData(Map<String, String> data) {
+                        payload = data;
+                        getApplicationContext().bindService(new Intent(getApplicationContext(), ChatService.class), this, BIND_AUTO_CREATE);
+                    }
+                }.relayMessageData(data);
+            } else if (isNotification(data)) {
+                notificationHelper.createNotification(data);
+            } else {
+                serviceDataHelper.saveSituationsFromFCM(data);
+                notificationHelper.createFCMNotification(data);
             }
-        }
-        else{
-            serviceDataHelper.saveSituationsFromFCM(data);
-            notificationHelper.createFCMNotification(data);
         }
     }
 
@@ -65,7 +64,10 @@ public class FcmListenerService extends FirebaseMessagingService {
         super.onNewToken(s);
         FirebaseMessaging.getInstance().subscribeToTopic("all");
     }
-
+//more than 4 hours?
+    public boolean isOld(Map data){
+        return Long.parseLong(data.get("ts").toString())<System.currentTimeMillis()-1000 * 60 * 60 *4;
+    }
     public boolean isChatRequest(Map data){
         return data.get("title") != null && data.get("title").toString().equals("chatService");
     }

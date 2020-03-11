@@ -42,9 +42,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import androidx.annotation.NonNull;
@@ -109,6 +107,7 @@ public class Home extends Fragment {
                 ((MainActivity)getActivity()).refreshHome();
             }
         });
+
         dataHelper=new DataHelper(getActivity());
         if (dataHelper.getGender().equals("")||dataHelper.getQuote().equals("")||dataHelper.getGender().equals("Male")){
             startGenderActivity();
@@ -278,23 +277,17 @@ public class Home extends Fragment {
                         }
                     });
 
-            myRef.collection(getString(R.string.user_db))
-                    .document(dataHelper.getUID())
-                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                            @Nullable FirebaseFirestoreException e) {
-                            if (snapshot != null && snapshot.exists()) {
-                                dataHelper.syncWithFirebase(snapshot);
-                                updateWidgets(dataHelper.get());
-                            }
-                        }
-                    });
+
 
         }catch (Exception ignore){
             Toast.makeText(getContext(),"Unexpected problem contacting server. Check Network Connection",Toast.LENGTH_SHORT).show();
         }
-
+        ((MainActivity)getActivity()).setOnDataChangedListener(new MainActivity.OnDataChangedListener() {
+            @Override
+            public void onDataChanged() {
+                updateWidgets(dataHelper.get());
+            }
+        });
         return view;
     }
 
@@ -378,7 +371,6 @@ public class Home extends Fragment {
         dataHelper.setAvailable();
         if (dataHelper.getRemoteTmp()!=null){
             RemoteUserConnection tmp=dataHelper.getRemoteTmp();
-            Log.d("Homelol",tmp.getRemoteUserDp()+" "+tmp.getRemoteUserId());
             Toast.makeText(getContext(), "App closed unexpectedly! Showing last matched user..", Toast.LENGTH_SHORT).show();
             try {
                 new Handler().postDelayed(new Runnable() {

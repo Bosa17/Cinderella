@@ -7,20 +7,27 @@ import android.util.TypedValue;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
+import com.getcinderella.app.Fragments.Home;
 import com.getcinderella.app.R;
 import com.getcinderella.app.Utils.BottomNavigationUtils;
+import com.getcinderella.app.Utils.DataHelper;
 import com.getcinderella.app.Utils.Permissions;
 
 import com.getcinderella.app.Utils.NavigationController;
 import com.getcinderella.app.Utils.PageNavigationView;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
-
+    private FirebaseFirestore myRef;
     static NavigationController navigationController;
     private final int[] PAGE_IDS = {
             R.id.Home_fragment,
@@ -29,18 +36,42 @@ public class MainActivity extends BaseActivity {
     };
 
     private NavController mNavController;
+    private static OnDataChangedListener onDataChangedListener;
+    public void setOnDataChangedListener(OnDataChangedListener listener) {
+        onDataChangedListener = listener;
+    }
 
+    public interface OnDataChangedListener {
+        void onDataChanged();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        myRef = FirebaseFirestore.getInstance();
+        DataHelper dataHelper= new DataHelper(this);
         PageNavigationView mNavigation = findViewById(R.id.navigation);
 
         mNavController = Navigation.findNavController(this, R.id.nav_main_fragment);
 
         initBottomNavigation(mNavigation);
         checkPermission();
-
+        myRef.collection(getString(R.string.user_db))
+                .document(dataHelper.getUID())
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (snapshot != null && snapshot.exists()) {
+                            dataHelper.syncWithFirebase(snapshot);
+                            try {
+                                onDataChangedListener.onDataChanged();
+                            }catch (Exception exc){
+//                                Ignore
+                            }
+                        }
+                    }
+                });
     }
 
 
@@ -109,14 +140,4 @@ public class MainActivity extends BaseActivity {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
 

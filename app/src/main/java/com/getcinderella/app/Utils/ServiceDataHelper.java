@@ -32,12 +32,13 @@ public class ServiceDataHelper {
     }
 
     public void saveSituationsFromFCM(Map data){
+        putAvailable();
         String[] names = data.get("name").toString().split("@");
         String[] desc = data.get("desc").toString().split("@");
         String[] option0 = data.get("option0").toString().split("@");
         String[] option1 = data.get("option1").toString().split("@");
         String[] scene_no = data.get("scene_no").toString().split("@");
-        long timestamp=Long.valueOf(data.get("timestamp").toString());
+        long timestamp=Long.valueOf(data.get("ts").toString());
         Hawk.put("scene_timestamp",timestamp);
         try {
             for (int i=1;i<4;i++) {
@@ -57,7 +58,6 @@ public class ServiceDataHelper {
         }catch (Exception ignore){
 
         }
-        putAvailable();
     }
 
     public ArrayList<String> getBlockUserCallerId(){
@@ -80,13 +80,15 @@ public class ServiceDataHelper {
 
     public void putAvailable() {
         PreferenceModel pm = new PreferenceModel("f",System.currentTimeMillis());
-        FirebaseDatabase.getInstance().getReference().child("a")
+        if (getUID()!=null && !Hawk.get(mContext.getString(R.string.gender)).equals(""))
+            FirebaseDatabase.getInstance().getReference().child("a")
                 .child(Hawk.get(mContext.getString(R.string.gender)))
                 .child(getUID()).setValue(pm);
     }
     public void putUnAvailable() {
         PreferenceModel pm = new PreferenceModel("t",System.currentTimeMillis());
-        FirebaseDatabase.getInstance().getReference().child("a")
+        if (getUID()!=null && !Hawk.get(mContext.getString(R.string.gender)).equals(""))
+            FirebaseDatabase.getInstance().getReference().child("a")
                 .child(Hawk.get(mContext.getString(R.string.gender)))
                 .child(getUID()).setValue(pm);
     }

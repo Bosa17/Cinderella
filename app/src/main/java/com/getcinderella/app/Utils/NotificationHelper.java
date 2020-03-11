@@ -47,8 +47,8 @@ public class NotificationHelper {
         buildNotification(data.get("title").toString(),data.get("msg").toString(),CHANNEL_ONE_NAME,1);
     }
 
-    public void createInvitationNotification(Map data) {
-        buildNotification("Invitation Reward",data.get("msg").toString(),CHANNEL_ONE_NAME,1);
+    public void createNotification(Map data) {
+        buildNotification(data.get("msgTitle").toString(),data.get("msg").toString(),CHANNEL_ONE_NAME,1);
     }
 
     public void createClaimPixieNotification() {

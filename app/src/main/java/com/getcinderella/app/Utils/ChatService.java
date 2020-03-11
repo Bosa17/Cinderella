@@ -31,7 +31,6 @@ public class ChatService extends Service {
 
     public class ChatServiceInterface extends Binder {
 
-
         public void initChatWithPayload(final Map payload){
             if(!dataHelper.getBlockUserCallerId().contains( payload.get("uID").toString())){
                 final Intent intent;

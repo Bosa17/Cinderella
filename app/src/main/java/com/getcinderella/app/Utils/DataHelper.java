@@ -49,6 +49,7 @@ public class DataHelper {
         putCharisma(0L);
         putPixies(50L);
         firebaseHelper.addNewUser(userID,get());
+        declareToken();
     }
     public void addPrevUser(String userID){
         try {
@@ -79,6 +80,7 @@ public class DataHelper {
         putPartner(0L);
         putCharisma(0L);
         putPixies(curr_user.getPixies());
+        declareToken();
     }
     public void addNewRemoteUser(RemoteUserConnection remoteUser,long partner_no){
         Hawk.put(mContext.getString(R.string.remote)+partner_no,remoteUser);
@@ -136,17 +138,6 @@ public class DataHelper {
         return Ids;
     }
 
-    public boolean isUserAlreadyMatched(String remoteId){
-        return getRemoteUserIds().contains(remoteId);
-    }
-
-    public void deleteRemoteUser(int index){
-//        blockUser();
-        for (long i = getPartners(); i >= index; i--)  {
-
-            RemoteUserConnection remoteTemp = Hawk.get(mContext.getString(R.string.remote) + i);
-        }
-    }
     public ArrayList<Long> getRemoteUserCharismas(){
         ArrayList<Long> Charismas=new ArrayList<>();
         try {
@@ -331,7 +322,7 @@ public class DataHelper {
         Hawk.put(mContext.getString(R.string.uid), uid);
     }
     public String getUID(){
-        return Hawk.get(mContext.getString(R.string.uid),"" );
+        return firebaseHelper.getUserID();
     }
     public void putTheme(String theme){
         Hawk.put("theme",theme);

@@ -208,6 +208,7 @@ public class MatchActivity extends BaseActivity implements ChatListener{
         end_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                isChatEnded=true;
                 Toast.makeText(MatchActivity.this,"Chat Ended",Toast.LENGTH_LONG).show();
                 endChat();
             }
@@ -223,6 +224,7 @@ public class MatchActivity extends BaseActivity implements ChatListener{
                             @Override
                             public void onPositive(MaterialDialog dialog) {
                                 super.onPositive(dialog);
+                                isChatEnded=true;
                                 isInappropriate=true;
                                 blockUser(mRemoteUserID);
                                 endChat();
@@ -401,7 +403,7 @@ public class MatchActivity extends BaseActivity implements ChatListener{
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snap) {
                             String isC=snap.getValue(String.class);
-                            if(isC==null ){
+                            if(isC==null && !isChatEnded ){
                                 isChatEnded=true;
                                 endChat();
                             }
@@ -420,6 +422,10 @@ public class MatchActivity extends BaseActivity implements ChatListener{
 
     private void answerClicked() {
         mAudioHelper.stopRingtone();
+        if (curr_pixie<3) {
+            declineClicked();
+            Toast.makeText(this, "Sorry!! You have insufficient Pixies. Invite ar watch ad to earn more for free", Toast.LENGTH_SHORT).show();
+        }
         try {
             if(!isChatEnded)
             firebaseHelper.getRef().child("h").child(roomId).child("c")
@@ -431,9 +437,9 @@ public class MatchActivity extends BaseActivity implements ChatListener{
     private void declineClicked() {
         isDeclined=true;
         mAudioHelper.stopRingtone();
-        if (roomId!=null && !isChatEnded)
-            firebaseHelper.getRef().child("h").child(roomId).child("c")
-                    .setValue("f");
+//        if (roomId!=null && !isChatEnded)
+//            firebaseHelper.getRef().child("h").child(roomId).child("c")
+//                    .setValue("f");
         endChat();
     }
 
@@ -521,7 +527,7 @@ public class MatchActivity extends BaseActivity implements ChatListener{
                                 updateWidgets();
                             }
                             else{
-                                if (mChatType.equals("0")) {
+                                if (mChatType.equals("0")&&!isChatEnded) {
                                     isChatEnded = true;
                                     endChat();
                                 }
@@ -683,15 +689,6 @@ public class MatchActivity extends BaseActivity implements ChatListener{
                                     state_outgoing.setText("Answered");
                                     chatEstablished();
                                 }
-                                else if(c!=null && c.equals("f")){
-                                    isDeclined=true;
-                                    state_outgoing.setText("Declined");
-                                    this.handler.removeCallbacksAndMessages(null);
-                                    if(roomId!=null)
-                                        firebaseHelper.getRef().child("h").child(roomId).child("c").removeEventListener(this);
-                                    reset();
-                                }
-
                                 else if(c!=null && c.equals("o")){
                                     isInitiated=true;
                                     state_outgoing.setText("Waiting for Response...");
@@ -719,8 +716,13 @@ public class MatchActivity extends BaseActivity implements ChatListener{
                                         }
                                     }, 15000);
                                 }
-                                else if (c==null){
+                                else if (c==null && !isChatEstablished){
+                                    isDeclined=true;
+                                    state_outgoing.setText("Declined");
                                     this.handler.removeCallbacksAndMessages(null);
+                                    if(roomId!=null)
+                                        firebaseHelper.getRef().child("h").child(roomId).child("c").removeEventListener(this);
+                                    reset();
                                 }
                             }
                             @Override
@@ -790,8 +792,9 @@ public class MatchActivity extends BaseActivity implements ChatListener{
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snap) {
                             String c=snap.getValue(String.class);
-                            if(c==null){
+                            if(c==null && !isChatEnded){
                                 isDeclined=true;
+                                isChatEnded=true;
                                 endChat();
                             }
                         }
@@ -888,7 +891,8 @@ public class MatchActivity extends BaseActivity implements ChatListener{
             mTimer.cancel();
         }catch (Exception e){ Log.d(TAG, "No Timer ");}
         Toast.makeText(this,"Chat Ended",Toast.LENGTH_LONG).show();
-        endChat();
+        if(!isChatEnded)
+            endChat();
     }
 
 

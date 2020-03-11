@@ -2,7 +2,6 @@ package com.getcinderella.app.Activities;
 
 import androidx.annotation.NonNull;
 
-
 import com.getcinderella.app.Fragments.ProgressDialogFragment;
 import com.getcinderella.app.Models.UserModel;
 import com.getcinderella.app.R;

@@ -12,50 +12,53 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import java.util.Map;
 
 
 public class FcmListenerService extends FirebaseMessagingService {
 
-    private ServiceDataHelper serviceDataHelper;
-
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage){
         Map data = remoteMessage.getData();
-        serviceDataHelper=new ServiceDataHelper(getApplicationContext());
-        NotificationHelper notificationHelper=new NotificationHelper(getApplicationContext());
-        if (!isOld(data)) {
-            if (isChatRequest(data)) {
-                new ServiceConnection() {
-                    private Map payload;
-
-                    @Override
-                    public void onServiceConnected(ComponentName name, IBinder service) {
-                        if (payload != null) {
-                            ChatService.ChatServiceInterface chatService = (ChatService.ChatServiceInterface) service;
-                            if (chatService != null) {
-                                chatService.initChatWithPayload(payload);
-                            }
+        Log.d("insideFCM","lol");
+        if (isChatRequest(data)) {
+            new ServiceConnection() {
+                private Map payload;
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    if (payload != null) {
+                        ChatService.ChatServiceInterface chatService = (ChatService.ChatServiceInterface) service;
+                        if (chatService != null) {
+                            chatService.initChatWithPayload(payload);
                         }
-                        payload = null;
                     }
-
-                    @Override
-                    public void onServiceDisconnected(ComponentName name) {
-                    }
-
-                    public void relayMessageData(Map<String, String> data) {
-                        payload = data;
-                        getApplicationContext().bindService(new Intent(getApplicationContext(), ChatService.class), this, BIND_AUTO_CREATE);
-                    }
-                }.relayMessageData(data);
-            } else if (isNotification(data)) {
-                notificationHelper.createNotification(data);
-            } else {
-                serviceDataHelper.saveSituationsFromFCM(data);
-                notificationHelper.createFCMNotification(data);
-            }
+                    payload = null;
+                }
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+                }
+                public void relayMessageData(Map<String, String> data) {
+                    payload = data;
+                    getApplicationContext().bindService(new Intent(getApplicationContext(), ChatService.class), this, BIND_AUTO_CREATE);
+                }
+            }.relayMessageData(data);
+        } else if (isNotification(data)) {
+            new NotificationHelper(getApplicationContext()).createNotification(data);
+        } else {
+            Constraints constraints = new Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build();
+            OneTimeWorkRequest syncWorkRequest = new OneTimeWorkRequest.Builder(SyncWorker.class)
+                    .setConstraints(constraints)
+                    .build();
+            WorkManager.getInstance(getApplicationContext()).enqueue(syncWorkRequest);
+            new ServiceDataHelper(getApplicationContext()).saveSituationsFromFCM(data);
+            new NotificationHelper(getApplicationContext()).createNotification(data);
         }
     }
 
@@ -63,10 +66,6 @@ public class FcmListenerService extends FirebaseMessagingService {
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
         FirebaseMessaging.getInstance().subscribeToTopic("all");
-    }
-//more than 4 hours?
-    public boolean isOld(Map data){
-        return Long.parseLong(data.get("ts").toString())<System.currentTimeMillis()-1000 * 60 * 60 *4;
     }
     public boolean isChatRequest(Map data){
         return data.get("title") != null && data.get("title").toString().equals("chatService");

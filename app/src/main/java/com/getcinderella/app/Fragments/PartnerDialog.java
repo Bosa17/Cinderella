@@ -15,6 +15,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,7 +37,7 @@ public class PartnerDialog extends BlurPopupWindow {
     private ImageView mRemoteUserDp;
     private ImageView block;
     private ImageView unblock;
-    private Button connectButton;
+    private RelativeLayout connectButton;
     public PartnerDialog(@NonNull Context context) {
         super(context);
     }

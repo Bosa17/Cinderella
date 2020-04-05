@@ -372,6 +372,11 @@ public class DataHelper {
     public String getReferrer(){return Hawk.get("referrer","");}
     public void putT(String t){Hawk.put("t", t);}
     public String getT(){return Hawk.get("t","" ); }
+    public void putAutoStart(boolean isAutoStart){Hawk.put("isAutostart", isAutoStart);}
+    public boolean getAutostart(){return Hawk.get("isAutostart",false ); }
+    public void putIsOnCall(boolean isOnCall){
+        Hawk.put("isOnCall",isOnCall);
+    }
     public void declareToken(){
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -408,12 +413,13 @@ public class DataHelper {
 
     public void setAvailable(){
         firebaseHelper.setAvailable(getUID());
+        putIsOnCall(false);
     }
     public void saveRemoteTmp(RemoteUserConnection remoteTmp){
         Hawk.put("remoteTmp",remoteTmp);
     }
     public RemoteUserConnection getRemoteTmp(){
-        return Hawk.get("remoteTmp",null);
+        return Hawk.get("remoteTmp",new RemoteUserConnection());
     }
 }
 

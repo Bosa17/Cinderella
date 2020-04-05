@@ -3,6 +3,7 @@ package com.getcinderella.app.Activities;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -91,11 +92,12 @@ public class MatchActivity extends BaseActivity implements ChatListener{
     private boolean isPixieUpdated;
     private boolean isInappropriate;
     private boolean isPrivate;
+    private boolean isPrivateTmp;
     private boolean isDeclined;
+    private boolean isCancelled;
     private boolean isMatched;
     private boolean isInitiated;
     private boolean isChatEnded;
-    public static boolean isMatchActivityActive;
 //    widgets
     private CoordinatorLayout chat_progressing;
     private LinearLayout chat_init;
@@ -161,9 +163,15 @@ public class MatchActivity extends BaseActivity implements ChatListener{
                         | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                         | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                         | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true);
+            setTurnScreenOn(true);
+        }
         setContentView(R.layout.activity_match);
         firebaseHelper=new FirebaseHelper(this);
         userID=firebaseHelper.getUserID();
+        firebaseHelper.setUnavailable();
+        new ServiceDataHelper(this).putIsOnCall(true);
         vibe = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         mAudioHelper =new AudioHelper(this);
         chat_progressing =findViewById(R.id.chat_progressing);
@@ -274,106 +282,21 @@ public class MatchActivity extends BaseActivity implements ChatListener{
         mRemoteUserID =null;
         roomId=null;
         participId=null;
-        isMatchActivityActive=true;
         isDeclined=false;
         isMatched=false;
         isInitiated=false;
         isChatEstablished =false;
         isPixieUpdated=false;
         isInappropriate=false;
+        isCancelled=false;
         isChatEnded=false;
-        firebaseHelper.setUnavailable();
-    }
-
-
-    @Override
-    protected void onStop() {
-        if (!isChatEnded) {
-            isMatchActivityActive=false;
-            if (isChatEstablished) {
-                mAudioHelper.stopRingtone();
-                if (scene != null)
-                    firebaseHelper.removeUserFromChannel(scene.getScene_no());
-                if (roomId != null)
-                    firebaseHelper.removeRoom(roomId);
-                try {
-                    mDurationTask.cancel();
-                    mTimer.cancel();
-                } catch (Exception e) {
-                    Log.d(TAG, "No Timer ");
-                }
-                if (!isPixieUpdated)
-                    firebaseHelper.updatePixie(curr_pixie - pixieCost);
-                if (!isPrivate && !isPixieUpdated && mRemoteUserID != null) {
-                    RemoteUserConnection remoteUser = new RemoteUserConnection();
-                    remoteUser.setRemoteUserId(mRemoteUserID);
-                    remoteUser.setRemoteUserQuote(mRemotuserQuote);
-                    remoteUser.setRemoteUserName(mRemoteUserName);
-                    remoteUser.setRemoteUserCharisma(mRemoteUserCharisma);
-                    remoteUser.setRemoteUserDp(mRemoteUserFbDp);
-                    ServiceDataHelper dataHelper = new ServiceDataHelper(this);
-                    dataHelper.saveRemoteTmp(remoteUser);
-                }
-                finish();
-            } else if (mChatType.equals("1") && scene != null) {
-                firebaseHelper.removeUserFromChannel(scene.getScene_no());
-                if (roomId != null)
-                    firebaseHelper.removeRoom(roomId);
-            }
-        }
-        super.onStop();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (isChatEstablished) {
-            try {
-                mDurationTask.run();
-                mTimer.schedule(mDurationTask, 0, 1000);
-            } catch (Exception e) {
-
-            }
-        }
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mAudioHelper.stopRingtone();
-
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        TwoButtonsDialogFragment.show(
-                getSupportFragmentManager(),
-                getString(R.string.dlg_chat_back_confirm),
-                new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        super.onPositive(dialog);
-                        endChat();
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        super.onNegative(dialog);
-
-                    }
-                });
-    }
-
-    @Override
-    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-        super.onServiceConnected(componentName, iBinder);
+        onceAgain();
         if(mChatType.equals("1")) {
             mAudioHelper.playMusic();
             scene = (SceneModel) getIntent().getSerializableExtra("scene");
             Bundle callSettings = getIntent().getExtras();
-            isPrivate = callSettings.getBoolean("isPrivate");
+            isPrivateTmp = callSettings.getBoolean("isPrivate");
+            isPrivate=isPrivateTmp;
             partnerPreference = callSettings.getString("partnerPreference");
             switch(partnerPreference){
                 case "Man": partnerPreference="1";
@@ -420,6 +343,87 @@ public class MatchActivity extends BaseActivity implements ChatListener{
 
     }
 
+
+    @Override
+    protected void onStop() {
+        if (!isChatEnded) {
+            new ServiceDataHelper(this).putIsOnCall(false);
+            if (isChatEstablished) {
+                mAudioHelper.stopRingtone();
+                if (scene != null)
+                    firebaseHelper.removeUserFromChannel(scene.getScene_no());
+                if (roomId != null)
+                    firebaseHelper.endChat(roomId);
+                try {
+                    mDurationTask.cancel();
+                    mTimer.cancel();
+                } catch (Exception e) {
+                    Log.d(TAG, "No Timer ");
+                }
+                if (!isPixieUpdated)
+                    firebaseHelper.updatePixie(curr_pixie - pixieCost);
+                if (!isPrivate && !isPixieUpdated && mRemoteUserID != null) {
+                    RemoteUserConnection remoteUser = new RemoteUserConnection();
+                    remoteUser.setRemoteUserId(mRemoteUserID);
+                    remoteUser.setRemoteUserQuote(mRemotuserQuote);
+                    remoteUser.setRemoteUserName(mRemoteUserName);
+                    remoteUser.setRemoteUserCharisma(mRemoteUserCharisma);
+                    remoteUser.setRemoteUserDp(mRemoteUserFbDp);
+                    ServiceDataHelper dataHelper = new ServiceDataHelper(this);
+                    dataHelper.saveRemoteTmp(remoteUser);
+                }
+                finish();
+            } else if (mChatType.equals("1") && scene != null) {
+                firebaseHelper.removeUserFromChannel(scene.getScene_no());
+                if (roomId != null)
+                    firebaseHelper.endChat(roomId);
+            }
+        }
+        super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isChatEstablished) {
+            try {
+                mDurationTask.run();
+                mTimer.schedule(mDurationTask, 0, 1000);
+            } catch (Exception e) {
+
+            }
+        }
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mAudioHelper.stopRingtone();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        TwoButtonsDialogFragment.show(
+                getSupportFragmentManager(),
+                getString(R.string.dlg_chat_back_confirm),
+                new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        super.onPositive(dialog);
+                        isCancelled=true;
+                        endChat();
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        super.onNegative(dialog);
+
+                    }
+                });
+    }
+
     private void answerClicked() {
         mAudioHelper.stopRingtone();
         if (curr_pixie<3) {
@@ -435,11 +439,7 @@ public class MatchActivity extends BaseActivity implements ChatListener{
     }
 
     private void declineClicked() {
-        isDeclined=true;
         mAudioHelper.stopRingtone();
-//        if (roomId!=null && !isChatEnded)
-//            firebaseHelper.getRef().child("h").child(roomId).child("c")
-//                    .setValue("f");
         endChat();
     }
 
@@ -613,6 +613,7 @@ public class MatchActivity extends BaseActivity implements ChatListener{
 
     public void endChat() {
         isChatEnded=true;
+        new ServiceDataHelper(this).putIsOnCall(false);
         if(roomId!=null)
             firebaseHelper.endChat(roomId);
         firebaseHelper.removeUserFromChannel(scene.getScene_no());
@@ -628,12 +629,10 @@ public class MatchActivity extends BaseActivity implements ChatListener{
         }
         else if(isInappropriate) {
             setResult(2);
-            isMatchActivityActive=false;
             finish();
         }
         else {
             setResult(Activity.RESULT_CANCELED);
-            isMatchActivityActive=false;
             finish();
         }
         roomId=null;
@@ -643,7 +642,6 @@ public class MatchActivity extends BaseActivity implements ChatListener{
         public void onDismiss(BlurPopupWindow popupWindow) {
             if (mInterstitialAd.isLoaded())
                 mInterstitialAd.show();
-            isMatchActivityActive=false;
             setResult(Activity.RESULT_OK);
             MatchActivity.this.finish();
         }
@@ -695,7 +693,7 @@ public class MatchActivity extends BaseActivity implements ChatListener{
                                     this.handler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
-                                            if (!isChatEstablished && !isDeclined) {
+                                            if (!isChatEstablished && new ServiceDataHelper(MatchActivity.this).getIsOnCall()) {
                                                 reset();
                                                 handler.removeCallbacksAndMessages(null);
                                             }
@@ -708,15 +706,15 @@ public class MatchActivity extends BaseActivity implements ChatListener{
                                     this.handler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
-                                            if (!isChatEstablished && !isInitiated) {
+                                            if (!isChatEstablished && !isInitiated && new ServiceDataHelper(MatchActivity.this).getIsOnCall()) {
                                                 firebaseHelper.getRef().child("a").child(partnerPreference).child(mRemoteUserID).child("m").setValue("f");
                                                 reset();
                                                 handler.removeCallbacksAndMessages(null);
                                             }
                                         }
-                                    }, 15000);
+                                    }, 17000);
                                 }
-                                else if (c==null && !isChatEstablished){
+                                else if (c==null && !isChatEstablished && !isCancelled){
                                     isDeclined=true;
                                     state_outgoing.setText("Declined");
                                     this.handler.removeCallbacksAndMessages(null);
@@ -738,26 +736,41 @@ public class MatchActivity extends BaseActivity implements ChatListener{
         }
     }
 
+    private void onceAgain(){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!isChatEstablished && new ServiceDataHelper(MatchActivity.this).getIsOnCall() && !isMatched) {
+                    onceAgain();
+                    reset();
+                }
+            }
+        }, 17000);
+    }
+
     private void reset(){
         state_outgoing.setText("Resetting...");
         if (roomId!=null)
-            firebaseHelper.removeRoom(roomId);
+            firebaseHelper.endChat(roomId);
         mRemoteUser.setText("");
         isMatched=false;
         isInitiated=false;
         roomId=null;
+        isPrivate=isPrivateTmp;
         mRemoteUserID =null;
         participId=null;
         oppParticipId=null;
         isDeclined=true;
-        chat_init.setVisibility(View.VISIBLE);
         chat_matched.setVisibility(View.GONE);
+        chat_init.setVisibility(View.VISIBLE);
         firebaseHelper.removeUserFromChannel(scene.getScene_no());
         firebaseHelper.setUnavailable();
-        firebaseHelper.addUserToChannel(scene.getScene_no(),"1");
+        new ServiceDataHelper(this).putIsOnCall(true);
+        firebaseHelper.addUserToChannel(scene.getScene_no(),partnerPreference);
     }
 
     private void  updateWidgetsIncoming(){
+        chat_init.setVisibility(View.GONE);
         state_outgoing.setText("Matched...");
         String scene_option;
         if (participId.equals("1")) {

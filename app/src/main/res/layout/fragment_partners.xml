@@ -63,8 +63,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"/>
 
-
-
             </FrameLayout>
         </LinearLayout>
 
@@ -81,7 +79,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:layout_marginStart="40dp">
 
             <TextSwitcher
@@ -109,8 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/q"
                 android:layout_marginEnd="20dp"
-                app:autoSizeTextType="uniform"
-                android:textSize="30sp"/>
+                />
 
         </RelativeLayout>
         <Button
@@ -118,7 +115,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Chat Now"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="bottom"
             android:textColor="@color/white"
             android:background="@drawable/button_bg"
             android:layout_marginEnd="25dp"

@@ -32,15 +32,14 @@ public class ServiceDataHelper {
     }
 
     public void saveSituationsFromFCM(Map data){
-        putAvailable();
         String[] names = data.get("name").toString().split("@");
         String[] desc = data.get("desc").toString().split("@");
         String[] option0 = data.get("option0").toString().split("@");
         String[] option1 = data.get("option1").toString().split("@");
         String[] scene_no = data.get("scene_no").toString().split("@");
         long timestamp=Long.valueOf(data.get("ts").toString());
-        Hawk.put("scene_timestamp",timestamp);
         try {
+            Hawk.put("scene_timestamp",timestamp);
             for (int i=1;i<4;i++) {
                 SceneModel tmp = new SceneModel();
                 tmp.setDesc(desc[i-1]);
@@ -51,12 +50,14 @@ public class ServiceDataHelper {
                 Hawk.put("scene"+i,tmp);
             }
         }catch (Exception e){
-            Hawk.put("scene_timestamp",0);
+            try {
+                Hawk.put("scene_timestamp", 0);
+            }catch(Exception ignore){ return;}
         }
         try {
             onSceneChangedListener.onSceneChanged();
         }catch (Exception ignore){
-
+            return;
         }
     }
 
@@ -80,16 +81,18 @@ public class ServiceDataHelper {
 
     public void putAvailable() {
         PreferenceModel pm = new PreferenceModel("f",System.currentTimeMillis());
-        if (getUID()!=null && !Hawk.get(mContext.getString(R.string.gender)).equals(""))
+        String gender=Hawk.get(mContext.getString(R.string.gender));
+        if (!getUID().equals("") && !gender.equals(""))
             FirebaseDatabase.getInstance().getReference().child("a")
-                .child(Hawk.get(mContext.getString(R.string.gender)))
+                .child(gender)
                 .child(getUID()).setValue(pm);
     }
     public void putUnAvailable() {
         PreferenceModel pm = new PreferenceModel("t",System.currentTimeMillis());
-        if (getUID()!=null && !Hawk.get(mContext.getString(R.string.gender)).equals(""))
+        String gender=Hawk.get(mContext.getString(R.string.gender));
+        if (!getUID().equals("") && !gender.equals(""))
             FirebaseDatabase.getInstance().getReference().child("a")
-                .child(Hawk.get(mContext.getString(R.string.gender)))
+                .child(gender)
                 .child(getUID()).setValue(pm);
     }
 

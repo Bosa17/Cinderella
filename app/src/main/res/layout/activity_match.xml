@@ -70,6 +70,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
             android:layout_weight="1">
             <TextView
                 android:layout_width="wrap_content"
@@ -77,10 +78,10 @@
                 android:layout_centerHorizontal="true"
                 android:id="@+id/state_outgoing"
                 android:layout_margin="30dp"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:text="Matched..."/>
         </RelativeLayout>
-
+wa
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="0dp"
@@ -119,17 +120,16 @@
                 android:layout_margin="10dp"
                 android:text=""
                 android:textColor="@color/white"
-                android:textSize="56sp"/>
+                android:textSize="30sp"/>
             <TextView
                 android:id="@+id/sceneOptionTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginBottom="8dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="4dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/white"
-                android:textSize="32sp"/>
+                android:autoSizeTextType="uniform"/>
 
 
         </LinearLayout>
@@ -237,8 +237,7 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginEnd="20dp"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:textColor="@color/white"
-                            android:textSize="24sp"/>
+                            android:textColor="@color/white"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -251,7 +250,6 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginEnd="20dp"
                             app:autoSizeTextType="uniform"
-                            android:textSize="20sp"
                             />
 
                     </LinearLayout>
@@ -344,8 +342,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="20dp"
-                app:autoSizeTextType="uniform"
-                android:textSize="20sp"/>
+                app:autoSizeTextType="uniform"/>
 
             <TextView
                 android:id="@+id/sceneDescTextView_incoming"
@@ -357,7 +354,6 @@
                 android:layout_below="@id/remoteUser_incoming"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:textSize="20sp"
                 />
 
 

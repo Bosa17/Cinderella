@@ -32,7 +32,8 @@
         <activity android:name=".Activities.QuoteActivity" />
         <activity
             android:name=".Activities.ContactSupport"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -51,7 +52,8 @@
         </activity>
         <activity
             android:name=".Activities.User_login"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -65,19 +67,24 @@
         </activity>
         <activity
             android:name=".Activities.Select_mask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activities.Setting"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activities.MatchActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
+            android:parentActivityName=".Activities.MainActivity"
+            android:windowSoftInputMode="adjustResize"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activities.Splash"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -86,10 +93,13 @@
         </activity>
         <activity
             android:name=".Activities.MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activities.PartnerChatActivity"
-            android:screenOrientation="portrait" /> <!-- ca-app-pub-6258093238303404~8159625694 -->
+            android:screenOrientation="portrait"
+            android:parentActivityName=".Activities.MainActivity"
+            tools:ignore="LockedOrientationActivity" /> <!-- ca-app-pub-6258093238303404~8159625694 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713" />
@@ -104,7 +114,8 @@
             </intent-filter>
         </receiver>
         <service android:name=".Utils.ChatService" />
-        <service android:name=".Utils.FcmListenerService">
+        <service android:name=".Utils.FcmListenerService"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

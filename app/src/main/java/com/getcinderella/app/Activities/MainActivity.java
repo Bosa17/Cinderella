@@ -1,5 +1,6 @@
 package com.getcinderella.app.Activities;
 
+
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,12 +8,15 @@ import android.util.TypedValue;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
-import com.getcinderella.app.Fragments.Home;
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.getcinderella.app.R;
 import com.getcinderella.app.Utils.BottomNavigationUtils;
 import com.getcinderella.app.Utils.DataHelper;
@@ -24,6 +28,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.judemanutd.autostarter.AutoStartPermissionHelper;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
@@ -34,7 +39,7 @@ public class MainActivity extends BaseActivity {
             R.id.Partner_fragment,
             R.id.Pixies_fragment,
     };
-
+    private DataHelper dataHelper;
     private NavController mNavController;
     private static OnDataChangedListener onDataChangedListener;
     public void setOnDataChangedListener(OnDataChangedListener listener) {
@@ -49,7 +54,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         myRef = FirebaseFirestore.getInstance();
-        DataHelper dataHelper= new DataHelper(this);
+        dataHelper= new DataHelper(this);
         PageNavigationView mNavigation = findViewById(R.id.navigation);
 
         mNavController = Navigation.findNavController(this, R.id.nav_main_fragment);
@@ -115,9 +120,32 @@ public class MainActivity extends BaseActivity {
     private void checkPermission() {
         if (!Permissions.hasAllPermissions(this) ){
             requestPermissions(Permissions.PERMISSIONS, 2);
-        }else {
-            //write your code here. if permission already granted
+        }else{
 
+        }
+
+        if (AutoStartPermissionHelper.getInstance().isAutoStartPermissionAvailable(this) && !dataHelper.getAutostart()){
+            new MaterialDialog.Builder(MainActivity.this).title("Enable AutoStart")
+                    .content(
+                            "Please allow Cinderella to always run in the background,else your partner will not be able to use \"ChatCall\" to connect with you!")
+                    .theme(Theme.DARK)
+                    .positiveText("ALLOW")
+                    .positiveColor(getResources().getColor(R.color.the_royalty))
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            AutoStartPermissionHelper.getInstance().getAutoStartPermission(MainActivity.this);
+                        }
+                    })
+                    .negativeText("ALREADY ALLOWED")
+                    .negativeColor(getResources().getColor(R.color.the_royalty))
+                    .onNegative(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            dataHelper.putAutoStart(true);
+                        }
+                    })
+                    .show();
 
         }
     }
@@ -138,6 +166,5 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
-
 }
 

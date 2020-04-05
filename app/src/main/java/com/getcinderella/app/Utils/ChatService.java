@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.getcinderella.app.Activities.MatchActivity;
 import com.google.firebase.database.FirebaseDatabase;
@@ -32,17 +33,18 @@ public class ChatService extends Service {
     public class ChatServiceInterface extends Binder {
 
         public void initChatWithPayload(final Map payload){
+            Log.d("insideChatService","lol");
             if(!dataHelper.getBlockUserCallerId().contains( payload.get("uID").toString())){
                 final Intent intent;
-                if (MatchActivity.isMatchActivityActive||PartnerChatActivity.isPartnerChatActivityActive||dataHelper.getIsOnCall())
+                if (dataHelper.getIsOnCall())
                 {
                     switch (payload.get("type").toString()){
-                        case "1":FirebaseDatabase.getInstance().getReference().child("h").child( payload.get("rID").toString()).child("1p")
-                                .setValue("f");
+                        case "1":FirebaseDatabase.getInstance().getReference().child("h").child( payload.get("rID").toString())
+                                .removeValue();
                                 break;
                         case "0":String roomId= StringUtils.extractRoomIdandParticipID(payload.get("comboID").toString())[0];
-                            FirebaseDatabase.getInstance().getReference().child("h").child(roomId).child("c")
-                                    .setValue("f");
+                            FirebaseDatabase.getInstance().getReference().child("h").child(roomId)
+                                    .removeValue();
                             break;
                     }
                 }
@@ -68,15 +70,15 @@ public class ChatService extends Service {
                 switch (payload.get("type").toString()){
                     case "1":FirebaseDatabase.getInstance().getReference().child("h").child( payload.get("rID").toString()).child("1p")
                             .setValue("b");
+                        FirebaseDatabase.getInstance().getReference().child("h").child( payload.get("rID").toString())
+                                .removeValue();
                         break;
                     case "0":String roomId= StringUtils.extractRoomIdandParticipID(payload.get("comboID").toString())[0];
-                        FirebaseDatabase.getInstance().getReference().child("h").child(roomId).child("c")
-                                .setValue("f");
+                        FirebaseDatabase.getInstance().getReference().child("h").child(roomId)
+                                .removeValue();
                         break;
                 }
             }
         }
     }
-
-
 }

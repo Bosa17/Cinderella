@@ -1,6 +1,9 @@
 package com.getcinderella.app.Utils;
 
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.NavOptions;
@@ -22,11 +25,9 @@ public class BottomNavigationUtils {
             @Override
             public void onRepeat(int index) {}
         });
-
-        navController.addOnNavigatedListener(new NavController.OnNavigatedListener() {
+        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
-            public void onNavigated(@NonNull NavController controller,
-                                    @NonNull NavDestination destination) {
+            public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
                 int destinationId = destination.getId();
                 for (int i = 0; i < pageIds.length; i++) {
                     if (destinationId == pageIds[i]){
@@ -38,6 +39,21 @@ public class BottomNavigationUtils {
                 }
             }
         });
+//        navController.addOnNavigatedListener(new NavController.OnNavigatedListener() {
+//            @Override
+//            public void onNavigated(@NonNull NavController controller,
+//                                    @NonNull NavDestination destination) {
+//                int destinationId = destination.getId();
+//                for (int i = 0; i < pageIds.length; i++) {
+//                    if (destinationId == pageIds[i]){
+//                        if (navigationController.getSelected() != i){
+//                            navigationController.setSelect(i,false);
+//                        }
+//                        break;
+//                    }
+//                }
+//            }
+//        });
     }
 
     private static void onNavDestinationSelected(int id, @NonNull NavController navController) {

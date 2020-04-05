@@ -53,7 +53,7 @@ public class AudioHelper {
 
                 try {
                     mPlayer.setDataSource(mContext,
-                            Uri.parse("android.resource://" + mContext.getPackageName() + "/" + R.raw.bad_boy));
+                            Uri.parse("android.resource://" + mContext.getPackageName() + "/" + R.raw.bad_guy));
                     mPlayer.prepare();
                 } catch (IOException e) {
                     Log.e(LOG_TAG, "Could not setup media player for ringtone");
@@ -79,7 +79,7 @@ public class AudioHelper {
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             mPlayer.setDataSource(mContext,
-                    Uri.parse("android.resource://" + mContext.getPackageName() + "/" + R.raw.bad_boy));
+                    Uri.parse("android.resource://" + mContext.getPackageName() + "/" + R.raw.bad_guy));
             mPlayer.prepare();
         } catch (IOException e) {
             Log.e(LOG_TAG, "Could not setup media player for ringtone");

@@ -7,15 +7,14 @@ import com.getcinderella.app.Utils.NotificationHelper;
 import com.getcinderella.app.Utils.listener.ChatListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -73,7 +72,7 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
     private boolean isPixieUpdated;
     private boolean partnerDeclined;
     private boolean isDeclined;
-    public static boolean isPartnerChatActivityActive;
+    public  boolean isChatEnded;
 
     //widgets
     private LinearLayout incoming;
@@ -132,6 +131,10 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
                         | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                         | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                         | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true);
+            setTurnScreenOn(true);
+        }
         setContentView(R.layout.activity_partner_chat);
         firebaseHelper=new FirebaseHelper(this);
         incoming=findViewById(R.id.incoming);
@@ -150,7 +153,7 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
         sec=0;
         roomId=null;
         participId=null;
-        isPartnerChatActivityActive=true;
+        isChatEnded =true;
         isChatEstablished =false;
         isPixieUpdated=false;
         partnerDeclined =false;
@@ -170,8 +173,6 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
         outgoing_end.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                firebaseHelper.getRef().child("h").child(roomId).child("2p")
-                        .setValue("f");
                 endChat();
             }
         });
@@ -253,43 +254,28 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
         mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         firebaseHelper.setUnavailable();
-    }
-
-
-    @Override
-    protected void onServiceConnected() {
+        new ServiceDataHelper(this).putIsOnCall(true);
         if(mChatType.equals("0")) {
             participId="1";
             oppParticipId="2";
             mRemoteUserId = getIntent().getStringExtra("remoteUser");
             roomId= getIntent().getStringExtra("roomId");
-            firebaseHelper.getRef().child("h").child(roomId).child("1p")
-                    .setValue("o");
-            firebaseHelper.setUnavailable();
-            mAudioHelper.playRingtone();
-            updateWidgetsIncoming(mRemoteUserId);
-        }
-        else if(mChatType.equals("1")){
-            participId="2";
-            oppParticipId="1";
-            firebaseHelper.setUnavailable();
-            mAudioHelper.playMusic();
-            mRemoteUserId = getIntent().getStringExtra("remoteUser");
             try{
-                firebaseHelper.getRef().child("a").child(mRemoteUserId).child("m")
+                firebaseHelper.getRef().child("h").child(roomId).child("1p")
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snap) {
-                                String tmp =snap.getValue(String.class);
-                                if (tmp!=null && tmp.equals("t")) {
-                                    Toast.makeText(PartnerChatActivity.this, "User Busy!!", Toast.LENGTH_SHORT).show();
-                                    endChat();
+                                String tmp = snap.getValue(String.class);
+                                if(tmp!=null) {
+                                    firebaseHelper.getRef().child("h").child(roomId).child("1p")
+                                            .setValue("o");
+                                    firebaseHelper.setUnavailable();
+                                    new ServiceDataHelper(PartnerChatActivity.this).putIsOnCall(true);
+                                    mAudioHelper.playRingtone();
+                                    updateWidgetsIncoming(mRemoteUserId);
                                 }
-                                else {
-                                    roomId = firebaseHelper.getRef().child("h").push().getKey();
-                                    remoteUserState_outgoing.setText("Initiating");
-                                    updateWidgetsOutgoing(mRemoteUserId);
-                                    initChatOutgoing();
+                                else{
+                                    endChat();
                                 }
                             }
                             @Override
@@ -297,11 +283,26 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
 
                             }
                         });
-            }catch(Exception e){
+            } catch (Exception e) {
                 endChat();
             }
+
+        }
+        else if(mChatType.equals("1")){
+            participId="2";
+            oppParticipId="1";
+            firebaseHelper.setUnavailable();
+            new ServiceDataHelper(this).putIsOnCall(true);
+            mAudioHelper.playMusic();
+            mRemoteUserId = getIntent().getStringExtra("remoteUser");
+            roomId = firebaseHelper.getRef().child("h").push().getKey();
+            remoteUserState_outgoing.setText("Initiating");
+            updateWidgetsOutgoing(mRemoteUserId);
+            initChatOutgoing();
         }
     }
+
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -314,7 +315,9 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
     @Override
     protected void onStop() {
         if (isChatEstablished) {
-            isPartnerChatActivityActive=false;
+            new ServiceDataHelper(this).putIsOnCall(false);
+            firebaseHelper.setAvailable(firebaseHelper.getUserID());
+            isChatEnded =false;
             try {
                 mDurationTask.cancel();
                 mTimer.cancel();
@@ -376,7 +379,7 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
         try {
             firebaseHelper.getRef().child("n").child(firebaseHelper.getUserID()).setValue(roomId+" "+mRemoteUserId);
             firebaseHelper.removeinitChat();
-            firebaseHelper.getRef().child("h").child(roomId).child("1p")
+            firebaseHelper.getRef().child("h").child(roomId).child(oppParticipId+"p")
                     .addValueEventListener(new ValueEventListener() {
                         private boolean isInitiated=false;
                         @Override
@@ -397,14 +400,14 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        if (!isChatEstablished && !isInitiated) {
+                                        if (!isChatEstablished && !isInitiated && new ServiceDataHelper(PartnerChatActivity.this).getIsOnCall()) {
                                             Toast.makeText(PartnerChatActivity.this, "Could Not Establish Connection to Partner", Toast.LENGTH_SHORT).show();
                                             endChat();
                                         }
                                     }
-                                }, 7000);
+                                }, 30000);
                             }
-                            else {
+                            else if (isInitiated){
                                 endChat();
                             }
                         }
@@ -418,7 +421,7 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
     }
     private void initChatIncoming(){
         try {
-            firebaseHelper.getRef().child("h").child(roomId).child("1p")
+            firebaseHelper.getRef().child("h").child(roomId).child(participId+"p")
                     .setValue("t");
             initChatRoom();
 
@@ -534,7 +537,9 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
         }
         if (mInterstitialAd.isLoaded())
             mInterstitialAd.show();
-        isPartnerChatActivityActive=false;
+        isChatEnded =false;
+        new ServiceDataHelper(this).putIsOnCall(false);
+        firebaseHelper.setAvailable(firebaseHelper.getUserID());
         finish();
     }
 

@@ -48,7 +48,11 @@ public class NotificationHelper {
     }
 
     public void createNotification(Map data) {
-        buildNotification(data.get("msgTitle").toString(),data.get("msg").toString(),CHANNEL_ONE_NAME,1);
+        try {
+            buildNotification(data.get("msgTitle").toString(), data.get("msg").toString(), CHANNEL_ONE_NAME, 1);
+        }catch (Exception ignore){
+            buildNotification("You Have New Scenes!","Click Here to explore!", CHANNEL_ONE_NAME, 1);
+        }
     }
 
     public void createClaimPixieNotification() {

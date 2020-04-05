@@ -9,6 +9,7 @@ public class RemoteUserConnection {
 
 
     public RemoteUserConnection() {
+        remoteUserId="";
     }
 
     public String getRemoteUserId() {

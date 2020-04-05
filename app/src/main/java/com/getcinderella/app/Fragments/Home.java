@@ -369,7 +369,7 @@ public class Home extends Fragment {
             am.set(AlarmManager.RTC_WAKEUP, dataHelper.getLast_sign_at()+1000 * 60 * 60, pendingIntent);
         }
         dataHelper.setAvailable();
-        if (dataHelper.getRemoteTmp()!=null){
+        if (!dataHelper.getRemoteTmp().getRemoteUserId().isEmpty()){
             RemoteUserConnection tmp=dataHelper.getRemoteTmp();
             Toast.makeText(getContext(), "App closed unexpectedly! Showing last matched user..", Toast.LENGTH_SHORT).show();
             try {

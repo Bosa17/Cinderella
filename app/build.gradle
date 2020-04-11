@@ -8,6 +8,7 @@ android {
             keyAlias = 'release'
             keyPassword 'getcinderellakey'
         }
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -16,10 +17,10 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.getcinderella.app"
-        minSdkVersion 23
+        minSdkVersion 21
         targetSdkVersion 29
-        versionCode 5
-        versionName "1.0"
+        versionCode 8
+        versionName "1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true

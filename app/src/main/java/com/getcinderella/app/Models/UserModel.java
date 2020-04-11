@@ -1,7 +1,7 @@
 package com.getcinderella.app.Models;
 
 public class UserModel {
-    private String username;
+    private String a;
     private String fb_dp;
     private String quote;
     private String t;
@@ -11,8 +11,8 @@ public class UserModel {
     private long mask;
     private long pixies;
 
-    public UserModel(String username, String fb_dp, String quote, String t, String gender, long charisma, boolean isPremium, long mask, long pixies) {
-        this.username = username;
+    public UserModel(String a, String fb_dp, String quote, String t, String gender, long charisma, boolean isPremium, long mask, long pixies) {
+        this.a = a;
         this.fb_dp = fb_dp;
         this.quote = quote;
         this.t = t;
@@ -34,12 +34,12 @@ public class UserModel {
         this.quote = quote;
     }
 
-    public String getUsername() {
-        return username;
+    public String getA() {
+        return a;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setA(String a) {
+        this.a = a;
     }
 
     public String getFb_dp() {
@@ -103,7 +103,7 @@ public class UserModel {
     @Override
     public String toString() {
         return "UserModel{" +
-                "username='" + username + '\'' +
+                "username='" + a + '\'' +
                 ", fb_dp='" + fb_dp + '\'' +
                 ", quote='" + quote + '\'' +
                 ", charisma=" + charisma +

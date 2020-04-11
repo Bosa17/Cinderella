@@ -19,18 +19,12 @@
     <!--facebook-->
     <string name="facebook_app_id">858470831208589</string>
     <string name="fb_login_protocol_scheme">fb858470831208589</string>
-    <!--    <string name="facebook_app_id">2635111906573735</string>-->
-    <!--    <string name="fb_login_protocol_scheme">fb2635111906573735</string>-->
     <string name="continue_with_fb">Continue with Facebook</string>
     <string name="connect_on_facebook">Connect Directly On Facebook</string>
 
     <!--firebase-->
     <string name="user_db">User</string>
     <string name="scene">scene</string>
-
-    <!--sinch-->
-    <string name="sinch_key">4d488c48-c86f-4c7b-9779-e99f64f9f169</string>
-    <string name="sinch_secret">M0f04f2FVECLNh5S6NnWEg==</string>
 
     <!--dialog-->
     <string name="dlg_wait_please">Please wait…</string>
@@ -41,7 +35,7 @@
 
     <!--user fields-->
     <string name="uid">uid</string>
-    <string name="username">username</string>
+    <string name="alias">a</string>
     <string name="charisma">charisma</string>
     <string name="pixies">pixies</string>
     <string name="fb_dp">fb_dp</string>

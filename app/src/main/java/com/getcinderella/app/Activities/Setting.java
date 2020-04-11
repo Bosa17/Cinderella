@@ -36,6 +36,7 @@ public class Setting extends BaseActivity {
     private TextView logout;
     private ImageView image;
     private EditText quote;
+    private EditText alias;
     private TextView invite;
     private TextView feedback;
     private Button temptation;
@@ -64,6 +65,7 @@ public class Setting extends BaseActivity {
         vibrant=findViewById(R.id.vibrant_switch);
         sexy=findViewById(R.id.sexy_switch);
         quote=(EditText) findViewById(R.id.quoteText);
+        alias=(EditText) findViewById(R.id.aliasText);
         logout =(TextView) findViewById(R.id.logout);
         invite =(TextView) findViewById(R.id.invite);
         feedback=(TextView) findViewById(R.id.feedback);
@@ -71,6 +73,8 @@ public class Setting extends BaseActivity {
         ImageView back = (ImageView) findViewById(R.id.ivBack);
         if (!dataHelper.getQuote().trim().equals(""))
             quote.setText(dataHelper.getQuote());
+        if (!dataHelper.getA().trim().equals(""))
+            alias.setText(dataHelper.getA());
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,10 +129,43 @@ public class Setting extends BaseActivity {
         };
 
         quote.setFilters(new InputFilter[]{filtertxt,new InputFilter.LengthFilter(40)});
+        InputFilter filtertxt_alias = new InputFilter() {
+            public CharSequence filter(CharSequence source, int start, int end,
+                                       Spanned dest, int dstart, int dend) {
+                for (int i = start; i < end; i++) {
+                    if (Character.isSpaceChar(source.charAt(i))) {
+                        Toast.makeText(Setting.this,"No Space allowed inside NickName",Toast.LENGTH_SHORT).show();
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
+
+        alias.setFilters(new InputFilter[]{filtertxt_alias,new InputFilter.LengthFilter(17)});
         int position = quote.getText().length();
         Editable editObj= quote.getText();
         Selection.setSelection(editObj, position);
         quote.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                isChanged=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        int position_alias = alias.getText().length();
+        Editable editObj_alias= alias.getText();
+        Selection.setSelection(editObj, position);
+        alias.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -239,8 +276,12 @@ public class Setting extends BaseActivity {
         if (q.matches("")) {
             Toast.makeText(Setting.this, "You did not enter a quote", Toast.LENGTH_SHORT).show();
         }
+        String a = alias.getText().toString();
+        if (a.matches("")) {
+            Toast.makeText(Setting.this, "You did not enter a NickName", Toast.LENGTH_SHORT).show();
+        }
         else {
-            dataHelper.putSetting2Firebase((Integer) image.getTag(),String.valueOf(quote.getText()));
+            dataHelper.putSetting2Firebase((Integer) image.getTag(),String.valueOf(quote.getText()),String.valueOf(alias.getText()));
             super.onBackPressed();
         }
     }

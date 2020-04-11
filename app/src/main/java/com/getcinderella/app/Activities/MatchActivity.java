@@ -1,14 +1,11 @@
 package com.getcinderella.app.Activities;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Vibrator;
-import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -31,24 +28,18 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.getcinderella.app.Fragments.RemoteCardDialog;
 import com.getcinderella.app.Models.RemoteUserConnection;
 import com.getcinderella.app.Utils.ChatService;
-import com.getcinderella.app.Utils.FileUtils;
-import com.getcinderella.app.Utils.KeyboardUtils;
 import com.getcinderella.app.Utils.MessageAdapter;
-import com.getcinderella.app.Utils.Permissions;
 import com.getcinderella.app.Utils.listener.ChatListener;
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 
-import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -116,6 +107,7 @@ public class MatchActivity extends BaseActivity implements ChatListener{
     private ImageView remoteMask_incoming;
     private ToggleButton ring_control;
     private ImageView close_call;
+    private ImageView close_call_matched;
     private ImageView mRemoteUserDp;
     private ImageView chat_init_mask;
     private ImageView call_warn;
@@ -212,6 +204,13 @@ public class MatchActivity extends BaseActivity implements ChatListener{
                 onBackPressed();
             }
         });
+        close_call_matched=findViewById(R.id.closecall_matched);
+        close_call_matched.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
         end_btn=findViewById(R.id.hangupButton);
         end_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -290,7 +289,6 @@ public class MatchActivity extends BaseActivity implements ChatListener{
         isInappropriate=false;
         isCancelled=false;
         isChatEnded=false;
-        onceAgain();
         if(mChatType.equals("1")) {
             mAudioHelper.playMusic();
             scene = (SceneModel) getIntent().getSerializableExtra("scene");
@@ -303,7 +301,12 @@ public class MatchActivity extends BaseActivity implements ChatListener{
                     break;
                 case "Woman":partnerPreference="2";
                     break;
-                case "Any":partnerPreference="1";
+                case "Any":if(new Random().nextInt(3)==1){
+                                partnerPreference="2";
+                            }
+                            else{
+                                partnerPreference="1";
+                            }
             }
             pixieCost = callSettings.getLong("pixieCost");
             curr_pixie = callSettings.getLong("pixies");
@@ -451,6 +454,7 @@ public class MatchActivity extends BaseActivity implements ChatListener{
                         public void onDataChange(@NonNull DataSnapshot snap) {
                             String comboId=snap.getValue(String.class);
                             if (comboId!=null && !isMatched) {
+                                isMatched=true;
                                 initChatRoom(comboId);
                             }
                         }
@@ -669,7 +673,7 @@ public class MatchActivity extends BaseActivity implements ChatListener{
                         mRemoteUserCharisma = remoteUser.getCharisma();
                         mRemoteUserFbDp = remoteUser.getFb_dp();
                         mRemotuserQuote = remoteUser.getQuote();
-                        mRemoteUserName = StringUtils.extractFirstName(remoteUser.getUsername());
+                        mRemoteUserName = StringUtils.extractFirstName(remoteUser.getA());
                         remoteMask = (int) remoteUser.getMask();
                         mRemoteUser.setText(mRemoteUserName);
                         mRemoteUserDp.setImageResource(remoteMask);
@@ -736,25 +740,14 @@ public class MatchActivity extends BaseActivity implements ChatListener{
         }
     }
 
-    private void onceAgain(){
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!isChatEstablished && new ServiceDataHelper(MatchActivity.this).getIsOnCall() && !isMatched) {
-                    onceAgain();
-                    reset();
-                }
-            }
-        }, 17000);
-    }
 
     private void reset(){
         state_outgoing.setText("Resetting...");
         if (roomId!=null)
             firebaseHelper.endChat(roomId);
         mRemoteUser.setText("");
-        isMatched=false;
         isInitiated=false;
+        isMatched=false;
         roomId=null;
         isPrivate=isPrivateTmp;
         mRemoteUserID =null;
@@ -790,7 +783,7 @@ public class MatchActivity extends BaseActivity implements ChatListener{
                     mRemoteUserCharisma = remoteUser.getCharisma();
                     mRemoteUserFbDp = remoteUser.getFb_dp();
                     mRemotuserQuote = remoteUser.getQuote();
-                    mRemoteUserName = StringUtils.extractFirstName(remoteUser.getUsername());
+                    mRemoteUserName = StringUtils.extractFirstName(remoteUser.getA());
                     remoteMask = (int) remoteUser.getMask();
                     remoteUser_incoming.setText(mRemoteUserName+"("+scene_option+")");
                     remoteMask_incoming.setImageResource(remoteMask);
@@ -919,7 +912,6 @@ public class MatchActivity extends BaseActivity implements ChatListener{
         mMessageAdapter.addMessage(message, MessageAdapter.DIRECTION_OUTGOING);
         chat_init_area.setVisibility(View.GONE);
         chatTxt.setText("");
-        KeyboardUtils.hideKeyboard(this);
     }
 
 }

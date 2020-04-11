@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.getcinderella.app.Activities.AliasActivity;
 import com.getcinderella.app.Activities.GenderActivity;
 import com.getcinderella.app.Activities.MatchActivity;
 import com.getcinderella.app.Activities.QuoteActivity;
@@ -48,6 +49,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
+import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
 
 import java.util.List;
@@ -74,6 +76,7 @@ public class Home extends Fragment {
     private boolean isCardVisible;
     private static int RC_SUCCESS_QUOTE=3;
     private static int RC_SUCCESS_GENDER=4;
+    private static int RC_SUCCESS_ALIAS=6;
     private static int  RC_SUCCESS_MASK=5;
     //widgets
     private ImageView privateMode;
@@ -109,8 +112,10 @@ public class Home extends Fragment {
         });
 
         dataHelper=new DataHelper(getActivity());
-        if (dataHelper.getGender().equals("")||dataHelper.getQuote().equals("")||dataHelper.getGender().equals("Male")){
-            startGenderActivity();
+        if (dataHelper.getA().equals("")||dataHelper.getGender().equals("")||!dataHelper.getUsername().equals("")){
+            dataHelper.putUsername("");
+            Log.d("lol",dataHelper.getA()+" "+dataHelper.getGender()+" "+dataHelper.getUsername());
+            startAliasActivity();
         }
         scene_desc =view.findViewById(R.id.scene_desc);
         mask=(ImageView) view.findViewById(R.id.user_dp);
@@ -235,8 +240,8 @@ public class Home extends Fragment {
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                     UserModel referrer = documentSnapshot.toObject(UserModel.class);
                                     dataHelper.updatePixieWithUid(dataHelper.getReferrer(),referrer.getPixies()+5);
-                                    showInvitation(referrer.getUsername());
-                                    FirebaseDatabase.getInstance().getReference().child("i").child(dataHelper.getReferrer()).setValue(dataHelper.getUsername());
+                                    showInvitation(referrer.getA());
+                                    FirebaseDatabase.getInstance().getReference().child("i").child(dataHelper.getReferrer()).setValue(dataHelper.getA());
                                 }
                             });
                             dataHelper.putIsRewardPossible(true);
@@ -315,6 +320,11 @@ public class Home extends Fragment {
             if (dataHelper.getQuote().equals(""))
                 startQuoteActivity();
         }
+        else if (requestCode==RC_SUCCESS_ALIAS){
+            dataHelper.putAlias2Firebase(data.getStringExtra(getString(R.string.alias)));
+            if (dataHelper.getGender().equals(""))
+                startGenderActivity();
+        }
     }
 
     @Override
@@ -340,6 +350,9 @@ public class Home extends Fragment {
     }
     private void startGenderActivity(){
         startActivityForResult(new Intent(getContext(), GenderActivity.class),RC_SUCCESS_GENDER);
+    }
+    private void startAliasActivity(){
+        startActivityForResult(new Intent(getContext(), AliasActivity.class),RC_SUCCESS_ALIAS);
     }
     private void showInvitation(String name){
         new InvitationDialog.Builder(getContext(),name).build().show();
@@ -469,7 +482,7 @@ public class Home extends Fragment {
 
         if (user != null) {
             partner.setText(String.valueOf(dataHelper.getPartners()));
-            username.setText(user.getUsername());
+            username.setText(user.getA());
             pixies.setText(String.valueOf(user.getPixies()));
             charisma.setText(String.valueOf(user.getCharisma()));
             mask.setImageResource((int) user.getMask());
@@ -498,8 +511,8 @@ public class Home extends Fragment {
             if (center) {
                 textView.setGravity(Gravity.CENTER);
             }
-            textView.setTextAppearance(styleId);
-
+//            textView.setTextAppearance(styleId);
+            TextViewCompat.setTextAppearance(textView,styleId);
             return textView;
         }
 

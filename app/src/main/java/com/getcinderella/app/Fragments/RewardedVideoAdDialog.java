@@ -45,7 +45,7 @@ public class RewardedVideoAdDialog extends BlurPopupWindow implements RewardedVi
     @Override
     protected View createContentView(ViewGroup parent) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_ad_dialog, parent, false);
-        MobileAds.initialize(getContext(), "ca-app-pub-3940256099942544~3347511713");
+        MobileAds.initialize(getContext(), "ca-app-pub-6258093238303404/8024322921");//ca-app-pub-3940256099942544~3347511713   ca-app-pub-6258093238303404/8024322921
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getContext());
         mRewardedVideoAd.setRewardedVideoAdListener(this);
         loadRewardedVideoAd();

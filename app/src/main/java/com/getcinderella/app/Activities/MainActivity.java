@@ -2,6 +2,7 @@ package com.getcinderella.app.Activities;
 
 
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -88,7 +89,7 @@ public class MainActivity extends BaseActivity {
         navigationController = pageNavigationView.material()
                 .addItem(R.drawable.ic_home, "Home",color)
                 .addItem(R.drawable.ic_partners,"Partners",color)
-                .addItem(R.drawable.ic_pixie_buy, "Pixie",color).setDefaultColor(getResources().getColor(R.color.white,getTheme()))
+                .addItem(R.drawable.ic_pixie_buy, "Pixie",color).setDefaultColor(getResources().getColor(R.color.white))
                 .build();
         BottomNavigationUtils.setupWithNavController(PAGE_IDS, navigationController, mNavController);
     }
@@ -119,7 +120,9 @@ public class MainActivity extends BaseActivity {
 
     private void checkPermission() {
         if (!Permissions.hasAllPermissions(this) ){
-            requestPermissions(Permissions.PERMISSIONS, 2);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(Permissions.PERMISSIONS, 2);
+            }
         }else{
 
         }
@@ -127,7 +130,7 @@ public class MainActivity extends BaseActivity {
         if (AutoStartPermissionHelper.getInstance().isAutoStartPermissionAvailable(this) && !dataHelper.getAutostart()){
             new MaterialDialog.Builder(MainActivity.this).title("Enable AutoStart")
                     .content(
-                            "Please allow Cinderella to always run in the background,else your partner will not be able to use \"ChatCall\" to connect with you!")
+                            " VERY IMPORTANT!!! Please allow Cinderella to always run in the background,else your partner will not be able to use \"ChatCall\" to connect with you! Settings->Autostart and enable Cinderella.")
                     .theme(Theme.DARK)
                     .positiveText("ALLOW")
                     .positiveColor(getResources().getColor(R.color.the_royalty))

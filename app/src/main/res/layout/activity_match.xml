@@ -81,7 +81,7 @@
                 android:textSize="20sp"
                 android:text="Matched..."/>
         </RelativeLayout>
-wa
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="0dp"
@@ -130,9 +130,19 @@ wa
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/white"
                 android:autoSizeTextType="uniform"/>
-
+            <ImageView
+                android:id="@+id/closecall_matched"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/call_end_bg"
+                android:layout_margin="30dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginStart="70dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ic_close"/>
 
         </LinearLayout>
+
 
 
     </LinearLayout>

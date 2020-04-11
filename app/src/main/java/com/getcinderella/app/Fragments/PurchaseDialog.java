@@ -1,7 +1,9 @@
 package com.getcinderella.app.Fragments;
 
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.graphics.drawable.AnimationDrawable;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -15,8 +17,11 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.getcinderella.app.Utils.FirebaseHelper;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.ConsumeParams;
+import com.android.billingclient.api.ConsumeResponseListener;
+import com.getcinderella.app.Activities.MainActivity;
+import com.getcinderella.app.Utils.DataHelper;
 import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
 import com.android.billingclient.api.BillingClient;
@@ -41,9 +46,8 @@ public class PurchaseDialog extends BlurPopupWindow {
     private Button getpixie_200;
     private Button getpixie_300;
     private Button get_premium;
-    private FirebaseHelper firebaseHelper;
+    private DataHelper dataHelper;
     private BillingClient billingClient;
-    HashMap<String,String> priceList;
     List<String> skuList;
     public PurchaseDialog(@NonNull Context context) {
         super(context);
@@ -56,8 +60,7 @@ public class PurchaseDialog extends BlurPopupWindow {
         skuList.add("100_pixies");
         skuList.add("200_pixies");
         skuList.add("300_pixies");
-        priceList=new HashMap<>();
-        firebaseHelper=new FirebaseHelper(getContext());
+        dataHelper=new DataHelper(getContext());
         ImageView closeDialog= view.findViewById(R.id.closeDialog);
         getpixie_100=view.findViewById(R.id.getpixie_100);
         getpixie_200=view.findViewById(R.id.getpixie_200);
@@ -104,7 +107,41 @@ public class PurchaseDialog extends BlurPopupWindow {
                                             String sku = skuDetails.getSku();
                                             String price = skuDetails.getPrice();
                                             Log.d("lol",sku);
-                                            priceList.put(sku,price);
+                                            switch(sku){
+                                                case "100_pixies":getpixie_100.setText(price);
+                                                    getpixie_100.setOnClickListener(new OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            billingClient.launchBillingFlow(getActivity(),BillingFlowParams.newBuilder()
+                                                                    .setSkuDetails(skuDetails)
+                                                                    .build());
+
+                                                        }
+                                                    });
+                                                    break;
+                                                case "200_pixies":getpixie_200.setText(price);
+                                                    getpixie_200.setOnClickListener(new OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            billingClient.launchBillingFlow(getActivity(),BillingFlowParams.newBuilder()
+                                                                    .setSkuDetails(skuDetails)
+                                                                    .build());
+
+                                                        }
+                                                    });
+                                                    break;
+                                                case "300_pixies":getpixie_300.setText(price);
+                                                    getpixie_300.setOnClickListener(new OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            billingClient.launchBillingFlow(getActivity(),BillingFlowParams.newBuilder()
+                                                                    .setSkuDetails(skuDetails)
+                                                                    .build());
+
+                                                        }
+                                                    });
+                                                    break;
+                                            }
                                         }
                                     }
                                 }
@@ -119,9 +156,54 @@ public class PurchaseDialog extends BlurPopupWindow {
         });
     }
 
-
+    private Activity getActivity() {
+        Context context = getContext();
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity)context;
+            }
+            context = ((ContextWrapper)context).getBaseContext();
+        }
+        return null;
+    }
     public void handlePurchase(Purchase purchase){
+        Log.d("lol",purchase.getPurchaseState()+"");
+        if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+            // Grant entitlement to the user.
+            switch(purchase.getSku()){
+                case"100_pixies": dataHelper.addPixies(100);
+                    new BillingAckDialog.Builder(getContext(),false,100).build().show();
+                    ((MainActivity)getActivity()).refreshHome();
+                    dismiss();
+                    break;
+                case"200_pixies": dataHelper.addPixies(200);
+                    new BillingAckDialog.Builder(getContext(),false,200).build().show();
+                    ((MainActivity)getActivity()).refreshHome();
+                    dismiss();
+                    break;
+                case"300_pixies": dataHelper.addPixies(300);
+                    new BillingAckDialog.Builder(getContext(),false,300).build().show();
+                    ((MainActivity)getActivity()).refreshHome();
+                    dismiss();
+                    break;
+            }
+            // Acknowledge the purchase if it hasn't already been acknowledged.
+            if (!purchase.isAcknowledged()) {
+                ConsumeParams consumeParams = ConsumeParams.newBuilder()
+                                .setPurchaseToken(purchase.getPurchaseToken())
+                                .build();
 
+                billingClient.consumeAsync(consumeParams, new ConsumeResponseListener() {
+                    @Override
+                    public void onConsumeResponse(BillingResult billingResult, String s) {
+
+                    }
+                });
+            }
+        } else{
+            Log.d("lol","failed transaction");
+            new BillingAckDialog.Builder(getContext(),true,0).build().show();
+        }
     }
 
     public void startPremiumPayment(String TXN_AMOUNT){
@@ -137,9 +219,9 @@ public class PurchaseDialog extends BlurPopupWindow {
                     handlePurchase(purchase);
                 }
             } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
-                // Handle an error caused by a user cancelling the purchase flow.
+                new BillingAckDialog.Builder(getContext(),true,0).build().show();
             } else {
-                // Handle any other error codes.
+                new BillingAckDialog.Builder(getContext(),true,0).build().show();
             }
         }
     }

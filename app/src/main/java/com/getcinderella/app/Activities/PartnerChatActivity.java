@@ -1,7 +1,6 @@
 package com.getcinderella.app.Activities;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.getcinderella.app.Utils.KeyboardUtils;
 import com.getcinderella.app.Utils.MessageAdapter;
 import com.getcinderella.app.Utils.NotificationHelper;
 import com.getcinderella.app.Utils.listener.ChatListener;
@@ -251,7 +250,7 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
         messagesList.setAdapter(mMessageAdapter);
         mAudioHelper = new AudioHelper(this);
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId("ca-app-pub-6258093238303404/8487357353");//ca-app-pub-3940256099942544/1033173712    ca-app-pub-6258093238303404/8487357353
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         firebaseHelper.setUnavailable();
         new ServiceDataHelper(this).putIsOnCall(true);
@@ -316,7 +315,6 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
     protected void onStop() {
         if (isChatEstablished) {
             new ServiceDataHelper(this).putIsOnCall(false);
-            firebaseHelper.setAvailable(firebaseHelper.getUserID());
             isChatEnded =false;
             try {
                 mDurationTask.cancel();
@@ -539,7 +537,6 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
             mInterstitialAd.show();
         isChatEnded =false;
         new ServiceDataHelper(this).putIsOnCall(false);
-        firebaseHelper.setAvailable(firebaseHelper.getUserID());
         finish();
     }
 
@@ -551,7 +548,7 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     UserModel remote = documentSnapshot.toObject(UserModel.class);
-                    name=StringUtils.extractFirstName(remote.getUsername());
+                    name=StringUtils.extractFirstName(remote.getA());
                     mask=(int)remote.getMask();
                     remoteUser_incoming.setText(name);
                     remoteMask_incoming.setImageResource(mask);
@@ -634,7 +631,7 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     UserModel remote = documentSnapshot.toObject(UserModel.class);
-                    name=StringUtils.extractFirstName(remote.getUsername());
+                    name=StringUtils.extractFirstName(remote.getA());
                     mask=(int)remote.getMask();
                     remoteUser_outgoing.setText(name);
                     remoteMask_outgoing.setImageResource(mask);
@@ -687,6 +684,5 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
         mMessageAdapter.addMessage(message, MessageAdapter.DIRECTION_OUTGOING);
         chat_init_area.setVisibility(View.GONE);
         chatTxt.setText("");
-        KeyboardUtils.hideKeyboard(this);
     }
 }

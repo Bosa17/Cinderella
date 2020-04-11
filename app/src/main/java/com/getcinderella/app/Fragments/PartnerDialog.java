@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
 import com.getcinderella.app.Activities.PartnerChatActivity;
@@ -59,7 +57,7 @@ public class PartnerDialog extends BlurPopupWindow {
                 else {
                     Intent intent = new Intent(getContext(), PartnerChatActivity.class);
                     intent.putExtra("remoteUser", remoteUserId);
-                    intent.putExtra("userName", dataHelper.getUsername());
+                    intent.putExtra("userName", dataHelper.getA());
                     intent.putExtra("isPremium",dataHelper.getIsPremium());
                     intent.putExtra("pixies",dataHelper.getPixies());
                     intent.putExtra(ChatService.CHAT_TYPE, "1");

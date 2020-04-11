@@ -15,21 +15,28 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="com.android.vending.BILLING"/>
+    <uses-permission android:name="com.android.vending.BILLING" />
 
     <application
         android:name=".Cinderella"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/ThemeRoyalty"
         tools:ignore="GoogleAppIndexingWarning"
-        android:allowBackup="false"
         tools:node="merge"
         tools:replace="android:label,android:allowBackup">
-        <activity android:name=".Activities.GenderActivity"/>
-        <activity android:name=".Activities.QuoteActivity" />
+        <activity android:name=".Activities.AliasActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity android:name=".Activities.GenderActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity android:name=".Activities.QuoteActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".Activities.ContactSupport"
             android:screenOrientation="portrait"
@@ -76,8 +83,8 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activities.MatchActivity"
-            android:screenOrientation="portrait"
             android:parentActivityName=".Activities.MainActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="LockedOrientationActivity" />
         <activity
@@ -97,12 +104,12 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activities.PartnerChatActivity"
-            android:screenOrientation="portrait"
             android:parentActivityName=".Activities.MainActivity"
+            android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" /> <!-- ca-app-pub-6258093238303404~8159625694 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-6258093238303404~8159625694" /> <!-- ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -110,11 +117,13 @@
         <receiver android:name=".Utils.ClaimPixiesNotification" />
         <receiver android:name="Utils.PhoneStateBroadcastReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE"/>
+                <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
+
         <service android:name=".Utils.ChatService" />
-        <service android:name=".Utils.FcmListenerService"
+        <service
+            android:name=".Utils.FcmListenerService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

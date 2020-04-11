@@ -50,6 +50,7 @@ public class User_login extends BaseActivity {
     private static int RC_SUCCESS_MASK=2;
     private static int RC_SUCCESS_QUOTE=3;
     private static int RC_SUCCESS_GENDER=4;
+    private static int RC_SUCCESS_ALIAS=5;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,19 +74,7 @@ public class User_login extends BaseActivity {
         });
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
     private void checkCurrentUser(FirebaseUser user){
-        Log.d(TAG, "checkCurrentUser: checking if user is logged com.");
-
         if(user != null){
             startMainActivity();
         }
@@ -101,20 +90,17 @@ public class User_login extends BaseActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             dataHelper.saveScene();
-//                            boolean isNewUser=true;
                             boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
                             Log.d(TAG, "signInWithCredential:success");
                             if (isNewUser) {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 getDynamicLink();
-                                getFacebookDetails(user.getUid(), token);
+                                getFacebookDetails(user.getUid());
                                 ProgressDialogFragment.hide(getSupportFragmentManager());
                             }
                             else{
-                                if (dataHelper.getScene_timestamp()==0){
-                                    dataHelper.addPrevUser(mAuth.getCurrentUser().getUid());
-                                }
-                                startMainActivity();
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                getprevUser(user.getUid());
                                 ProgressDialogFragment.hide(getSupportFragmentManager());
                             }
                             ProgressDialogFragment.hide(getSupportFragmentManager());
@@ -155,38 +141,27 @@ public class User_login extends BaseActivity {
                 });
     }
 
-    private void getFacebookDetails(String uid,AccessToken token){
+    private void getFacebookDetails(String uid){
 
-        GraphRequest request = GraphRequest.newMeRequest(
-            token,
-            new GraphRequest.GraphJSONObjectCallback() {
-                @Override
-                public void onCompleted(JSONObject object, GraphResponse response) {
-                    // Application code
-                    try {
-                        Log.i("Response",response.toString());
+        if (Profile.getCurrentProfile()!=null)
+        {
+            userModel.setFb_dp(""+Profile.getCurrentProfile().getProfilePictureUri(200, 200));
+            Log.i("Login", "ProfilePic" + Profile.getCurrentProfile().getProfilePictureUri(200, 200));
+        }
+        dataHelper.addNewUser(uid,userModel);
+        startAliasActivity();
+    }
 
-                        String name = object.getString("name");
-
-                        userModel.setUsername(name);
-
-                        if (Profile.getCurrentProfile()!=null)
-                        {
-                            userModel.setFb_dp(""+Profile.getCurrentProfile().getProfilePictureUri(200, 200));
-                            Log.i("Login", "ProfilePic" + Profile.getCurrentProfile().getProfilePictureUri(200, 200));
-                        }
-                        dataHelper.addNewUser(uid,userModel);
-                        startGenderActivity();
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name");
-        request.setParameters(parameters);
-        request.executeAsync();
+    private void getprevUser(String uid){
+        if (dataHelper.getScene_timestamp()==0){
+            dataHelper.addPrevUser(uid);
+        }
+        if (Profile.getCurrentProfile()!=null)
+        {
+            dataHelper.putFb_dp(""+Profile.getCurrentProfile().getProfilePictureUri(200, 200));
+            Log.i("Login", "ProfilePic" + Profile.getCurrentProfile().getProfilePictureUri(200, 200));
+        }
+        startMainActivity();
     }
 
     private void startSelect_mask(){
@@ -197,6 +172,9 @@ public class User_login extends BaseActivity {
     }
     private void startGenderActivity(){
         startActivityForResult(new Intent(this,GenderActivity.class),RC_SUCCESS_GENDER);
+    }
+    private void startAliasActivity(){
+        startActivityForResult(new Intent(this,AliasActivity.class),RC_SUCCESS_ALIAS);
     }
 
     @Override
@@ -213,6 +191,10 @@ public class User_login extends BaseActivity {
         else if (requestCode==RC_SUCCESS_GENDER){
             dataHelper.putGender2Firebase(data.getStringExtra(getString(R.string.gender)));
             startQuoteActivity();
+        }
+        else if (requestCode==RC_SUCCESS_ALIAS){
+            dataHelper.putAlias2Firebase(data.getStringExtra(getString(R.string.alias)));
+            startGenderActivity();
         }
         facebookHelper.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);

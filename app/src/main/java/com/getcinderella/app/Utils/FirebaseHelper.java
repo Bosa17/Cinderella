@@ -1,6 +1,7 @@
 package com.getcinderella.app.Utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.getcinderella.app.Models.PreferenceModel;
 import com.google.firebase.auth.FirebaseAuth;
@@ -58,6 +59,11 @@ public class FirebaseHelper {
         db.collection(mContext.getString(R.string.user_db))
                 .document(getUserID()).update(mContext.getString(R.string.pixies),pixie);
     }
+    public void updateAlias(String alias){
+        Log.d("lol","updateFired! "+alias);
+        db.collection(mContext.getString(R.string.user_db))
+                .document(getUserID()).update(mContext.getString(R.string.alias),alias);
+    }
     public void updateCharismaWithUid(String uid, long charisma){
         db.collection(mContext.getString(R.string.user_db))
                 .document(uid)
@@ -78,18 +84,20 @@ public class FirebaseHelper {
 
     public void endChat(String roomId){
         removeRoom(roomId);
-        setAvailable(userID);
+        setAvailable();
     }
-    public void setAvailable(String Id){
+    public void setAvailable(){
         PreferenceModel pm = new PreferenceModel("f",System.currentTimeMillis());
-        myRef.child("a")
+        if (!getGender().equals("") && getUserID()!=null)
+            myRef.child("a")
                 .child(getGender())
-                .child(Id).setValue(pm);
+                .child(getUserID()).setValue(pm);
     }
 
     public void setUnavailable(){
         PreferenceModel pm = new PreferenceModel("t",System.currentTimeMillis());
-        myRef.child("a")
+        if (!getGender().equals("") && getUserID()!=null)
+            myRef.child("a")
                 .child(getGender())
                 .child(getUserID()).setValue(pm);
     }
@@ -116,11 +124,12 @@ public class FirebaseHelper {
                 .child(roomId).removeValue();
     }
 
-    public void updateSettings(long mask, String quote){
+    public void updateSettings(long mask, String quote,String alias){
         db.collection(mContext.getString(R.string.user_db))
                 .document(getUserID()).update(
                         mContext.getString(R.string.mask),mask,
-                        mContext.getString(R.string.quote),quote
+                        mContext.getString(R.string.quote),quote,
+                        mContext.getString(R.string.alias),alias
                 );
     }
 

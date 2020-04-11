@@ -35,37 +35,14 @@
                     android:background="@drawable/setting_border"
                     >
 
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:id="@+id/imageShare"
-                    android:layout_marginTop="20dp"
-                    android:scaleType="fitCenter"/>
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:id="@+id/imageShare"
+                        android:layout_marginTop="20dp"
+                        android:scaleType="fitCenter"/>
                 </FrameLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:focusableInTouchMode="true"
-                    android:layout_marginTop="30dp"
-                    android:padding="30dp"
-                    android:background="@drawable/setting_border"
-                    >
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_quote"
-                        android:drawablePadding="10dp"
-                        android:imeOptions="actionDone"
-                        android:singleLine="true"
-                        android:maxLength="35"
-                        android:padding="10dp"
-                        android:hint="   Enter Your Quote (Max : 40)"
-                        android:id="@+id/quoteText"
-                        />
-                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -140,6 +117,52 @@
                         android:text="Temptation" />
 
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:focusableInTouchMode="true"
+                    android:layout_marginTop="30dp"
+                    android:padding="30dp"
+                    android:background="@drawable/setting_border"
+                    >
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_quote"
+                        android:drawablePadding="10dp"
+                        android:imeOptions="actionDone"
+                        android:singleLine="true"
+                        android:maxLength="35"
+                        android:padding="10dp"
+                        android:hint="   Enter Your Quote (Max : 40)"
+                        android:id="@+id/quoteText"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:focusableInTouchMode="true"
+                    android:layout_marginTop="30dp"
+                    android:padding="30dp"
+                    android:background="@drawable/setting_border"
+                    >
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="10dp"
+                        android:imeOptions="actionDone"
+                        android:singleLine="true"
+                        android:maxLength="17"
+                        android:padding="10dp"
+                        android:hint="   Enter Your NickName (Max : 17)"
+                        android:id="@+id/aliasText"
+                        />
+                </LinearLayout>
+
 
 
                 <LinearLayout

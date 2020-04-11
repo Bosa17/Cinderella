@@ -36,7 +36,7 @@ public class NotificationHelper {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             UserModel remote = documentSnapshot.toObject(UserModel.class);
-                            String n=StringUtils.extractFirstName(remote.getUsername());
+                            String n=StringUtils.extractFirstName(remote.getA());
                             buildNotification("A Partner tried contacting you","You have missed a chat from your partner "+n,CHANNEL_TWO_NAME,(int)System.currentTimeMillis());
                         }
                     });

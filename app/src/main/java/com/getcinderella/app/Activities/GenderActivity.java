@@ -1,7 +1,5 @@
 package com.getcinderella.app.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,7 +22,7 @@ public class GenderActivity extends BaseActivity {
         setContentView(R.layout.activity_gender);
         genderbtn=findViewById(R.id.genderbtn);
         TextView gender_init=findViewById(R.id.gender_init);
-        gender_init.setText("Hi "+dataHelper.getUsername()+", welcome to Cinderella. Please choose your gender carefully as you will not be able to change again. ");
+        gender_init.setText("Hi "+dataHelper.getA()+", welcome to Cinderella. Please choose your gender carefully as you will not be able to change again. ");
         TextView nextScreen = (TextView) findViewById(R.id.tvNext);
         nextScreen.setOnClickListener(new View.OnClickListener() {
             @Override

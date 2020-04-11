@@ -40,8 +40,8 @@ public class DataHelper {
         putMask((int)curr_user.getMask());
         putGender(curr_user.getGender());
         putQuote("");
+        putA("");
         putLast_sign_at(System.currentTimeMillis());
-        putUsername(curr_user.getUsername());
         putFb_dp(curr_user.getFb_dp());
         putIsPrivate(false);
         putIsPremium(false);
@@ -60,7 +60,6 @@ public class DataHelper {
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     UserModel user = documentSnapshot.toObject(UserModel.class);
                     saveUser(userID,user);
-
                 }
             });
         }catch (Exception ignore){
@@ -73,7 +72,7 @@ public class DataHelper {
         putGender(curr_user.getGender());
         putQuote(curr_user.getQuote());
         putLast_sign_at(System.currentTimeMillis());
-        putUsername(curr_user.getUsername());
+        putA(curr_user.getA());
         putFb_dp(curr_user.getFb_dp());
         putIsPrivate(false);
         putIsPremium(curr_user.isPremium());
@@ -217,6 +216,7 @@ public class DataHelper {
         UserModel user=Snapshot.toObject(UserModel.class);
         putUID(firebaseHelper.getUserID());
         try {
+            putA(user.getA());
             putCharisma(user.getCharisma());
             putPixies(user.getPixies());
         }catch(Exception e){
@@ -232,10 +232,13 @@ public class DataHelper {
         firebaseHelper.updatePixieWithUid(uid,pixie);
     }
     public void addPixies(int pixies){
-        firebaseHelper.updatePixie(getPixies()+pixies);
+        if(getPixies()!=0)
+            firebaseHelper.updatePixie(getPixies()+pixies);
     }
     public int rewardPixies(){
         int pixies_won=new Random().nextInt(4);
+        if (pixies_won==0)
+            pixies_won=1;
         firebaseHelper.updatePixie(getPixies()+pixies_won);
         return pixies_won;
     }
@@ -252,7 +255,7 @@ public class DataHelper {
         user.setFb_dp(getFb_dp());
         user.setQuote(getQuote());
         user.setCharisma(getCharisma());
-        user.setUsername(getUsername());
+        user.setA(getA());
         user.setMask(getMask());
         user.setPremium(getIsPremium());
         user.setPixies(getPixies());
@@ -270,10 +273,15 @@ public class DataHelper {
         Hawk.put(mContext.getString(R.string.gender), gender);
         firebaseHelper.updateGender(gender);
     }
-    public void putSetting2Firebase(int maskID,String quote){
+    public void putAlias2Firebase(String alias){
+        putA(alias);
+        firebaseHelper.updateAlias(alias);
+    }
+    public void putSetting2Firebase(int maskID,String quote,String alias){
         Hawk.put(mContext.getString(R.string.mask), maskID);
         Hawk.put(mContext.getString(R.string.quote), quote);
-        firebaseHelper.updateSettings(maskID,quote);
+        Hawk.put(mContext.getString(R.string.alias), alias);
+        firebaseHelper.updateSettings(maskID,quote,alias);
     }
     public int getMask(){
         return Hawk.get(mContext.getString(R.string.mask),R.drawable.dp_1);
@@ -298,9 +306,13 @@ public class DataHelper {
     public String getGender(){
         return Hawk.get(mContext.getString(R.string.gender),"");
     }
-    public void putUsername(String username){ Hawk.put(mContext.getString(R.string.username), username); }
+    public void putA(String alias){ Hawk.put(mContext.getString(R.string.alias), alias); }
+    public String getA(){
+        return Hawk.get(mContext.getString(R.string.alias),"");
+    }
+    public void putUsername(String username){ Hawk.put("username", username); }
     public String getUsername(){
-        return Hawk.get(mContext.getString(R.string.username));
+        return Hawk.get("username","");
     }
     public void putFb_dp(String fb_dp){
         Hawk.put(mContext.getString(R.string.fb_dp), fb_dp);
@@ -412,7 +424,7 @@ public class DataHelper {
     }
 
     public void setAvailable(){
-        firebaseHelper.setAvailable(getUID());
+        firebaseHelper.setAvailable();
         putIsOnCall(false);
     }
     public void saveRemoteTmp(RemoteUserConnection remoteTmp){

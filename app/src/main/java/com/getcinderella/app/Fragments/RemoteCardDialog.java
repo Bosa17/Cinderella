@@ -134,8 +134,11 @@ public class RemoteCardDialog extends BlurPopupWindow {
                     scv.setImageBitmap(result);
                     init();
                 }
-                else
+                else {
+                    mRemoteUserIsPrivate=true;
+                    init();
                     return;
+                }
 
             }
 
@@ -173,7 +176,7 @@ public class RemoteCardDialog extends BlurPopupWindow {
                 remoteUser.setRemoteUserQuote(mRemoteUserQuote);
                 remoteUser.setRemoteUserName(mRemoteUserName);
                 remoteUser.setRemoteUserCharisma(mRemoteUserCharisma);
-                if (Permissions.hasStoragePermissions(getContext())) {
+                if (Permissions.hasAllPermissions(getContext())) {
                     remoteUser.setRemoteUserDp(FileUtils.storeImage(bmp));
                 }
                 else{

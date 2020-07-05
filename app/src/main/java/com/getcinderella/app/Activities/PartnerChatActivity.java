@@ -250,7 +250,7 @@ public class PartnerChatActivity extends BaseActivity implements ChatListener {
         messagesList.setAdapter(mMessageAdapter);
         mAudioHelper = new AudioHelper(this);
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-6258093238303404/8487357353");//ca-app-pub-3940256099942544/1033173712    ca-app-pub-6258093238303404/8487357353
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");//ca-app-pub-3940256099942544/1033173712    ca-app-pub-6258093238303404/8487357353
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         firebaseHelper.setUnavailable();
         new ServiceDataHelper(this).putIsOnCall(true);

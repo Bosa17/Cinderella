@@ -33,7 +33,7 @@ public class ChatService extends Service {
     public class ChatServiceInterface extends Binder {
 
         public void initChatWithPayload(final Map payload){
-            Log.d("insideChatService","lol");
+            Log.d("insideChatService","initiated ChatService");
             if(!dataHelper.getBlockUserCallerId().contains( payload.get("uID").toString())){
                 final Intent intent;
                 if (dataHelper.getIsOnCall())
@@ -62,7 +62,7 @@ public class ChatService extends Service {
                     }
                     intent.putExtra(CHAT_TYPE, "0");
                     intent.putExtra("pixies", dataHelper.getPixies());
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     ChatService.this.startActivity(intent);
                 }
             }

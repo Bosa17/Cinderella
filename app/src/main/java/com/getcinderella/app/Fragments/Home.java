@@ -207,7 +207,7 @@ public class Home extends Fragment {
         hashTagView =(HashtagView) view.findViewById(R.id.scene_tags);
         initElements();
         initPrivateMode();
-
+        sync();
         pixies_cost_switcher.setFactory(new TextViewFactory(R.style.PixieCostTextView, true));
         setPixieCost();
         updateWidgets(dataHelper.get());
@@ -297,12 +297,6 @@ public class Home extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        sync();
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==2 && resultCode==2){
@@ -381,7 +375,12 @@ public class Home extends Fragment {
             AlarmManager am = (AlarmManager)getContext().getSystemService(getContext().ALARM_SERVICE);
             am.set(AlarmManager.RTC_WAKEUP, dataHelper.getLast_sign_at()+1000 * 60 * 60, pendingIntent);
         }
-        dataHelper.setAvailable();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dataHelper.setAvailable();
+            }
+        }, 2000);
         if (!dataHelper.getRemoteTmp().getRemoteUserId().isEmpty()){
             RemoteUserConnection tmp=dataHelper.getRemoteTmp();
             Toast.makeText(getContext(), "App closed unexpectedly! Showing last matched user..", Toast.LENGTH_SHORT).show();
@@ -456,20 +455,19 @@ public class Home extends Fragment {
     }
 
     private void setPixieCost(){
-        long s1=dataHelper.getIsPrivate()?2:0;
-        long s2=0;
+        long s=0;
         switch (getSelectedPartnerPreference()){
-            case "Man":s2=2;
+            case "Man":s=2;
             break;
-            case"Woman":s2=2;
+            case"Woman":s=2;
             break;
-            case"Any":s2=0;
+            case"Any":s=0;
             break;
         }
         int[] animV = new int[]{R.anim.slide_in_top, R.anim.slide_out_bottom};
         pixies_cost_switcher.setInAnimation(getContext(), animV[0]);
         pixies_cost_switcher.setOutAnimation(getContext(), animV[1]);
-        pixies_cost_switcher.setText(String.valueOf(String.valueOf(s1+s2+3)));
+        pixies_cost_switcher.setText(String.valueOf(String.valueOf(s+3)));
     }
 
     private String getSelectedPartnerPreference() {

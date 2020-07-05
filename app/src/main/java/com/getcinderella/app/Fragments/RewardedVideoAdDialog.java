@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
@@ -45,7 +46,7 @@ public class RewardedVideoAdDialog extends BlurPopupWindow implements RewardedVi
     @Override
     protected View createContentView(ViewGroup parent) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_ad_dialog, parent, false);
-        MobileAds.initialize(getContext(), "ca-app-pub-6258093238303404/8024322921");//ca-app-pub-3940256099942544~3347511713   ca-app-pub-6258093238303404/8024322921
+        MobileAds.initialize(getContext(), "ca-app-pub-3940256099942544~3347511713");//ca-app-pub-3940256099942544~3347511713   ca-app-pub-6258093238303404/8024322921
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getContext());
         mRewardedVideoAd.setRewardedVideoAdListener(this);
         loadRewardedVideoAd();
@@ -97,7 +98,7 @@ public class RewardedVideoAdDialog extends BlurPopupWindow implements RewardedVi
         dismiss();
     }
     public void loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544~3347511713",
                 new AdRequest.Builder().build());
     }
 
@@ -200,7 +201,7 @@ public class RewardedVideoAdDialog extends BlurPopupWindow implements RewardedVi
     public static class Builder extends BlurPopupWindow.Builder<RewardedVideoAdDialog> {
         public Builder(Context context) {
             super(context);
-            this.setScaleRatio(0.25f).setBlurRadius(0).setTintColor(context.getColor(R.color.colorPrimary)).setDismissOnClickBack(false)
+            this.setScaleRatio(0.25f).setBlurRadius(0).setTintColor(ContextCompat.getColor(context,R.color.colorPrimary)).setDismissOnClickBack(false)
                     .setDismissOnTouchBackground(false);
         }
 

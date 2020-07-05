@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
@@ -89,7 +90,7 @@ public class CongoPixiesDialog extends BlurPopupWindow {
         public Builder(Context context,boolean isP) {
             super(context);
             isPremium=isP;
-            this.setScaleRatio(0.25f).setBlurRadius(0).setTintColor(context.getColor(R.color.colorPrimary))
+            this.setScaleRatio(0.25f).setBlurRadius(0).setTintColor(ContextCompat.getColor(context,R.color.colorPrimary))
                     .setDismissOnTouchBackground(false);
         }
 

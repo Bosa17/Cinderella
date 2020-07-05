@@ -6,6 +6,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
+import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -194,8 +195,7 @@ public class Partner extends Fragment {
             if (center) {
                 textView.setGravity(Gravity.CENTER);
             }
-            textView.setTextAppearance(styleId);
-
+            TextViewCompat.setTextAppearance(textView,styleId);
             return textView;
         }
 

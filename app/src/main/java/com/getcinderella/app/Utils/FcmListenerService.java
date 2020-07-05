@@ -47,9 +47,7 @@ public class FcmListenerService extends FirebaseMessagingService {
                     getApplicationContext().bindService(new Intent(getApplicationContext(), ChatService.class), this, BIND_AUTO_CREATE);
                 }
             }.relayMessageData(data);
-        } else if (isNotification(data)) {
-            new NotificationHelper(getApplicationContext()).createNotification(data);
-        } else {
+        }else {
             Constraints constraints = new Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
                     .build();
@@ -71,7 +69,4 @@ public class FcmListenerService extends FirebaseMessagingService {
         return data.get("title") != null && data.get("title").toString().equals("chatService");
     }
 
-    public boolean isNotification(Map data){
-        return data.get("title") != null && data.get("title").toString().equals("notifs");
-    }
 }

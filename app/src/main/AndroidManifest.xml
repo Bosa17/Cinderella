@@ -11,8 +11,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.android.vending.BILLING" />
@@ -28,23 +26,6 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:node="merge"
         tools:replace="android:label,android:allowBackup">
-        <activity android:name=".Activities.AliasActivity"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"/>
-        <activity android:name=".Activities.GenderActivity"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"/>
-        <activity android:name=".Activities.QuoteActivity"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"/>
-        <activity
-            android:name=".Activities.ContactSupport"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name" />
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
@@ -57,6 +38,26 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Activities.AliasActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".Activities.GenderActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".Activities.QuoteActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".Activities.ContactSupport"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
         <activity
             android:name=".Activities.User_login"
             android:screenOrientation="portrait"
@@ -83,9 +84,9 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activities.MatchActivity"
+            android:autoRemoveFromRecents="true"
             android:parentActivityName=".Activities.MainActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activities.Splash"
@@ -104,22 +105,19 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activities.PartnerChatActivity"
+            android:autoRemoveFromRecents="true"
+            android:noHistory="true"
             android:parentActivityName=".Activities.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" /> <!-- ca-app-pub-6258093238303404~8159625694 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-6258093238303404~8159625694" /> <!-- ca-app-pub-3940256099942544~3347511713 -->
+            android:value="ca-app-pub-3940256099942544~3347511713" /> <!-- ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
         <receiver android:name=".Utils.ClaimPixiesNotification" />
-        <receiver android:name="Utils.PhoneStateBroadcastReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE" />
-            </intent-filter>
-        </receiver>
 
         <service android:name=".Utils.ChatService" />
         <service

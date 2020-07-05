@@ -162,7 +162,6 @@ public class MatchActivity extends BaseActivity implements ChatListener{
         setContentView(R.layout.activity_match);
         firebaseHelper=new FirebaseHelper(this);
         userID=firebaseHelper.getUserID();
-        firebaseHelper.setUnavailable();
         new ServiceDataHelper(this).putIsOnCall(true);
         vibe = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         mAudioHelper =new AudioHelper(this);
@@ -208,7 +207,7 @@ public class MatchActivity extends BaseActivity implements ChatListener{
         close_call_matched.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBackPressed();
+                reset();
             }
         });
         end_btn=findViewById(R.id.hangupButton);
@@ -278,6 +277,7 @@ public class MatchActivity extends BaseActivity implements ChatListener{
         mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         sec=0;
+        scene=new SceneModel();
         mRemoteUserID =null;
         roomId=null;
         participId=null;
@@ -291,6 +291,7 @@ public class MatchActivity extends BaseActivity implements ChatListener{
         isChatEnded=false;
         if(mChatType.equals("1")) {
             mAudioHelper.playMusic();
+            firebaseHelper.setUnavailable();
             scene = (SceneModel) getIntent().getSerializableExtra("scene");
             Bundle callSettings = getIntent().getExtras();
             isPrivateTmp = callSettings.getBoolean("isPrivate");
@@ -375,7 +376,6 @@ public class MatchActivity extends BaseActivity implements ChatListener{
                     ServiceDataHelper dataHelper = new ServiceDataHelper(this);
                     dataHelper.saveRemoteTmp(remoteUser);
                 }
-                finish();
             } else if (mChatType.equals("1") && scene != null) {
                 firebaseHelper.removeUserFromChannel(scene.getScene_no());
                 if (roomId != null)
@@ -688,8 +688,9 @@ public class MatchActivity extends BaseActivity implements ChatListener{
                             public void onDataChange(@NonNull DataSnapshot snap) {
                                 String c=snap.getValue(String.class);
                                 if(c!=null && c.equals("t")){
-                                    state_outgoing.setText("Answered");
                                     chatEstablished();
+                                    if(roomId!=null)
+                                        firebaseHelper.getRef().child("h").child(roomId).child("c").removeEventListener(this);
                                 }
                                 else if(c!=null && c.equals("o")){
                                     isInitiated=true;
@@ -743,8 +744,12 @@ public class MatchActivity extends BaseActivity implements ChatListener{
 
     private void reset(){
         state_outgoing.setText("Resetting...");
+        scene = (SceneModel) getIntent().getSerializableExtra("scene");
+        Log.d(TAG, "reset: "+scene.scene_no);
+        firebaseHelper.removeUserFromChannel(scene.getScene_no());
+        firebaseHelper.addUserToChannel(scene.getScene_no(),partnerPreference);
         if (roomId!=null)
-            firebaseHelper.endChat(roomId);
+            firebaseHelper.removeRoom(roomId);
         mRemoteUser.setText("");
         isInitiated=false;
         isMatched=false;
@@ -756,10 +761,6 @@ public class MatchActivity extends BaseActivity implements ChatListener{
         isDeclined=true;
         chat_matched.setVisibility(View.GONE);
         chat_init.setVisibility(View.VISIBLE);
-        firebaseHelper.removeUserFromChannel(scene.getScene_no());
-        firebaseHelper.setUnavailable();
-        new ServiceDataHelper(this).putIsOnCall(true);
-        firebaseHelper.addUserToChannel(scene.getScene_no(),partnerPreference);
     }
 
     private void  updateWidgetsIncoming(){
@@ -826,8 +827,6 @@ public class MatchActivity extends BaseActivity implements ChatListener{
         long seconds = totalSeconds % 60;
         return String.format(Locale.US, "%02d:%02d", minutes, seconds);
     }
-
-
 
     private void initChatWidgets(){
         incoming.setVisibility(View.GONE);

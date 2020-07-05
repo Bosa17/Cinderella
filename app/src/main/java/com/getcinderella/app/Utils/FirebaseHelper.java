@@ -41,7 +41,6 @@ public class FirebaseHelper {
         return mAuth.getCurrentUser().getUid();
     }
     public String getGender(){
-        Hawk.init(mContext).build();
         return Hawk.get(mContext.getString(R.string.gender), "");
     }
     public void addNewUser(String userID,UserModel user){
@@ -86,20 +85,37 @@ public class FirebaseHelper {
         removeRoom(roomId);
         setAvailable();
     }
-    public void setAvailable(){
-        PreferenceModel pm = new PreferenceModel("f",System.currentTimeMillis());
-        if (!getGender().equals("") && getUserID()!=null)
-            myRef.child("a")
+    public void putLast_available_at(long last_available_at){ Hawk.put("last_available_at", last_available_at); }
+    public long getLast_available_at(){
+        return Hawk.get("last_available_at",0L);
+    }
+    public void destroyAvailable(long t){
+        myRef.child("a")
                 .child(getGender())
-                .child(getUserID()).setValue(pm);
+                .child(t+""). removeValue();
+    }
+    public void setAvailable(){
+        destroyAvailable(getLast_available_at());
+        if ( getUserID()!=null) {
+            PreferenceModel pm = new PreferenceModel("f", getUserID());
+            long t=System.currentTimeMillis();
+            putLast_available_at(t);
+            myRef.child("a")
+                    .child(getGender())
+                    .child(t+"").setValue(pm);
+        }
     }
 
     public void setUnavailable(){
-        PreferenceModel pm = new PreferenceModel("t",System.currentTimeMillis());
-        if (!getGender().equals("") && getUserID()!=null)
+        destroyAvailable(getLast_available_at());
+        if ( getUserID()!=null) {
+            PreferenceModel pm = new PreferenceModel("t", getUserID());
+            long t=System.currentTimeMillis();
+            putLast_available_at(t);
             myRef.child("a")
-                .child(getGender())
-                .child(getUserID()).setValue(pm);
+                    .child(getGender())
+                    .child(t+"").setValue(pm);
+        }
     }
     public void removeUserFromChannel(String scene){
         myRef.child(scene)
@@ -127,10 +143,10 @@ public class FirebaseHelper {
     public void updateSettings(long mask, String quote,String alias){
         db.collection(mContext.getString(R.string.user_db))
                 .document(getUserID()).update(
-                        mContext.getString(R.string.mask),mask,
-                        mContext.getString(R.string.quote),quote,
-                        mContext.getString(R.string.alias),alias
-                );
+                mContext.getString(R.string.mask),mask,
+                mContext.getString(R.string.quote),quote,
+                mContext.getString(R.string.alias),alias
+        );
     }
 
     public void updateMask(long mask){

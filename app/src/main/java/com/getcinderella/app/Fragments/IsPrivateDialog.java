@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
@@ -98,7 +99,7 @@ public class IsPrivateDialog extends BlurPopupWindow {
         public Builder(Context context,boolean pm) {
             super(context);
             isPrivateMode=pm;
-            this.setScaleRatio(0.25f).setBlurRadius(0).setTintColor(context.getColor(R.color.colorPrimary)).setDismissOnClickBack(true)
+            this.setScaleRatio(0.25f).setBlurRadius(0).setTintColor(ContextCompat.getColor(context,R.color.colorPrimary)).setDismissOnClickBack(true)
                     .setDismissOnTouchBackground(false);
         }
 

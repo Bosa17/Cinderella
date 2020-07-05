@@ -170,11 +170,11 @@ public class User_login extends BaseActivity {
     private void startQuoteActivity(){
         startActivityForResult(new Intent(this,QuoteActivity.class),RC_SUCCESS_QUOTE);
     }
-    private void startGenderActivity(){
-        startActivityForResult(new Intent(this,GenderActivity.class),RC_SUCCESS_GENDER);
-    }
     private void startAliasActivity(){
         startActivityForResult(new Intent(this,AliasActivity.class),RC_SUCCESS_ALIAS);
+    }
+    private void startGenderActivity(){
+        startActivityForResult(new Intent(this,GenderActivity.class),RC_SUCCESS_GENDER);
     }
 
     @Override
@@ -188,13 +188,13 @@ public class User_login extends BaseActivity {
             dataHelper.putQuote2Firebase(data.getStringExtra(getString(R.string.quote)));
             startSelect_mask();
         }
-        else if (requestCode==RC_SUCCESS_GENDER){
-            dataHelper.putGender2Firebase(data.getStringExtra(getString(R.string.gender)));
-            startQuoteActivity();
-        }
         else if (requestCode==RC_SUCCESS_ALIAS){
             dataHelper.putAlias2Firebase(data.getStringExtra(getString(R.string.alias)));
             startGenderActivity();
+        }
+        else if (requestCode==RC_SUCCESS_GENDER){
+            dataHelper.putGender2Firebase(data.getStringExtra(getString(R.string.gender)));
+            startQuoteActivity();
         }
         facebookHelper.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);

@@ -20,16 +20,30 @@ public class SyncWorker extends Worker {
         mContext=context;
         Hawk.init(mContext).build();
     }
-
+    public void putLast_available_at(long last_available_at){ Hawk.put("last_available_at", last_available_at); }
+    public long getLast_available_at(){
+        return Hawk.get("last_available_at",0L);
+    }
+    public void destroyAvailable(long t){
+        FirebaseDatabase.getInstance().getReference().child("a").child(Hawk.get(mContext.getString(R.string.gender)))
+                .child(t+""). removeValue();
+    }
+    public void putAvailable(){
+        String gender= Hawk.get(mContext.getString(R.string.gender));
+        if (!gender.equals("") && getUID()!=null) {
+            destroyAvailable(getLast_available_at());
+            PreferenceModel pm = new PreferenceModel("f", getUID());
+            long t=System.currentTimeMillis();
+            putLast_available_at(t);
+            FirebaseDatabase.getInstance().getReference().child("a")
+                    .child(gender)
+                    .child(t+"").setValue(pm);
+        }
+    }
     @Override
     public Result doWork() {
         // Do the work here
-        PreferenceModel pm = new PreferenceModel("f",System.currentTimeMillis());
-        String gender= Hawk.get(mContext.getString(R.string.gender));
-        if (!getUID().equals("") && !gender.equals(""))
-            FirebaseDatabase.getInstance().getReference().child("a")
-                    .child(gender)
-                    .child(getUID()).setValue(pm);
+        putAvailable();
         return Result.success();
     }
 

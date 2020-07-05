@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
@@ -51,7 +52,6 @@ public class PartnerDialog extends BlurPopupWindow {
             @Override
             public void onClick(View view) {
                 if (dataHelper.getPixies()<3 && !dataHelper.getIsPremium()){
-                    new PurchaseDialog.Builder(getContext()).build().show();
                     Toast.makeText(getContext(), R.string.insufficient_pixies, Toast.LENGTH_LONG).show();
                 }
                 else {
@@ -205,7 +205,7 @@ public class PartnerDialog extends BlurPopupWindow {
             super(context);
             dp_file=filePath;
             remoteUserId=uid;
-            this.setScaleRatio(0.75f).setBlurRadius(0).setTintColor(context.getColor(R.color.colorPrimary)).setDismissOnClickBack(true)
+            this.setScaleRatio(0.75f).setBlurRadius(0).setTintColor(ContextCompat.getColor(context,R.color.colorPrimary)).setDismissOnClickBack(true)
                     .setDismissOnTouchBackground(false);
         }
 

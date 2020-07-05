@@ -44,6 +44,7 @@
                 app:autoSizeTextType="uniform"
                 android:layout_gravity="center_horizontal"
                 android:textSize="30sp"
+                android:textStyle="italic"
                 android:text="Bibbidi Bobbidi Boo"/>
             <ToggleButton
                 android:layout_width="30dp"
@@ -78,7 +79,9 @@
                 android:layout_centerHorizontal="true"
                 android:id="@+id/state_outgoing"
                 android:layout_margin="30dp"
-                android:textSize="20sp"
+                android:textStyle="italic"
+                android:textSize="21sp"
+                android:singleLine="true"
                 android:text="Matched..."/>
         </RelativeLayout>
 
@@ -133,9 +136,9 @@
             <ImageView
                 android:id="@+id/closecall_matched"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:background="@drawable/call_end_bg"
-                android:layout_margin="30dp"
+                android:layout_marginTop="30dp"
                 android:layout_marginEnd="70dp"
                 android:layout_marginStart="70dp"
                 android:layout_gravity="center_horizontal"

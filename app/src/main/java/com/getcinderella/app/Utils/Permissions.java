@@ -27,30 +27,9 @@ public class Permissions {
 
     }
 
-
-    public static boolean hasStoragePermissions(Context context) {
-
-        boolean hasAllPermissions = true;
-
-        for(String permission : STORAGE_PERMISSION) {
-            //you can return false instead of assigning, but by assigning you can log all permission values
-            if (! hasPermission(context, permission)) {hasAllPermissions = false; }
-        }
-
-        return hasAllPermissions;
-
-    }
-
     public static final String[] PERMISSIONS = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.READ_PHONE_STATE,
-    };
-
-
-    public static final String[] STORAGE_PERMISSION = {
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE
     };
 
 }

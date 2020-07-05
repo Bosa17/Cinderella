@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
@@ -72,7 +73,7 @@ public class InvitationDialog extends BlurPopupWindow {
         public Builder(Context context,String username) {
             super(context);
             name=username;
-            this.setScaleRatio(0.25f).setBlurRadius(0).setTintColor(context.getColor(R.color.colorPrimary))
+            this.setScaleRatio(0.25f).setBlurRadius(0).setTintColor(ContextCompat.getColor(context,R.color.colorPrimary))
                     .setDismissOnTouchBackground(false);
         }
 
